@@ -239,7 +239,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
   .dnd-hint-icon svg{width:16px;height:16px}
 }
 
-.aksi-cell{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.aksi-cell{text-align:right}
+.aksi-cell-in{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 
 /* ============ DATA MASTER — PANEL PILIH DOKUMEN (DRAG & DROP) ============ */
 .dnd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -733,7 +734,7 @@ function renderTable(){
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
       <td><span class="pill ${verified===totalReq?'ok':uploaded===0?'wait':'wait'}">${verified}/${totalReq} terverifikasi · ${uploaded}/${totalReq} unggah</span></td>
-      <td class="aksi-cell">${aksiHtml}</td>
+      <td class="aksi-cell"><div class="aksi-cell-in">${aksiHtml}</div></td>
     </tr>`;
   }).join('');
   body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.pid)));
@@ -803,10 +804,10 @@ function renderMasterTable(){
       <td>${r.kota||'-'}</td>
       <td>${(Number(r.tahap??0)+1)}/6</td>
       <td>${tgl}</td>
-      <td class="aksi-cell">
+      <td class="aksi-cell"><div class="aksi-cell-in">
         <button class="btn b-navy sm" data-manage="${r.participant_id}">📤 Kelola Dokumen</button>
         <button class="btn b-red sm" data-remove="${r.id}" data-pid="${r.participant_id}">Keluarkan</button>
-      </td>
+      </div></td>
     </tr>`;
   }).join('');
   body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openMasterDoc(tr.dataset.pid)));
