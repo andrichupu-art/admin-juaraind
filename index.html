@@ -19,6 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <style>
 /* ============ TOKENS — disamakan persis dengan portal pendaftaran ============ */
 :root{
@@ -207,6 +208,33 @@ td.nama span{color:var(--mut);font-size:.78rem}
 
 .hint{background:#FFF6E9;border:1px solid #F3D9A6;border-radius:12px;padding:12px 14px;color:var(--navy);font-size:.78rem;line-height:1.5;margin-bottom:18px}
 
+.aksi-cell{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ============ DATA MASTER — PANEL PILIH DOKUMEN (DRAG & DROP) ============ */
+.dnd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dnd-col{background:#F7F5EF;border:1.5px solid var(--line);border-radius:14px;padding:14px;min-height:260px;display:flex;flex-direction:column}
+.dnd-col h4{font:800 .74rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.dnd-col h4 small{font:600 .68rem var(--body);text-transform:none;letter-spacing:0;color:var(--mut)}
+.dnd-list{flex:1;display:flex;flex-direction:column;gap:8px;border-radius:10px;transition:.15s;padding:2px}
+.dnd-list.drag-over{background:#FFF6E9;outline:2px dashed var(--gold);outline-offset:2px}
+.dnd-target .dnd-list{border:2px dashed var(--line)}
+.dnd-target .dnd-list.drag-over{border-color:var(--gold)}
+.dnd-item{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;cursor:grab;transition:.15s;user-select:none}
+.dnd-item:hover{border-color:var(--gold);box-shadow:0 2px 8px rgba(190,129,70,.14)}
+.dnd-item:active{cursor:grabbing}
+.dnd-item.dragging{opacity:.35}
+.dnd-item .dnd-ic{font-size:1.15rem;width:26px;text-align:center;flex-shrink:0}
+.dnd-item .dnd-lbl{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.dnd-item .dnd-lbl b{font:700 .82rem var(--body);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dnd-dot{width:9px;height:9px;border-radius:99px;flex-shrink:0;background:#D9D2BE}
+.dnd-dot.ok{background:var(--green)} .dnd-dot.wait{background:#E3A93B} .dnd-dot.bad{background:var(--red)}
+.dnd-rm{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--mut);font-size:.72rem;display:none;align-items:center;justify-content:center;transition:.15s}
+.dnd-rm:hover{border-color:var(--red);color:var(--red)}
+.dnd-empty{margin:auto;text-align:center;color:var(--mut);font-size:.78rem;padding:20px 10px}
+.dnd-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.dnd-actions .btn{flex:1;justify-content:center}
+@media(max-width:640px){ .dnd-wrap{grid-template-columns:1fr} }
+
 @media(max-width:760px){
   .stats{grid-template-columns:1fr 1fr}
   .info-grid{grid-template-columns:1fr}
@@ -360,6 +388,36 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <div class="box-sec">
         <h4>📎 Dokumen</h4>
         <div id="docList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL PILIH DOKUMEN — DATA MASTER ============ -->
+<div class="modal" id="masterDocModal">
+  <div class="box" style="max-width:900px">
+    <div class="box-h">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <div class="ava" id="mdAva">-</div>
+        <div style="min-width:0"><h3 id="mdNama" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-</h3><p id="mdKode">-</p></div>
+      </div>
+      <button class="x" id="btnCloseMasterDoc">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="hint">📌 Seret (drag) kartu dokumen dari kolom kiri ke kolom kanan untuk memilih berkas yang akan dikirim via email atau di-download. Bisa juga tap kartunya untuk memindahkan.</div>
+      <div class="dnd-wrap">
+        <div class="dnd-col dnd-source">
+          <h4>📂 Dokumen Peserta</h4>
+          <div class="dnd-list" id="dndSource"></div>
+        </div>
+        <div class="dnd-col dnd-target">
+          <h4>📤 Dokumen Terpilih <small id="dndCount"></small></h4>
+          <div class="dnd-list" id="dndTarget"><div class="dnd-empty" id="dndEmptyMsg">Seret dokumen ke sini</div></div>
+          <div class="dnd-actions">
+            <button class="btn b-ghost sm" id="btnSendEmail" disabled>✉️ Kirim via Email</button>
+            <button class="btn b-navy sm" id="btnDownloadPicked" disabled>⬇ Download Terpilih</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -609,16 +667,21 @@ function renderMasterTable(){
   if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr>'; return; }
   body.innerHTML=rows.map(r=>{
     const tgl=r.converted_at?new Date(r.converted_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}):'-';
-    return `<tr>
+    return `<tr data-pid="${r.participant_id}">
       <td class="kode">${r.kode_peserta||'-'}</td>
       <td class="nama"><b>${r.nama||'-'}</b><span>${r.telepon||'-'}</span></td>
       <td>${r.kota||'-'}</td>
       <td>${(Number(r.tahap??0)+1)}/6</td>
       <td>${tgl}</td>
-      <td class="aksi-cell"><button class="btn b-red sm" data-remove="${r.id}" data-pid="${r.participant_id}">Keluarkan</button></td>
+      <td class="aksi-cell">
+        <button class="btn b-navy sm" data-manage="${r.participant_id}">📤 Kelola Dokumen</button>
+        <button class="btn b-red sm" data-remove="${r.id}" data-pid="${r.participant_id}">Keluarkan</button>
+      </td>
     </tr>`;
   }).join('');
-  body.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>removeFromMaster(b.dataset.remove,b.dataset.pid)));
+  body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openMasterDoc(tr.dataset.pid)));
+  body.querySelectorAll('[data-manage]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); openMasterDoc(b.dataset.manage); }));
+  body.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); removeFromMaster(b.dataset.remove,b.dataset.pid); }));
 }
 $('#qSearchMaster')?.addEventListener('input', renderMasterTable);
 
@@ -698,6 +761,152 @@ $('#btnSaveStage').addEventListener('click', async ()=>{
   renderTable(); renderStats();
   toast('Tahap peserta diperbarui ✓','ok');
 });
+
+/* ============ DATA MASTER: PANEL PILIH DOKUMEN (DRAG & DROP) ============ */
+let DND_PID=null;
+
+function dndItemHtml(d,up){
+  const st=up?.status;
+  const dot=st==='terverifikasi'?'ok':st==='ditolak'?'bad':'wait';
+  return `<div class="dnd-item" draggable="true" data-key="${d.k}">
+    <span class="dnd-ic">${d.ic}</span>
+    <div class="dnd-lbl"><b>${d.t}</b><span class="dnd-dot ${dot}" title="${st==='terverifikasi'?'Terverifikasi':st==='ditolak'?'Ditolak':'Menunggu'}"></span></div>
+    <button class="dnd-rm" data-rm="${d.k}" title="Kembalikan ke daftar dokumen">✕</button>
+  </div>`;
+}
+
+function openMasterDoc(pid){
+  DND_PID=pid;
+  const p=PARTICIPANTS.find(x=>x.id===pid);
+  const mrow=MASTER_ROWS.find(r=>r.participant_id===pid);
+  const nama=p?.nama||mrow?.nama||'-';
+  $('#mdAva').textContent=(nama||'?')[0].toUpperCase();
+  $('#mdNama').textContent=nama;
+  $('#mdKode').textContent=mrow?.kode_peserta||(p?participantCode(p):'-');
+
+  const docs=DOCS_BY_PID[pid]||{};
+  const uploaded=DOCS.filter(d=>docs[d.k]);
+  $('#dndSource').innerHTML=uploaded.length?uploaded.map(d=>dndItemHtml(d,docs[d.k])).join(''):'<div class="dnd-empty">Peserta ini belum mengunggah dokumen apa pun.</div>';
+  $('#dndTarget').innerHTML='<div class="dnd-empty" id="dndEmptyMsg">Seret dokumen ke sini</div>';
+  updateDndCount();
+  $('#masterDocModal').classList.add('show');
+}
+function closeMasterDoc(){ $('#masterDocModal').classList.remove('show'); DND_PID=null; }
+$('#btnCloseMasterDoc').addEventListener('click', closeMasterDoc);
+$('#masterDocModal').addEventListener('click', e=>{ if(e.target.id==='masterDocModal')closeMasterDoc(); });
+
+function updateDndCount(){
+  const n=$('#dndTarget').querySelectorAll('.dnd-item').length;
+  $('#dndCount').textContent=n?`(${n} dipilih)`:'';
+  const has=n>0;
+  $('#btnSendEmail').disabled=!has;
+  $('#btnDownloadPicked').disabled=!has;
+}
+
+function moveDndToTarget(key){
+  const src=$('#dndSource'), tgt=$('#dndTarget');
+  const item=src.querySelector(`.dnd-item[data-key="${key}"]`); if(!item)return;
+  $('#dndEmptyMsg')?.remove();
+  item.querySelector('.dnd-rm').style.display='flex';
+  tgt.appendChild(item);
+  if(!src.querySelector('.dnd-item')) src.innerHTML='<div class="dnd-empty">Semua dokumen sudah dipilih.</div>';
+  updateDndCount();
+}
+function moveDndToSource(key){
+  const tgt=$('#dndTarget'), src=$('#dndSource');
+  const item=tgt.querySelector(`.dnd-item[data-key="${key}"]`); if(!item)return;
+  item.querySelector('.dnd-rm').style.display='none';
+  src.querySelector('.dnd-empty')?.remove();
+  const order=DOCS.map(d=>d.k);
+  const after=[...src.querySelectorAll('.dnd-item')].find(it=>order.indexOf(it.dataset.key)>order.indexOf(key));
+  after?src.insertBefore(item,after):src.appendChild(item);
+  if(!tgt.querySelector('.dnd-item')) tgt.innerHTML='<div class="dnd-empty" id="dndEmptyMsg">Seret dokumen ke sini</div>';
+  updateDndCount();
+}
+
+function initDndLists(){
+  [['#dndSource',false],['#dndTarget',true]].forEach(([sel,isTarget])=>{
+    const list=$(sel);
+    list.addEventListener('dragstart', e=>{
+      const item=e.target.closest('.dnd-item'); if(!item)return;
+      e.dataTransfer.setData('text/plain',item.dataset.key);
+      e.dataTransfer.effectAllowed='move';
+      item.classList.add('dragging');
+    });
+    list.addEventListener('dragend', e=>{ e.target.closest('.dnd-item')?.classList.remove('dragging'); });
+    list.addEventListener('dragover', e=>{ e.preventDefault(); list.classList.add('drag-over'); });
+    list.addEventListener('dragleave', ()=> list.classList.remove('drag-over'));
+    list.addEventListener('drop', e=>{
+      e.preventDefault(); list.classList.remove('drag-over');
+      const key=e.dataTransfer.getData('text/plain'); if(!key)return;
+      isTarget?moveDndToTarget(key):moveDndToSource(key);
+    });
+    list.addEventListener('click', e=>{
+      const rm=e.target.closest('.dnd-rm');
+      if(rm){ moveDndToSource(rm.dataset.rm); return; }
+      const item=e.target.closest('.dnd-item'); if(!item)return;
+      if(!isTarget) moveDndToTarget(item.dataset.key);
+    });
+  });
+}
+initDndLists();
+
+$('#btnSendEmail').addEventListener('click', ()=>{
+  const keys=[...$('#dndTarget').querySelectorAll('.dnd-item')].map(el=>el.dataset.key);
+  toast(`Fitur kirim email untuk ${keys.length} dokumen akan segera disambungkan`,'ok');
+});
+
+function sanitizeName(s){ return String(s||'').trim().replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'')||'file'; }
+
+async function downloadPickedZip(){
+  const pid=DND_PID; if(!pid)return;
+  const keys=[...$('#dndTarget').querySelectorAll('.dnd-item')].map(el=>el.dataset.key);
+  if(!keys.length)return;
+
+  const docs=DOCS_BY_PID[pid]||{};
+  const p=PARTICIPANTS.find(x=>x.id===pid);
+  const mrow=MASTER_ROWS.find(r=>r.participant_id===pid);
+  const nama=p?.nama||mrow?.nama||'Peserta';
+  const kode=mrow?.kode_peserta||(p?participantCode(p):'-');
+
+  const btn=$('#btnDownloadPicked');
+  const orig=btn.innerHTML;
+  btn.disabled=true; btn.innerHTML='⏳ Menyiapkan ZIP…';
+
+  try{
+    const zip=new JSZip();
+    let ok=0, used=new Set();
+    for(const key of keys){
+      const doc=docs[key]; const meta=DOCS.find(d=>d.k===key);
+      if(!doc?.storage_path){ console.warn('Tidak ada berkas untuk',key); continue; }
+      const {data:signed,error:sErr}=await sb.storage.from('juara-v2-documents').createSignedUrl(doc.storage_path,120);
+      if(sErr||!signed){ console.warn('Gagal signed url',key,sErr); continue; }
+      const res=await fetch(signed.signedUrl);
+      if(!res.ok){ console.warn('Gagal mengunduh berkas',key); continue; }
+      const blob=await res.blob();
+      const ext=(doc.file_name||'').includes('.')?doc.file_name.split('.').pop():'';
+      let base=sanitizeName(meta?.t||key), fname=base+(ext?'.'+ext:'');
+      let n=2; while(used.has(fname)){ fname=`${base}_${n}${ext?'.'+ext:''}`; n++; }
+      used.add(fname);
+      zip.file(fname, blob);
+      ok++;
+    }
+    if(!ok){ toast('Tidak ada berkas yang berhasil diunduh','err'); return; }
+    const content=await zip.generateAsync({type:'blob'});
+    const zipName=`${sanitizeName(nama)}_${sanitizeName(kode)}.zip`;
+    const url=URL.createObjectURL(content);
+    const a=document.createElement('a'); a.href=url; a.download=zipName;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+    toast(ok<keys.length?`ZIP dibuat: ${ok}/${keys.length} dokumen berhasil diunduh`:'ZIP berhasil diunduh ✓','ok');
+  }catch(err){
+    console.error(err);
+    toast('Gagal membuat ZIP: '+(err.message||'terjadi kesalahan'),'err');
+  }finally{
+    btn.disabled=false; btn.innerHTML=orig;
+  }
+}
+$('#btnDownloadPicked').addEventListener('click', downloadPickedZip);
 
 checkSession();
 
