@@ -242,6 +242,13 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .aksi-cell{text-align:right}
 .aksi-cell-in{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 
+.convert-progress{display:flex;align-items:center;gap:8px;width:150px;max-width:100%}
+.convert-progress .cp-track{flex:1;height:9px;background:#EAE6DA;border-radius:99px;overflow:hidden;position:relative}
+.convert-progress .cp-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--gold),#DDA45E);position:relative;transition:width .1s linear}
+.convert-progress .cp-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);width:40px;animation:cp-shine 1.1s linear infinite}
+.convert-progress .cp-pct{font:800 .72rem var(--body);color:var(--navy);min-width:34px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+@keyframes cp-shine{0%{transform:translateX(-40px)}100%{transform:translateX(150px)}}
+
 /* ============ DATA MASTER — PANEL PILIH DOKUMEN (DRAG & DROP) ============ */
 .dnd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .dnd-col{background:#F7F5EF;border:1.5px solid var(--line);border-radius:14px;padding:14px;min-height:260px;display:flex;flex-direction:column}
@@ -740,20 +747,37 @@ function renderTable(){
   body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.pid)));
   body.querySelectorAll('[data-convert]').forEach(b=>b.addEventListener('click', e=>{
     e.stopPropagation();
-    convertToMaster(b.dataset.convert);
+    convertToMaster(b.dataset.convert, b);
   }));
 }
 $('#qSearch').addEventListener('input', renderTable);
 $('#qStage').addEventListener('change', renderTable);
 
 /* ============ CONVERT KE DATA MASTER ============ */
-async function convertToMaster(pid){
+function runConvertProgress(host, durationMs){
+  return new Promise(resolve=>{
+    host.innerHTML=`<div class="convert-progress"><div class="cp-track"><div class="cp-fill" style="width:0%"></div></div><span class="cp-pct">0%</span></div>`;
+    const fill=host.querySelector('.cp-fill'), pct=host.querySelector('.cp-pct');
+    const start=performance.now();
+    function tick(now){
+      const p=Math.min(1,(now-start)/durationMs);
+      const shown=Math.round(p*100);
+      fill.style.width=shown+'%';
+      pct.textContent=shown+'%';
+      if(p<1){ requestAnimationFrame(tick); } else { resolve(); }
+    }
+    requestAnimationFrame(tick);
+  });
+}
+async function convertToMaster(pid, btn){
   const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
   const docs=DOCS_BY_PID[pid]||{};
   const totalReq=DOCS.length;
   const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
   if(verified!==totalReq)return toast('Dokumen peserta belum lengkap terverifikasi','err');
   if(MASTER_IDS.has(pid))return toast('Peserta sudah ada di Data Master','err');
+
+  const host=btn?btn.closest('.aksi-cell-in'):null;
 
   const payload={
     participant_id:pid,
@@ -764,8 +788,16 @@ async function convertToMaster(pid){
     tahap:(STAGE_BY_PID[pid]??0),
     converted_at:new Date().toISOString()
   };
-  const {data,error}=await sb.from('master_data_v2').upsert(payload,{onConflict:'participant_id'}).select().single();
-  if(error)return toast('Gagal memindahkan ke Data Master: '+error.message,'err');
+
+  const dbCall=sb.from('master_data_v2').upsert(payload,{onConflict:'participant_id'}).select().single();
+  const [_, {data,error}] = host
+    ? await Promise.all([runConvertProgress(host,6000), dbCall])
+    : [null, await dbCall];
+
+  if(error){
+    if(host)renderTable();
+    return toast('Gagal memindahkan ke Data Master: '+error.message,'err');
+  }
 
   MASTER_IDS.add(pid);
   MASTER_ROWS=MASTER_ROWS.filter(r=>r.participant_id!==pid);
