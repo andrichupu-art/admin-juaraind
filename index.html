@@ -131,6 +131,9 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 
 /* ============ DASHBOARD ============ */
 .main-content{padding:26px 0 60px}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:tabIn .2s ease}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
 .stat{background:var(--card);border-radius:16px;border:1.5px solid var(--line);padding:18px 20px}
 .stat b{display:block;font:800 1.9rem var(--disp);color:var(--navy)}
@@ -256,6 +259,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <span class="sb-label">Menu</span>
       <a class="sb-link active" data-target="secRingkasan"><span class="ic">📊</span> Ringkasan</a>
       <a class="sb-link" data-target="secPeserta"><span class="ic">📋</span> Data Peserta</a>
+      <a class="sb-link" data-target="secMaster"><span class="ic">🗂️</span> Data Master</a>
       <a id="sbRefresh"><span class="ic">↻</span> Muat Ulang</a>
       <span class="sb-label">Akun</span>
       <a id="sbLogout"><span class="ic">🚪</span> Keluar</a>
@@ -264,34 +268,53 @@ td.nama span{color:var(--mut);font-size:.78rem}
   <div class="sb-overlay" id="sbOverlay"></div>
   <div class="main-content">
     <div class="wrap">
-      <div class="stats" id="secRingkasan">
-        <div class="stat"><b id="stTotal">0</b><span>Total Peserta</span></div>
-        <div class="stat warn"><b id="stWait">0</b><span>Dokumen Menunggu</span></div>
-        <div class="stat bad"><b id="stReject">0</b><span>Dokumen Ditolak</span></div>
-        <div class="stat ok"><b id="stDone">0</b><span>Sudah Tahap 6</span></div>
+      <div class="tab-panel active" id="secRingkasan">
+        <div class="stats">
+          <div class="stat"><b id="stTotal">0</b><span>Total Peserta</span></div>
+          <div class="stat warn"><b id="stWait">0</b><span>Dokumen Menunggu</span></div>
+          <div class="stat bad"><b id="stReject">0</b><span>Dokumen Ditolak</span></div>
+          <div class="stat ok"><b id="stDone">0</b><span>Sudah Tahap 6</span></div>
+        </div>
       </div>
 
-      <div class="toolbar" id="secPeserta">
-        <input type="text" id="qSearch" placeholder="Cari nama, NIK, kota, atau kode peserta…">
-        <select id="qStage">
-          <option value="">Semua Tahap</option>
-          <option value="0">Tahap 1 — Berkas Diterima</option>
-          <option value="1">Tahap 2 — Verifikasi Dokumen</option>
-          <option value="2">Tahap 3 — Pelatihan &amp; Pembekalan</option>
-          <option value="3">Tahap 4 — Matching Perusahaan</option>
-          <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
-          <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
-        </select>
-        <button class="btn b-ghost sm" id="btnRefresh">↻ Muat Ulang</button>
+      <div class="tab-panel" id="secPeserta">
+        <div class="toolbar">
+          <input type="text" id="qSearch" placeholder="Cari nama, NIK, kota, atau kode peserta…">
+          <select id="qStage">
+            <option value="">Semua Tahap</option>
+            <option value="0">Tahap 1 — Berkas Diterima</option>
+            <option value="1">Tahap 2 — Verifikasi Dokumen</option>
+            <option value="2">Tahap 3 — Pelatihan &amp; Pembekalan</option>
+            <option value="3">Tahap 4 — Matching Perusahaan</option>
+            <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
+            <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
+          </select>
+          <button class="btn b-ghost sm" id="btnRefresh">↻ Muat Ulang</button>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dokumen</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="tblBody"><tr class="empty-row"><td colspan="6">Memuat data…</td></tr></tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr>
-            <th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dokumen</th>
-          </tr></thead>
-          <tbody id="tblBody"><tr class="empty-row"><td colspan="5">Memuat data…</td></tr></tbody>
-        </table>
+      <div class="tab-panel" id="secMaster">
+        <div class="toolbar">
+          <input type="text" id="qSearchMaster" placeholder="Cari nama, kota, atau kode peserta di Data Master…">
+          <span style="font:700 .78rem var(--body);color:var(--mut);white-space:nowrap">🗂️ Peserta yang sudah lengkap &amp; terverifikasi</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -365,6 +388,7 @@ const DOCS=[
 ];
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
+let MASTER_ROWS=[], MASTER_IDS=new Set();
 
 function toast(msg,type='ok'){
   const el=document.createElement('div');
@@ -412,8 +436,9 @@ document.querySelectorAll('.sb-link').forEach(link=>{
   link.addEventListener('click', ()=>{
     document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
     link.classList.add('active');
-    const target=document.getElementById(link.dataset.target);
-    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    const targetId=link.dataset.target;
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id===targetId));
+    $('.main-content').scrollIntoView({behavior:'smooth',block:'start'});
     if(window.innerWidth<=860) closeSidebar();
   });
 });
@@ -438,10 +463,11 @@ $('#btnLogout').addEventListener('click', async ()=>{
 async function loadAll(){
   $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Memuat data…</td></tr>';
   try{
-    const [pRes,dRes,sRes]=await Promise.all([
+    const [pRes,dRes,sRes,mRes]=await Promise.all([
       sb.from('participants_v2').select('*').order('created_at',{ascending:false}),
       sb.from('documents_v2').select('*'),
-      sb.from('progress_v2').select('*')
+      sb.from('progress_v2').select('*'),
+      sb.from('master_data_v2').select('*').order('converted_at',{ascending:false})
     ]);
     if(pRes.error)throw pRes.error;
     if(dRes.error)throw dRes.error;
@@ -453,8 +479,17 @@ async function loadAll(){
     STAGE_BY_PID={};
     (sRes.data||[]).forEach(s=>{ STAGE_BY_PID[s.participant_id]=s.tahap??0; });
 
+    if(mRes.error){
+      console.warn('Tabel master_data_v2 belum tersedia:',mRes.error.message);
+      MASTER_ROWS=[]; MASTER_IDS=new Set();
+    }else{
+      MASTER_ROWS=mRes.data||[];
+      MASTER_IDS=new Set(MASTER_ROWS.map(r=>r.participant_id));
+    }
+
     renderStats();
     renderTable();
+    renderMasterTable();
   }catch(err){
     console.error(err);
     $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Gagal memuat data: '+(err.message||'periksa koneksi/izin akses')+'</td></tr>';
@@ -494,18 +529,98 @@ function renderTable(){
     const totalReq=DOCS.length;
     const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
     const uploaded=DOCS.filter(d=>docs[d.k]).length;
+    const isComplete=totalReq>0&&verified===totalReq;
+    const isMaster=MASTER_IDS.has(p.id);
+    let aksiHtml;
+    if(isMaster){
+      aksiHtml=`<span class="pill ok">✓ Di Data Master</span>`;
+    }else if(isComplete){
+      aksiHtml=`<button class="btn b-navy sm" data-convert="${p.id}" title="Pindahkan ke Data Master">➜ Convert</button>`;
+    }else{
+      aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi semua dokumen dahulu">➜ Convert</button>`;
+    }
     return `<tr data-pid="${p.id}">
       <td class="kode">${participantCode(p)}</td>
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
       <td><span class="pill ${verified===totalReq?'ok':uploaded===0?'wait':'wait'}">${verified}/${totalReq} terverifikasi · ${uploaded}/${totalReq} unggah</span></td>
+      <td class="aksi-cell">${aksiHtml}</td>
     </tr>`;
   }).join('');
   body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.pid)));
+  body.querySelectorAll('[data-convert]').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    convertToMaster(b.dataset.convert);
+  }));
 }
 $('#qSearch').addEventListener('input', renderTable);
 $('#qStage').addEventListener('change', renderTable);
+
+/* ============ CONVERT KE DATA MASTER ============ */
+async function convertToMaster(pid){
+  const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
+  const docs=DOCS_BY_PID[pid]||{};
+  const totalReq=DOCS.length;
+  const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
+  if(verified!==totalReq)return toast('Dokumen peserta belum lengkap terverifikasi','err');
+  if(MASTER_IDS.has(pid))return toast('Peserta sudah ada di Data Master','err');
+
+  const payload={
+    participant_id:pid,
+    kode_peserta:participantCode(p),
+    nama:p.nama||'-',
+    telepon:p.telepon||'-',
+    kota:p.kota||'-',
+    tahap:(STAGE_BY_PID[pid]??0),
+    converted_at:new Date().toISOString()
+  };
+  const {data,error}=await sb.from('master_data_v2').upsert(payload,{onConflict:'participant_id'}).select().single();
+  if(error)return toast('Gagal memindahkan ke Data Master: '+error.message,'err');
+
+  MASTER_IDS.add(pid);
+  MASTER_ROWS=MASTER_ROWS.filter(r=>r.participant_id!==pid);
+  MASTER_ROWS.unshift(data);
+  renderTable();
+  renderMasterTable();
+  toast('Peserta dipindahkan ke Data Master ✓','ok');
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.toggle('active', l.dataset.target==='secMaster'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='secMaster'));
+  $('.main-content').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function removeFromMaster(masterId,pid){
+  const {error}=await sb.from('master_data_v2').delete().eq('id',masterId);
+  if(error)return toast('Gagal menghapus dari Data Master: '+error.message,'err');
+  MASTER_ROWS=MASTER_ROWS.filter(r=>r.id!==masterId);
+  MASTER_IDS.delete(pid);
+  renderTable();
+  renderMasterTable();
+  toast('Peserta dikeluarkan dari Data Master','ok');
+}
+
+function renderMasterTable(){
+  const q=($('#qSearchMaster')?.value||'').trim().toLowerCase();
+  const rows=MASTER_ROWS.filter(r=>{
+    if(!q)return true;
+    return [r.nama,r.kota,r.kode_peserta].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
+  });
+  const body=$('#tblMasterBody'); if(!body)return;
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr>'; return; }
+  body.innerHTML=rows.map(r=>{
+    const tgl=r.converted_at?new Date(r.converted_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}):'-';
+    return `<tr>
+      <td class="kode">${r.kode_peserta||'-'}</td>
+      <td class="nama"><b>${r.nama||'-'}</b><span>${r.telepon||'-'}</span></td>
+      <td>${r.kota||'-'}</td>
+      <td>${(Number(r.tahap??0)+1)}/6</td>
+      <td>${tgl}</td>
+      <td class="aksi-cell"><button class="btn b-red sm" data-remove="${r.id}" data-pid="${r.participant_id}">Keluarkan</button></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>removeFromMaster(b.dataset.remove,b.dataset.pid)));
+}
+$('#qSearchMaster')?.addEventListener('input', renderMasterTable);
 
 /* ============ DETAIL MODAL ============ */
 function openDetail(pid){
