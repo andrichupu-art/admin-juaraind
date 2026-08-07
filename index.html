@@ -423,6 +423,37 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL KIRIM EMAIL ============ -->
+<div class="modal" id="emailModal">
+  <div class="box" style="max-width:480px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>✉️ Kirim Dokumen via Email</h3><p id="emFor">-</p></div>
+      <button class="x" id="btnCloseEmail">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="fld">
+        <label>Kirim Dari</label>
+        <select id="emFrom"></select>
+      </div>
+      <div class="fld">
+        <label>Kirim Ke</label>
+        <input type="email" id="emTo" placeholder="contoh@perusahaan.com" required>
+      </div>
+      <div class="fld">
+        <label>Subjek</label>
+        <input type="text" id="emSubject">
+      </div>
+      <div class="fld">
+        <label>Pesan</label>
+        <input type="text" id="emMessage" placeholder="Pesan singkat (opsional)">
+      </div>
+      <p id="emDocCount" style="font:600 .78rem var(--body);color:var(--mut);margin-bottom:14px"></p>
+      <button class="btn b-pri" id="btnEmailSend" style="width:100%;justify-content:center">Kirim Sekarang</button>
+      <p class="err-txt" id="emErr"></p>
+    </div>
+  </div>
+</div>
+
 <div id="toastWrap"></div>
 
 <script>
@@ -447,6 +478,13 @@ const DOCS=[
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
 let MASTER_ROWS=[], MASTER_IDS=new Set();
+
+/* Daftar akun pengirim email (juaraXXX@juaraind.com). Tambah/kurangi sesuai akun yang sudah
+   dibuat di cPanel DomainEsia. Password TIDAK disimpan di sini — hanya di secret Edge Function. */
+const EMAIL_SENDERS=[
+  'juara001@juaraind.com',
+  'juara002@juaraind.com'
+];
 
 function toast(msg,type='ok'){
   const el=document.createElement('div');
@@ -851,9 +889,64 @@ function initDndLists(){
 }
 initDndLists();
 
-$('#btnSendEmail').addEventListener('click', ()=>{
+/* ============ MODAL KIRIM EMAIL ============ */
+function openEmailModal(){
+  const pid=DND_PID; if(!pid)return;
   const keys=[...$('#dndTarget').querySelectorAll('.dnd-item')].map(el=>el.dataset.key);
-  toast(`Fitur kirim email untuk ${keys.length} dokumen akan segera disambungkan`,'ok');
+  if(!keys.length)return;
+
+  const p=PARTICIPANTS.find(x=>x.id===pid);
+  const mrow=MASTER_ROWS.find(r=>r.participant_id===pid);
+  const nama=p?.nama||mrow?.nama||'-';
+  const kode=mrow?.kode_peserta||(p?participantCode(p):'-');
+
+  $('#emFor').textContent=`${nama} · ${kode}`;
+  $('#emFrom').innerHTML=EMAIL_SENDERS.map(e=>`<option value="${e}">${e}</option>`).join('');
+  $('#emTo').value='';
+  $('#emSubject').value=`Dokumen Peserta — ${nama} (${kode})`;
+  $('#emMessage').value='';
+  $('#emDocCount').textContent=`📎 ${keys.length} dokumen akan dilampirkan: `+keys.map(k=>DOCS.find(d=>d.k===k)?.t||k).join(', ');
+  $('#emErr').textContent='';
+  $('#emailModal').classList.add('show');
+}
+function closeEmailModal(){ $('#emailModal').classList.remove('show'); }
+$('#btnCloseEmail').addEventListener('click', closeEmailModal);
+$('#emailModal').addEventListener('click', e=>{ if(e.target.id==='emailModal')closeEmailModal(); });
+$('#btnSendEmail').addEventListener('click', openEmailModal);
+
+$('#btnEmailSend').addEventListener('click', async ()=>{
+  const pid=DND_PID; if(!pid)return;
+  const from=$('#emFrom').value;
+  const to=$('#emTo').value.trim();
+  const subject=$('#emSubject').value.trim();
+  const message=$('#emMessage').value.trim();
+  $('#emErr').textContent='';
+  if(!to){ $('#emErr').textContent='Alamat tujuan wajib diisi.'; return; }
+
+  const docs=DOCS_BY_PID[pid]||{};
+  const keys=[...$('#dndTarget').querySelectorAll('.dnd-item')].map(el=>el.dataset.key);
+  const storage_paths=keys.map(k=>{
+    const doc=docs[k]; const meta=DOCS.find(d=>d.k===k);
+    if(!doc?.storage_path)return null;
+    const ext=(doc.file_name||'').includes('.')?doc.file_name.split('.').pop():'';
+    return { path:doc.storage_path, filename:sanitizeName(meta?.t||k)+(ext?'.'+ext:'') };
+  }).filter(Boolean);
+  if(!storage_paths.length){ $('#emErr').textContent='Tidak ada berkas valid untuk dikirim.'; return; }
+
+  const btn=$('#btnEmailSend'); const orig=btn.textContent;
+  btn.disabled=true; btn.textContent='Mengirim…';
+  try{
+    const {data,error}=await sb.functions.invoke('send-email',{ body:{ from, to, subject, message, storage_paths } });
+    if(error) throw new Error(error.message||'Gagal memanggil layanan email');
+    if(data?.error) throw new Error(data.error);
+    toast(`Email terkirim ✓ (${data?.sent??storage_paths.length} lampiran)`,'ok');
+    closeEmailModal();
+  }catch(err){
+    console.error(err);
+    $('#emErr').textContent='Gagal mengirim: '+(err.message||'terjadi kesalahan');
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
+  }
 });
 
 function sanitizeName(s){ return String(s||'').trim().replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'')||'file'; }
