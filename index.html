@@ -230,6 +230,9 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-reply textarea{flex:1;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .85rem var(--body);resize:vertical;min-height:44px;max-height:140px}
 .mail-reply textarea:focus{outline:none;border-color:var(--navy)}
 .mail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:220px;color:var(--mut);gap:8px;padding:40px;text-align:center;font:600 .82rem var(--body)}
+.mail-shell-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:calc(100vh - 250px);color:var(--mut);font:700 .88rem var(--body)}
+.mail-shell-loading .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--navy);animation:mailSpin .8s linear infinite}
+@keyframes mailSpin{to{transform:rotate(360deg)}}
 .mail-acc-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .mail-acc-item:last-child{border-bottom:none}
 .mail-acc-item b{font:700 .85rem var(--body);color:var(--ink);display:block}
@@ -460,7 +463,16 @@ td.nama span{color:var(--mut);font-size:.78rem}
       </div>
 
       <div class="tab-panel" id="secEmail">
-        <div class="mail-shell">
+        <!-- FIX: overlay ini menutupi seluruh panel Kelola Email selagi akun,
+             folder, dan daftar email pertama disiapkan sekaligus di belakang layar.
+             Toolbar+daftar+panel baca baru ditampilkan setelah semuanya siap,
+             supaya tidak terasa "patah-patah" (dropdown kosong dulu, lalu
+             "Memuat email...", lalu baru terisi). -->
+        <div class="mail-shell-loading" id="mailShellLoading">
+          <div class="spin"></div>
+          <p>Menyiapkan Kelola Email…</p>
+        </div>
+        <div class="mail-shell" id="mailShell" style="display:none">
           <div class="mail-toolbar">
             <select id="mailAcc"></select>
             <select id="mailFolder"><option value="INBOX">Kotak Masuk</option></select>
@@ -852,7 +864,7 @@ document.querySelectorAll('.sb-link').forEach(link=>{
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id===targetId));
     window.scrollTo({top:0,behavior:'smooth'});
     if(window.innerWidth<=860) closeSidebar();
-    if(targetId==='secEmail' && !MAIL_LOADED){ MAIL_LOADED=true; loadMailAccounts(); }
+    if(targetId==='secEmail' && !MAIL_LOADED){ MAIL_LOADED=true; initMailPanel(); }
   });
 });
 if(window.innerWidth<=860) closeSidebar();
@@ -1372,15 +1384,28 @@ async function loadMailAccounts(){
   if(MAIL_ACCOUNTS.length){
     MAIL_ACTIVE=MAIL_ACCOUNTS[0].id;
     $('#mailAcc').value=MAIL_ACTIVE; ensureCsel($('#mailAcc'));
-    // FIX: sebelumnya loadMailFolders() di-await dulu baru loadMailList() jalan,
-    // padahal keduanya sama-sama buka koneksi IMAP baru (masing-masing bisa lambat).
-    // loadMailList() sudah punya default folder INBOX dari HTML, jadi tidak perlu
-    // menunggu loadMailFolders() selesai — jalankan paralel supaya total waktu
-    // tunggu tidak dobel.
-    loadMailFolders();
-    loadMailList();
+    // FIX: folder dan daftar email dijalankan paralel (bukan berurutan) supaya
+    // total waktu tunggu tidak dobel; di-await di sini supaya pemanggil (mis.
+    // overlay loading awal) tahu persis kapan semuanya benar-benar siap.
+    await Promise.all([loadMailFolders(), loadMailList()]);
   }else{
     $('#mailList').innerHTML='<div class="mail-empty">Belum ada akun email.<br>Klik "⚙ Kelola Akun" untuk menambahkan.</div>';
+  }
+}
+
+// FIX: dipanggil sekali saat pertama kali membuka tab "Kelola Email". Menampilkan
+// satu layar loading tunggal yang menutupi seluruh panel selama akun, folder, dan
+// daftar email pertama disiapkan di belakang layar — baru setelah semuanya siap
+// (atau gagal) panel sebenarnya ditampilkan. Ini menghindari kesan "patah-patah"
+// (toolbar kosong dulu, lalu satu-satu bagian terisi belakangan).
+async function initMailPanel(){
+  try{
+    await loadMailAccounts();
+  }catch(err){
+    console.error(err);
+  }finally{
+    $('#mailShellLoading').style.display='none';
+    $('#mailShell').style.display='';
   }
 }
 
