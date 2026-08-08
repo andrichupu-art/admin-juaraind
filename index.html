@@ -1372,7 +1372,12 @@ async function loadMailAccounts(){
   if(MAIL_ACCOUNTS.length){
     MAIL_ACTIVE=MAIL_ACCOUNTS[0].id;
     $('#mailAcc').value=MAIL_ACTIVE; ensureCsel($('#mailAcc'));
-    await loadMailFolders();
+    // FIX: sebelumnya loadMailFolders() di-await dulu baru loadMailList() jalan,
+    // padahal keduanya sama-sama buka koneksi IMAP baru (masing-masing bisa lambat).
+    // loadMailList() sudah punya default folder INBOX dari HTML, jadi tidak perlu
+    // menunggu loadMailFolders() selesai — jalankan paralel supaya total waktu
+    // tunggu tidak dobel.
+    loadMailFolders();
     loadMailList();
   }else{
     $('#mailList').innerHTML='<div class="mail-empty">Belum ada akun email.<br>Klik "⚙ Kelola Akun" untuk menambahkan.</div>';
@@ -1433,11 +1438,21 @@ async function loadMailFolders(){
   try{
     const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'folders',account_id:MAIL_ACTIVE}});
     if(error||data?.error) throw new Error(error?.message||data?.error);
-    const folders=(data?.folders?.length?data.folders:[{path:'INBOX',name:'Kotak Masuk'}]);
+    let folders=(data?.folders?.length?data.folders:[{path:'INBOX',name:'Kotak Masuk'}]);
+    // FIX: urutan folder yang dikembalikan server IMAP tidak selalu menaruh INBOX
+    // di posisi pertama (kadang "Arsip"/folder lain lebih dulu), jadi dropdown
+    // secara default menampilkan folder itu, bukan Kotak Masuk. Urutkan INBOX
+    // selalu di paling atas.
+    folders=[...folders].sort((a,b)=>(a.path==='INBOX'?-1:0)-(b.path==='INBOX'?-1:0));
     $('#mailFolder').innerHTML=folders.map(f=>`<option value="${escapeHtml(f.path)}">${escapeHtml(f.name)}</option>`).join('');
   }catch(err){
     console.error(err);
     $('#mailFolder').innerHTML='<option value="INBOX">Kotak Masuk</option>';
+  }
+  // FIX: Kotak Masuk (INBOX) selalu jadi folder default yang terpilih saat
+  // akun dibuka/diganti, bukan folder terakhir yang kebetulan ada di urutan pertama.
+  if([...$('#mailFolder').options].some(o=>o.value==='INBOX')){
+    $('#mailFolder').value='INBOX';
   }
   ensureCsel($('#mailFolder'));
 }
@@ -1524,10 +1539,11 @@ async function sendMailReply(msg){
   }
 }
 
-$('#mailAcc').addEventListener('change', async ()=>{
+$('#mailAcc').addEventListener('change', ()=>{
   MAIL_ACTIVE=$('#mailAcc').value; MAIL_OPEN=null;
   $('#mailRead').innerHTML='<div class="mail-empty"><p>Pilih email untuk membaca</p></div>';
-  await loadMailFolders();
+  // FIX: sama seperti di loadMailAccounts() — jalankan paralel, bukan berurutan.
+  loadMailFolders();
   loadMailList();
 });
 $('#mailFolder').addEventListener('change', ()=>{ MAIL_OPEN=null; loadMailList(); });
