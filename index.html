@@ -114,6 +114,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .b-hdr{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
 .b-hdr:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.7)}
 .btn.sm{padding:8px 13px;font-size:.78rem;border-radius:8px}
+.btn .ic-outbox{flex-shrink:0;vertical-align:-3px}
 .btn[disabled]{opacity:.5;pointer-events:none}
 
 /* ============ LOGIN ============ */
@@ -147,7 +148,30 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px}
 .toolbar input[type=text]{flex:1;min-width:180px;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .9rem var(--body)}
 .toolbar input[type=text]:focus{outline:none;border-color:var(--navy)}
-.toolbar select{border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:700 .85rem var(--body);color:var(--navy);background:#fff}
+.toolbar .csel{min-width:280px;flex:1;max-width:360px}
+
+/* ============ CUSTOM DROPDOWN (csel) ============ */
+.csel{position:relative;user-select:none}
+.csel select{display:none}
+.csel-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  background:#fff;border:2px solid var(--line);border-radius:10px;padding:10px 14px;
+  font:700 .85rem var(--body);color:var(--navy);text-align:left;transition:.15s}
+.csel-btn:hover{border-color:#b7c6db}
+.csel-btn:focus-visible{outline:none;border-color:var(--navy)}
+.csel-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csel-chev{flex-shrink:0;color:var(--mut);transition:transform .18s}
+.csel.open .csel-btn{border-color:var(--navy)}
+.csel.open .csel-chev{transform:rotate(180deg)}
+.csel-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;
+  border:1.5px solid var(--line);border-radius:12px;box-shadow:0 16px 36px rgba(11,31,58,.18);
+  padding:6px;z-index:80;max-height:280px;overflow-y:auto;
+  opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .15s,transform .15s}
+.csel.open .csel-menu{opacity:1;transform:translateY(0);pointer-events:auto}
+.csel-opt{padding:8px 12px;border-radius:8px;font:600 .78rem/1.4 var(--body);color:var(--ink);cursor:pointer;transition:.1s}
+.csel-opt:hover,.csel-opt.hi{background:#EEF3FA}
+.csel-opt.sel{background:var(--navy);color:#fff;font-weight:700}
+.stage-row .csel{flex:1}
+.fld .csel-btn{padding:13px 15px;border-radius:11px;font:600 .88rem var(--body)}
 
 .tbl-wrap{background:var(--card);border-radius:16px;border:1.5px solid var(--line);overflow:hidden}
 table{width:100%;border-collapse:collapse}
@@ -170,6 +194,47 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .stagebar b{font:700 .74rem var(--body);color:var(--navy);white-space:nowrap}
 .empty-row td{text-align:center;color:var(--mut);padding:40px 16px}
 
+.devnote{background:var(--card);border:1.5px solid var(--line);border-radius:16px;
+  padding:60px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:6px;color:var(--mut)}
+.devnote svg{color:var(--gold);margin-bottom:6px}
+.devnote h3{font:800 1.15rem var(--disp);color:var(--navy)}
+.devnote p{font:600 .85rem var(--body);color:var(--mut)}
+
+/* ============ KELOLA EMAIL (IMAP/SMTP terintegrasi) ============ */
+.mail-shell{background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden}
+.mail-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-bottom:1.5px solid var(--line)}
+.mail-toolbar .csel{min-width:200px;flex:1;max-width:260px}
+.mail-toolbar .csel.folder{max-width:190px;min-width:150px}
+.mail-body{display:grid;grid-template-columns:330px 1fr;height:calc(100vh - 250px);min-height:480px}
+@media(max-width:860px){.mail-body{grid-template-columns:1fr;height:auto}
+  .mail-list{max-height:320px}.mail-read{min-height:420px}}
+.mail-list{border-right:1.5px solid var(--line);overflow-y:auto;background:#FBFAF6}
+.mail-item{display:flex;flex-direction:column;gap:4px;padding:13px 16px;border-bottom:1px solid var(--line);border-left:3px solid transparent;cursor:pointer;transition:.15s}
+.mail-item:hover{background:#F1F5FA}
+.mail-item.active{background:#EEF3FA;border-left-color:var(--navy)}
+.mail-item .mi-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.mail-item .mi-from{font:700 .82rem var(--body);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.mail-item.unread .mi-from{color:var(--navy);font-weight:800}
+.mail-item .mi-date{font:600 .66rem var(--body);color:var(--mut);flex-shrink:0}
+.mail-item .mi-subject{font:600 .78rem var(--body);color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail-item.unread .mi-subject{color:var(--ink);font-weight:700}
+.mail-item .mi-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.mail-read{display:flex;flex-direction:column;min-width:0}
+.mail-read-hd{padding:16px 22px;border-bottom:1.5px solid var(--line)}
+.mail-read-hd h4{font:800 1.02rem var(--disp);color:var(--navy);margin-bottom:4px;word-break:break-word}
+.mail-read-meta{font:600 .78rem var(--body);color:var(--mut)}
+.mail-read-body{flex:1;overflow:hidden}
+.mail-read-body iframe{width:100%;height:100%;border:none;display:block;min-height:280px}
+.mail-reply{border-top:1.5px solid var(--line);padding:12px 16px;display:flex;gap:10px;align-items:flex-end}
+.mail-reply textarea{flex:1;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .85rem var(--body);resize:vertical;min-height:44px;max-height:140px}
+.mail-reply textarea:focus{outline:none;border-color:var(--navy)}
+.mail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:220px;color:var(--mut);gap:8px;padding:40px;text-align:center;font:600 .82rem var(--body)}
+.mail-acc-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.mail-acc-item:last-child{border-bottom:none}
+.mail-acc-item b{font:700 .85rem var(--body);color:var(--ink);display:block}
+.mail-acc-item span{font:600 .74rem var(--body);color:var(--mut)}
+
 /* ============ MODAL ============ */
 .modal{position:fixed;inset:0;background:rgba(8,21,39,.6);backdrop-filter:blur(3px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto}
 .modal.show{display:flex}
@@ -186,7 +251,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .info-grid .fld input{padding:10px 12px;font-size:.86rem}
 .info-grid .fld label{font-size:.65rem}
 .stage-row{display:flex;gap:10px;align-items:center}
-.stage-row select{flex:1;border:2px solid var(--line);border-radius:10px;padding:11px 14px;font:700 .88rem var(--body);color:var(--navy)}
 .doc{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .doc:last-child{border-bottom:none}
 .doc .ic{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -328,6 +392,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <a class="sb-link active" data-target="secRingkasan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="14"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="16" y1="20" x2="16" y2="4"/><line x1="21" y1="20" x2="3" y2="20"/></svg></span> Ringkasan</a>
       <a class="sb-link" data-target="secPeserta"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></span> Data Peserta</a>
       <a class="sb-link" data-target="secMaster"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span> Data Master</a>
+      <span class="sb-label">Lainnya</span>
+      <a class="sb-link" data-target="secAdministrasi"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2.06 2.06 0 1 1-2.92 2.92l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56v.16a2.06 2.06 0 1 1-4.12 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2.06 2.06 0 1 1-2.92-2.92l.06-.06a1.7 1.7 0 0 0 .34-1.87A1.7 1.7 0 0 0 2.7 12.47h-.16a2.06 2.06 0 1 1 0-4.12h.09A1.7 1.7 0 0 0 4.2 7.24a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.06 2.06 0 1 1 2.92-2.92l.06.06a1.7 1.7 0 0 0 1.87.34h.08a1.7 1.7 0 0 0 1.03-1.56V1.06a2.06 2.06 0 1 1 4.12 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.06 2.06 0 1 1 2.92 2.92l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.56 1.03h.16a2.06 2.06 0 1 1 0 4.12h-.09a1.7 1.7 0 0 0-1.56 1.03z"/></svg></span> Administrasi</a>
+      <a class="sb-link" data-target="secEmail"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span> Kelola Email</a>
+      <a class="sb-link" data-target="secKeuangan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span> Kelola Keuangan</a>
       <a id="sbRefresh"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.34 5.66"/><polyline points="20 4 20 11 13 11"/></svg></span> Muat Ulang</a>
       <span class="sb-label">Akun</span>
       <a id="sbLogout"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</a>
@@ -357,7 +425,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
             <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
             <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
           </select>
-          <button class="btn b-ghost sm" id="btnRefresh">↻ Muat Ulang</button>
         </div>
 
         <div class="tbl-wrap">
@@ -373,7 +440,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <div class="tab-panel" id="secMaster">
         <div class="toolbar">
           <input type="text" id="qSearchMaster" placeholder="Cari nama, kota, atau kode peserta di Data Master…">
-          <span style="font:700 .78rem var(--body);color:var(--mut);white-space:nowrap">🗂️ Peserta yang sudah lengkap &amp; terverifikasi</span>
         </div>
         <div class="tbl-wrap">
           <table>
@@ -382,6 +448,43 @@ td.nama span{color:var(--mut);font-size:.78rem}
             </tr></thead>
             <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr></tbody>
           </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="secAdministrasi">
+        <div class="devnote">
+          <svg viewBox="0 0 24 24" width="40" height="40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor" stroke="none"/></svg>
+          <h3>Administrasi</h3>
+          <p>Fitur ini sedang dalam pengembangan.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="secEmail">
+        <div class="mail-shell">
+          <div class="mail-toolbar">
+            <select id="mailAcc"></select>
+            <select id="mailFolder"><option value="INBOX">Kotak Masuk</option></select>
+            <button class="btn b-ghost sm" id="btnMailRefresh">↻ Muat Ulang</button>
+            <button class="btn b-ghost sm" id="btnMailAccounts">⚙ Kelola Akun</button>
+            <button class="btn b-pri sm" id="btnMailCompose" style="margin-left:auto">✎ Tulis Email</button>
+          </div>
+          <div class="mail-body">
+            <div class="mail-list" id="mailList"><div class="mail-empty">Memuat…</div></div>
+            <div class="mail-read" id="mailRead">
+              <div class="mail-empty">
+                <svg viewBox="0 0 24 24" width="40" height="40" stroke-width="1.6" stroke="var(--gold)" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+                <p>Pilih email untuk membaca</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="secKeuangan">
+        <div class="devnote">
+          <svg viewBox="0 0 24 24" width="40" height="40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor" stroke="none"/></svg>
+          <h3>Kelola Keuangan</h3>
+          <p>Fitur ini sedang dalam pengembangan.</p>
         </div>
       </div>
     </div>
@@ -545,6 +648,66 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL TULIS/BALAS EMAIL (Kelola Email) ============ -->
+<div class="modal" id="mailComposeModal">
+  <div class="box" style="max-width:520px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>✎ Tulis Email Baru</h3><p>Kirim lewat akun email cPanel</p></div>
+      <button class="x" id="btnCloseMailCompose">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="fld">
+        <label>Kirim Dari</label>
+        <select id="mcFrom"></select>
+      </div>
+      <div class="fld">
+        <label>Kirim Ke</label>
+        <input type="email" id="mcTo" placeholder="contoh@perusahaan.com">
+      </div>
+      <div class="fld">
+        <label>Subjek</label>
+        <input type="text" id="mcSubject">
+      </div>
+      <div class="fld">
+        <label>Pesan</label>
+        <textarea id="mcMessage" rows="8" style="width:100%;border:2px solid var(--line);border-radius:11px;padding:12px 14px;font:600 .88rem var(--body);color:var(--ink);resize:vertical"></textarea>
+      </div>
+      <button class="btn b-pri" id="btnMailSend" style="width:100%;justify-content:center">Kirim Sekarang</button>
+      <p class="err-txt" id="mcErr"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL KELOLA AKUN EMAIL ============ -->
+<div class="modal" id="mailAccModal">
+  <div class="box" style="max-width:560px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>⚙ Kelola Akun Email</h3><p>IMAP/SMTP — mail.juaraind.com</p></div>
+      <button class="x" id="btnCloseMailAcc">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="box-sec">
+        <h4>📋 Akun Terdaftar</h4>
+        <div id="mailAccList"><p style="color:var(--mut);font-size:.82rem">Memuat…</p></div>
+      </div>
+      <div class="box-sec">
+        <h4>➕ Tambah Akun</h4>
+        <div class="fld"><label>Label</label><input type="text" id="maLabel" placeholder="Contoh: Juara 199"></div>
+        <div class="fld"><label>Alamat Email</label><input type="email" id="maEmail" placeholder="juara199@juaraind.com"></div>
+        <div class="fld"><label>Kata Sandi Email</label><input type="password" id="maPass" autocomplete="new-password"></div>
+        <div class="info-grid">
+          <div class="fld"><label>IMAP Host</label><input type="text" id="maImapHost" value="mail.juaraind.com"></div>
+          <div class="fld"><label>IMAP Port</label><input type="text" id="maImapPort" value="993"></div>
+          <div class="fld"><label>SMTP Host</label><input type="text" id="maSmtpHost" value="mail.juaraind.com"></div>
+          <div class="fld"><label>SMTP Port</label><input type="text" id="maSmtpPort" value="465"></div>
+        </div>
+        <button class="btn b-navy sm" id="btnMailAccAdd" style="margin-top:6px">💾 Simpan Akun</button>
+        <p class="err-txt" id="maErr"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toastWrap"></div>
 
 <script>
@@ -556,6 +719,59 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 const $=s=>document.querySelector(s);
+
+/* ============ CUSTOM DROPDOWN (csel) — pengganti <select> native ============ */
+function buildCsel(select){
+  if(select._csel) return select._csel;
+  const wrap=document.createElement('div'); wrap.className='csel';
+  const btn=document.createElement('button'); btn.type='button'; btn.className='csel-btn';
+  btn.innerHTML='<span class="csel-label"></span><svg class="csel-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const menu=document.createElement('div'); menu.className='csel-menu'; menu.setAttribute('role','listbox');
+  select.parentNode.insertBefore(wrap,select);
+  wrap.appendChild(btn); wrap.appendChild(menu); wrap.appendChild(select);
+  select.tabIndex=-1; select.setAttribute('aria-hidden','true');
+
+  function renderOptions(){
+    menu.innerHTML='';
+    [...select.options].forEach(opt=>{
+      const o=document.createElement('div');
+      o.className='csel-opt'+(opt.value===select.value?' sel':'');
+      o.textContent=opt.textContent; o.dataset.value=opt.value; o.setAttribute('role','option');
+      o.addEventListener('click',()=>{
+        select.value=opt.value;
+        select.dispatchEvent(new Event('change',{bubbles:true}));
+        syncLabel(); close();
+      });
+      menu.appendChild(o);
+    });
+  }
+  function syncLabel(){
+    const opt=select.options[select.selectedIndex];
+    btn.querySelector('.csel-label').textContent=opt?opt.textContent:'';
+    menu.querySelectorAll('.csel-opt').forEach(o=>o.classList.toggle('sel',o.dataset.value===select.value));
+  }
+  function open(){ document.querySelectorAll('.csel.open').forEach(c=>{ if(c!==wrap)c.classList.remove('open'); }); wrap.classList.add('open'); }
+  function close(){ wrap.classList.remove('open'); }
+  btn.addEventListener('click',e=>{ e.stopPropagation(); wrap.classList.contains('open')?close():open(); });
+  document.addEventListener('click',e=>{ if(!wrap.contains(e.target)) close(); });
+  btn.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){ close(); return; }
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); wrap.classList.contains('open')?close():open(); return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+      e.preventDefault();
+      if(!wrap.classList.contains('open')){ open(); return; }
+      const opts=[...menu.querySelectorAll('.csel-opt')];
+      let idx=opts.findIndex(o=>o.dataset.value===select.value);
+      idx=e.key==='ArrowDown'?Math.min(idx+1,opts.length-1):Math.max(idx-1,0);
+      if(opts[idx]){ select.value=opts[idx].dataset.value; select.dispatchEvent(new Event('change',{bubbles:true})); syncLabel(); }
+    }
+  });
+
+  renderOptions(); syncLabel();
+  select._csel={ refresh(){ renderOptions(); syncLabel(); }, wrap };
+  return select._csel;
+}
+function ensureCsel(select){ return select._csel ? (select._csel.refresh(),select._csel) : buildCsel(select); }
 const STAGES=['Berkas Diterima','Verifikasi Dokumen','Pelatihan & Pembekalan','Matching Perusahaan','Proses Visa & MCU','Tiket & Keberangkatan'];
 const DOC_ICONS={
  ktp:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="5" width="19" height="14" rx="2.2" stroke="var(--navy)" stroke-width="1.5"/><circle cx="8" cy="11" r="2.1" fill="var(--gold)"/><path d="M5.3 16c.4-1.7 1.7-2.6 2.7-2.6s2.3.9 2.7 2.6" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round"/><line x1="14" y1="9.3" x2="19" y2="9.3" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round"/><line x1="14" y1="12.2" x2="19" y2="12.2" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round"/><line x1="14" y1="15.1" x2="17.5" y2="15.1" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round"/></svg>',
@@ -634,8 +850,9 @@ document.querySelectorAll('.sb-link').forEach(link=>{
     link.classList.add('active');
     const targetId=link.dataset.target;
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id===targetId));
-    $('.main-content').scrollIntoView({behavior:'smooth',block:'start'});
+    window.scrollTo({top:0,behavior:'smooth'});
     if(window.innerWidth<=860) closeSidebar();
+    if(targetId==='secEmail' && !MAIL_LOADED){ MAIL_LOADED=true; loadMailAccounts(); }
   });
 });
 if(window.innerWidth<=860) closeSidebar();
@@ -692,7 +909,6 @@ async function loadAll(){
     toast('Gagal memuat data: '+(err.message||'terjadi kesalahan'),'err');
   }
 }
-$('#btnRefresh').addEventListener('click', loadAll);
 
 function renderStats(){
   let wait=0,reject=0,done=0;
@@ -807,7 +1023,7 @@ async function convertToMaster(pid, btn){
   toast('Peserta dipindahkan ke Data Master ✓','ok');
   document.querySelectorAll('.sb-link').forEach(l=>l.classList.toggle('active', l.dataset.target==='secMaster'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='secMaster'));
-  $('.main-content').scrollIntoView({behavior:'smooth',block:'start'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 async function removeFromMaster(masterId,pid){
@@ -837,7 +1053,7 @@ function renderMasterTable(){
       <td>${(Number(r.tahap??0)+1)}/6</td>
       <td>${tgl}</td>
       <td class="aksi-cell"><div class="aksi-cell-in">
-        <button class="btn b-navy sm" data-manage="${r.participant_id}">📤 Kelola Dokumen</button>
+        <button class="btn b-navy sm" data-manage="${r.participant_id}"><svg class="ic-outbox" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v9" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"/><path d="M8 7l4-4 4 4" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13h4.5a1 1 0 0 1 .95.68 2.4 2.4 0 0 0 4.6 0 1 1 0 0 1 .95-.68H20" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Kelola Dokumen</button>
         <button class="btn b-red sm" data-remove="${r.id}" data-pid="${r.participant_id}">Keluarkan</button>
       </div></td>
     </tr>`;
@@ -857,6 +1073,7 @@ function openDetail(pid){
   $('#mKode').textContent=participantCode(p);
   $('#eNama').value=p.nama||''; $('#eNik').value=p.nik||''; $('#eWa').value=p.telepon||''; $('#eKota').value=p.kota||'';
   $('#eStage').value=String(STAGE_BY_PID[pid]??0);
+  ensureCsel($('#eStage'));
   renderDocList(pid);
   $('#detailModal').classList.add('show');
 }
@@ -1027,6 +1244,7 @@ function openEmailModal(){
 
   $('#emFor').textContent=`${nama} · ${kode}`;
   $('#emFrom').innerHTML=EMAIL_SENDERS.map(e=>`<option value="${e}">${e}</option>`).join('');
+  ensureCsel($('#emFrom'));
   $('#emTo').value='';
   $('#emSubject').value=`Dokumen Peserta — ${nama} (${kode})`;
   $('#emMessage').value='';
@@ -1126,6 +1344,231 @@ async function downloadPickedZip(){
 }
 $('#btnDownloadPicked').addEventListener('click', downloadPickedZip);
 
+/* ============ KELOLA EMAIL (IMAP/SMTP terintegrasi) ============ */
+let MAIL_LOADED=false, MAIL_ACCOUNTS=[], MAIL_ACTIVE=null, MAIL_MSGS=[], MAIL_OPEN=null;
+
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtMailDate(d){ if(!d)return '-'; const dt=new Date(d); if(isNaN(dt))return '-'; return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
+
+async function loadMailAccounts(){
+  $('#mailList').innerHTML='<div class="mail-empty">Memuat akun…</div>';
+  try{
+    const {data,error}=await sb.functions.invoke('email-accounts',{body:{action:'list'}});
+    if(error)throw new Error(error.message||'Gagal memuat akun email');
+    if(data?.error)throw new Error(data.error);
+    MAIL_ACCOUNTS=data?.accounts||[];
+  }catch(err){
+    console.error(err);
+    $('#mailList').innerHTML='<div class="mail-empty">Gagal memuat akun: '+escapeHtml(err.message)+'</div>';
+    return;
+  }
+  $('#mailAcc').innerHTML=MAIL_ACCOUNTS.length
+    ? MAIL_ACCOUNTS.map(a=>`<option value="${a.id}">${escapeHtml(a.label||a.email)}</option>`).join('')
+    : '<option value="">(Belum ada akun)</option>';
+  ensureCsel($('#mailAcc'));
+  $('#mcFrom').innerHTML=MAIL_ACCOUNTS.map(a=>`<option value="${a.id}">${escapeHtml(a.email)}</option>`).join('');
+  renderMailAccList();
+
+  if(MAIL_ACCOUNTS.length){
+    MAIL_ACTIVE=MAIL_ACCOUNTS[0].id;
+    $('#mailAcc').value=MAIL_ACTIVE; ensureCsel($('#mailAcc'));
+    await loadMailFolders();
+    loadMailList();
+  }else{
+    $('#mailList').innerHTML='<div class="mail-empty">Belum ada akun email.<br>Klik "⚙ Kelola Akun" untuk menambahkan.</div>';
+  }
+}
+
+function renderMailAccList(){
+  const wrap=$('#mailAccList');
+  if(!MAIL_ACCOUNTS.length){ wrap.innerHTML='<p style="color:var(--mut);font-size:.82rem">Belum ada akun terdaftar.</p>'; return; }
+  wrap.innerHTML=MAIL_ACCOUNTS.map(a=>`
+    <div class="mail-acc-item">
+      <div><b>${escapeHtml(a.label||'-')}</b><span>${escapeHtml(a.email)}</span></div>
+      <button class="mini r" data-del-acc="${a.id}">Hapus</button>
+    </div>`).join('');
+  wrap.querySelectorAll('[data-del-acc]').forEach(b=>b.addEventListener('click', ()=>deleteMailAccount(b.dataset.delAcc)));
+}
+
+async function deleteMailAccount(id){
+  if(!confirm('Hapus akun email ini? Password tersimpan juga akan terhapus.'))return;
+  try{
+    const {data,error}=await sb.functions.invoke('email-accounts',{body:{action:'delete',id}});
+    if(error)throw new Error(error.message||'Gagal menghapus akun');
+    if(data?.error)throw new Error(data.error);
+    toast('Akun email dihapus','ok');
+    if(MAIL_ACTIVE===id)MAIL_ACTIVE=null;
+    loadMailAccounts();
+  }catch(err){
+    console.error(err);
+    toast('Gagal menghapus akun: '+err.message,'err');
+  }
+}
+
+$('#btnMailAccAdd').addEventListener('click', async ()=>{
+  const label=$('#maLabel').value.trim(), email=$('#maEmail').value.trim(), password=$('#maPass').value;
+  const imap_host=$('#maImapHost').value.trim()||'mail.juaraind.com';
+  const imap_port=parseInt($('#maImapPort').value)||993;
+  const smtp_host=$('#maSmtpHost').value.trim()||'mail.juaraind.com';
+  const smtp_port=parseInt($('#maSmtpPort').value)||465;
+  $('#maErr').textContent='';
+  if(!email||!password){ $('#maErr').textContent='Email dan kata sandi wajib diisi.'; return; }
+  const btn=$('#btnMailAccAdd'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Menyimpan…';
+  try{
+    const {data,error}=await sb.functions.invoke('email-accounts',{body:{action:'add',label,email,password,imap_host,imap_port,smtp_host,smtp_port}});
+    if(error)throw new Error(error.message||'Gagal memanggil layanan email');
+    if(data?.error)throw new Error(data.error);
+    toast('Akun email ditambahkan ✓','ok');
+    $('#maLabel').value=''; $('#maEmail').value=''; $('#maPass').value='';
+    loadMailAccounts();
+  }catch(err){
+    console.error(err);
+    $('#maErr').textContent='Gagal: '+(err.message||'terjadi kesalahan');
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
+  }
+});
+
+async function loadMailFolders(){
+  try{
+    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'folders',account_id:MAIL_ACTIVE}});
+    if(error||data?.error) throw new Error(error?.message||data?.error);
+    const folders=(data?.folders?.length?data.folders:[{path:'INBOX',name:'Kotak Masuk'}]);
+    $('#mailFolder').innerHTML=folders.map(f=>`<option value="${escapeHtml(f.path)}">${escapeHtml(f.name)}</option>`).join('');
+  }catch(err){
+    console.error(err);
+    $('#mailFolder').innerHTML='<option value="INBOX">Kotak Masuk</option>';
+  }
+  ensureCsel($('#mailFolder'));
+}
+
+async function loadMailList(){
+  if(!MAIL_ACTIVE){ $('#mailList').innerHTML='<div class="mail-empty">Pilih akun email terlebih dahulu.</div>'; return; }
+  $('#mailList').innerHTML='<div class="mail-empty">Memuat email…</div>';
+  const folder=$('#mailFolder').value||'INBOX';
+  try{
+    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'list',account_id:MAIL_ACTIVE,folder,limit:50}});
+    if(error)throw new Error(error.message||'Gagal memuat email');
+    if(data?.error)throw new Error(data.error);
+    MAIL_MSGS=data?.messages||[];
+    renderMailList();
+  }catch(err){
+    console.error(err);
+    $('#mailList').innerHTML='<div class="mail-empty">Gagal memuat: '+escapeHtml(err.message)+'</div>';
+  }
+}
+
+function renderMailList(){
+  if(!MAIL_MSGS.length){ $('#mailList').innerHTML='<div class="mail-empty">Tidak ada email di folder ini.</div>'; return; }
+  $('#mailList').innerHTML=MAIL_MSGS.map(m=>`
+    <div class="mail-item${m.seen?'':' unread'}${MAIL_OPEN===m.uid?' active':''}" data-uid="${m.uid}">
+      <div class="mi-top"><span class="mi-from">${escapeHtml(m.from||'(tanpa pengirim)')}</span>${m.seen?'':'<span class="mi-dot"></span>'}</div>
+      <div class="mi-subject">${escapeHtml(m.subject||'(tanpa subjek)')}</div>
+      <div class="mi-date">${fmtMailDate(m.date)}</div>
+    </div>`).join('');
+  $('#mailList').querySelectorAll('.mail-item').forEach(el=>el.addEventListener('click', ()=>openMailMessage(parseInt(el.dataset.uid))));
+}
+
+async function openMailMessage(uid){
+  MAIL_OPEN=uid;
+  renderMailList();
+  $('#mailRead').innerHTML='<div class="mail-empty">Memuat pesan…</div>';
+  const folder=$('#mailFolder').value||'INBOX';
+  try{
+    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'read',account_id:MAIL_ACTIVE,folder,uid}});
+    if(error)throw new Error(error.message||'Gagal membaca pesan');
+    if(data?.error)throw new Error(data.error);
+    const msg=data.message;
+    $('#mailRead').innerHTML=`
+      <div class="mail-read-hd">
+        <h4>${escapeHtml(msg.subject||'(tanpa subjek)')}</h4>
+        <div class="mail-read-meta">Dari: <b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</div>
+      </div>
+      <div class="mail-read-body" id="mailReadBody"></div>
+      <div class="mail-reply">
+        <textarea id="mailReplyBox" placeholder="Tulis balasan…"></textarea>
+        <button class="btn b-pri sm" id="btnMailReplySend">Balas</button>
+      </div>`;
+    const ifr=document.createElement('iframe');
+    ifr.setAttribute('sandbox','');
+    $('#mailReadBody').appendChild(ifr);
+    ifr.srcdoc = msg.html || ('<pre style="white-space:pre-wrap;font-family:inherit;padding:16px;margin:0">'+escapeHtml(msg.text||'(tidak ada isi)')+'</pre>');
+    $('#btnMailReplySend').addEventListener('click', ()=>sendMailReply(msg));
+    const m=MAIL_MSGS.find(x=>x.uid===uid); if(m)m.seen=true;
+  }catch(err){
+    console.error(err);
+    $('#mailRead').innerHTML='<div class="mail-empty">Gagal memuat pesan: '+escapeHtml(err.message)+'</div>';
+  }
+}
+
+async function sendMailReply(msg){
+  const body=$('#mailReplyBox').value.trim();
+  if(!body)return;
+  const btn=$('#btnMailReplySend'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Mengirim…';
+  try{
+    const to=msg.from_email||msg.from;
+    const subject=/^re:/i.test(msg.subject||'')?msg.subject:'Re: '+(msg.subject||'');
+    const {data,error}=await sb.functions.invoke('email-send',{body:{
+      account_id:MAIL_ACTIVE, to, subject, message:body,
+      in_reply_to:msg.message_id, references:msg.message_id
+    }});
+    if(error)throw new Error(error.message||'Gagal mengirim balasan');
+    if(data?.error)throw new Error(data.error);
+    toast('Balasan terkirim ✓','ok');
+    $('#mailReplyBox').value='';
+  }catch(err){
+    console.error(err);
+    toast('Gagal membalas: '+err.message,'err');
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
+  }
+}
+
+$('#mailAcc').addEventListener('change', async ()=>{
+  MAIL_ACTIVE=$('#mailAcc').value; MAIL_OPEN=null;
+  $('#mailRead').innerHTML='<div class="mail-empty"><p>Pilih email untuk membaca</p></div>';
+  await loadMailFolders();
+  loadMailList();
+});
+$('#mailFolder').addEventListener('change', ()=>{ MAIL_OPEN=null; loadMailList(); });
+$('#btnMailRefresh').addEventListener('click', loadMailList);
+
+$('#btnMailAccounts').addEventListener('click', ()=>{ renderMailAccList(); $('#mailAccModal').classList.add('show'); });
+$('#btnCloseMailAcc').addEventListener('click', ()=>$('#mailAccModal').classList.remove('show'));
+$('#mailAccModal').addEventListener('click', e=>{ if(e.target.id==='mailAccModal')$('#mailAccModal').classList.remove('show'); });
+
+$('#btnMailCompose').addEventListener('click', ()=>{
+  $('#mcTo').value=''; $('#mcSubject').value=''; $('#mcMessage').value=''; $('#mcErr').textContent='';
+  if(MAIL_ACTIVE){ $('#mcFrom').value=MAIL_ACTIVE; }
+  ensureCsel($('#mcFrom'));
+  $('#mailComposeModal').classList.add('show');
+});
+$('#btnCloseMailCompose').addEventListener('click', ()=>$('#mailComposeModal').classList.remove('show'));
+$('#mailComposeModal').addEventListener('click', e=>{ if(e.target.id==='mailComposeModal')$('#mailComposeModal').classList.remove('show'); });
+
+$('#btnMailSend').addEventListener('click', async ()=>{
+  const account_id=$('#mcFrom').value;
+  const to=$('#mcTo').value.trim(), subject=$('#mcSubject').value.trim(), message=$('#mcMessage').value.trim();
+  $('#mcErr').textContent='';
+  if(!account_id){ $('#mcErr').textContent='Pilih akun pengirim.'; return; }
+  if(!to){ $('#mcErr').textContent='Alamat tujuan wajib diisi.'; return; }
+  const btn=$('#btnMailSend'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Mengirim…';
+  try{
+    const {data,error}=await sb.functions.invoke('email-send',{body:{account_id,to,subject,message}});
+    if(error)throw new Error(error.message||'Gagal mengirim');
+    if(data?.error)throw new Error(data.error);
+    toast('Email terkirim ✓','ok');
+    $('#mailComposeModal').classList.remove('show');
+  }catch(err){
+    console.error(err);
+    $('#mcErr').textContent='Gagal mengirim: '+(err.message||'terjadi kesalahan');
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
+  }
+});
+
+ensureCsel($('#qStage'));
+ensureCsel($('#eStage'));
 checkSession();
 
 /* ============ PWA: install prompt & service worker ============ */
