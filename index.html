@@ -127,8 +127,12 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .gate p.sub{text-align:center;color:var(--mut);font-size:.85rem;margin-bottom:26px}
 .fld{margin-bottom:16px}
 .fld label{display:block;font:800 .7rem var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin-bottom:7px}
-.fld input{width:100%;border:2px solid var(--line);border-radius:11px;padding:13px 15px;font:600 .95rem var(--body);color:var(--ink);transition:.2s}
-.fld input:focus{outline:none;border-color:var(--navy)}
+.fld input,.fld select,.fld textarea{width:100%;border:2px solid var(--line);border-radius:11px;padding:13px 15px;font:600 .95rem var(--body);color:var(--ink);transition:.2s;background:#fff}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--navy)}
+.fld textarea{resize:vertical;min-height:64px;font-family:inherit}
+.fld select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B3A66' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");background-repeat:no-repeat;background-position:right 12px center;background-size:15px;padding-right:34px}
+.fld-sec{grid-column:1/-1;font:800 .68rem var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:4px 0 -2px;padding-top:12px;border-top:1px dashed var(--line)}
+.fld-sec:first-child{border-top:none;padding-top:0;margin-top:0}
 #loginBtn{width:100%;justify-content:center;margin-top:6px}
 .err-txt{color:var(--red);font:600 .8rem var(--body);margin-top:10px;text-align:center;min-height:1em}
 
@@ -251,7 +255,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .box-sec{margin-bottom:22px}
 .box-sec h4{font:800 .78rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.info-grid .fld input{padding:10px 12px;font-size:.86rem}
+.info-grid .full{grid-column:1/-1}
+.info-grid .fld input,.info-grid .fld select,.info-grid .fld textarea{padding:10px 12px;font-size:.86rem}
 .info-grid .fld label{font-size:.65rem}
 .stage-row{display:flex;gap:10px;align-items:center}
 .doc{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
@@ -395,6 +400,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <a class="sb-link active" data-target="secRingkasan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="14"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="16" y1="20" x2="16" y2="4"/><line x1="21" y1="20" x2="3" y2="20"/></svg></span> Ringkasan</a>
       <a class="sb-link" data-target="secPeserta"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></span> Data Peserta</a>
       <a class="sb-link" data-target="secMaster"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span> Data Master</a>
+      <a class="sb-link" data-target="secSekolah"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 8.5v6"/></svg></span> Sekolah Mitra</a>
       <span class="sb-label">Lainnya</span>
       <a class="sb-link" data-target="secAdministrasi"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2.06 2.06 0 1 1-2.92 2.92l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56v.16a2.06 2.06 0 1 1-4.12 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2.06 2.06 0 1 1-2.92-2.92l.06-.06a1.7 1.7 0 0 0 .34-1.87A1.7 1.7 0 0 0 2.7 12.47h-.16a2.06 2.06 0 1 1 0-4.12h.09A1.7 1.7 0 0 0 4.2 7.24a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.06 2.06 0 1 1 2.92-2.92l.06.06a1.7 1.7 0 0 0 1.87.34h.08a1.7 1.7 0 0 0 1.03-1.56V1.06a2.06 2.06 0 1 1 4.12 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.06 2.06 0 1 1 2.92 2.92l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.56 1.03h.16a2.06 2.06 0 1 1 0 4.12h-.09a1.7 1.7 0 0 0-1.56 1.03z"/></svg></span> Administrasi</a>
       <a class="sb-link" data-target="secEmail"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span> Kelola Email</a>
@@ -450,6 +456,23 @@ td.nama span{color:var(--mut);font-size:.78rem}
               <th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
             </tr></thead>
             <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="secSekolah">
+        <div class="toolbar">
+          <input type="text" id="qSekolah" placeholder="Cari nama sekolah…">
+          <input type="text" id="newSekolahNama" placeholder="Nama sekolah baru…" style="flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
+          <button class="btn b-pri sm" id="btnAddSekolah">+ Tambah Sekolah</button>
+        </div>
+        <p style="font:600 .8rem var(--body);color:var(--mut);margin:-8px 0 14px">Daftar ini yang muncul sebagai pilihan "Asal Sekolah" di form pendaftaran peserta. Nonaktifkan sekolah kalau kerja sama sudah berhenti — data peserta lama tidak akan berubah.</p>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Nama Sekolah</th><th>Status</th><th>Ditambahkan</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="tblSekolahBody"><tr class="empty-row"><td colspan="4">Memuat data…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -517,10 +540,57 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <div class="box-sec">
         <h4>📋 Data Peserta</h4>
         <div class="info-grid">
+          <div class="fld-sec">Data Pribadi</div>
           <div class="fld"><label>Nama</label><input type="text" id="eNama"></div>
           <div class="fld"><label>NIK</label><input type="text" id="eNik" disabled></div>
+          <div class="fld"><label>Jenis Kelamin</label>
+            <select id="eJk">
+              <option value="">—</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+          <div class="fld"><label>Status Pernikahan</label>
+            <select id="eStatusNikah">
+              <option value="">—</option>
+              <option value="Belum Menikah">Belum Menikah</option>
+              <option value="Menikah">Menikah</option>
+              <option value="Cerai Hidup">Cerai Hidup</option>
+              <option value="Cerai Mati">Cerai Mati</option>
+            </select>
+          </div>
+          <div class="fld"><label>Tempat Lahir</label><input type="text" id="eTempatLahir"></div>
+          <div class="fld"><label>Tanggal Lahir</label><input type="date" id="eTglLahir"></div>
+          <div class="fld"><label>Pendidikan Terakhir</label>
+            <select id="ePendidikan">
+              <option value="">—</option>
+              <option value="SD">SD</option>
+              <option value="SMP">SMP</option>
+              <option value="SMA/SMK">SMA/SMK</option>
+              <option value="D3">D3</option>
+              <option value="S1">S1</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="fld"><label>Agama</label>
+            <select id="eAgama">
+              <option value="">—</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Konghucu">Konghucu</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="fld"><label>Asal Sekolah</label><input type="text" id="eAsalSekolah" list="dlAsalSekolah" placeholder="cth: SMK Negeri 1 Cianjur"><datalist id="dlAsalSekolah"></datalist></div>
+
+          <div class="fld-sec">Kontak &amp; Domisili</div>
           <div class="fld"><label>WhatsApp</label><input type="text" id="eWa"></div>
-          <div class="fld"><label>Kota</label><input type="text" id="eKota"></div>
+          <div class="fld"><label>Provinsi</label><select id="eProvinsi"><option value="">—</option></select></div>
+          <div class="fld"><label>Kota/Kabupaten</label><input type="text" id="eKota"></div>
+          <div class="fld full"><label>Alamat Lengkap</label><textarea id="eAlamat" placeholder="Alamat sesuai KTP"></textarea></div>
         </div>
         <button class="btn b-navy sm" id="btnSaveInfo" style="margin-top:10px">💾 Simpan Perubahan Data</button>
       </div>
@@ -806,6 +876,13 @@ const DOCS=[
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
 let MASTER_ROWS=[], MASTER_IDS=new Set();
+let SEKOLAH_MITRA=[];
+
+const PROVINSI_LIST=['Aceh','Sumatera Utara','Sumatera Barat','Riau','Kepulauan Riau','Jambi','Sumatera Selatan','Bangka Belitung','Bengkulu','Lampung','DKI Jakarta','Jawa Barat','Jawa Tengah','DI Yogyakarta','Jawa Timur','Banten','Bali','Nusa Tenggara Barat','Nusa Tenggara Timur','Kalimantan Barat','Kalimantan Tengah','Kalimantan Selatan','Kalimantan Timur','Kalimantan Utara','Sulawesi Utara','Gorontalo','Sulawesi Tengah','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tenggara','Maluku','Maluku Utara','Papua','Papua Barat','Papua Barat Daya','Papua Tengah','Papua Pegunungan','Papua Selatan'];
+(function fillProvinsiAdmin(){
+  const sel=document.getElementById('eProvinsi'); if(!sel)return;
+  PROVINSI_LIST.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+})();
 
 /* Daftar akun pengirim email (juaraXXX@juaraind.com). Tambah/kurangi sesuai akun yang sudah
    dibuat di cPanel DomainEsia. Password TIDAK disimpan di sini — hanya di secret Edge Function. */
@@ -888,11 +965,12 @@ $('#btnLogout').addEventListener('click', async ()=>{
 async function loadAll(){
   $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Memuat data…</td></tr>';
   try{
-    const [pRes,dRes,sRes,mRes]=await Promise.all([
+    const [pRes,dRes,sRes,mRes,skRes]=await Promise.all([
       sb.from('participants_v2').select('*').order('created_at',{ascending:false}),
       sb.from('documents_v2').select('*'),
       sb.from('progress_v2').select('*'),
-      sb.from('master_data_v2').select('*').order('converted_at',{ascending:false})
+      sb.from('master_data_v2').select('*').order('converted_at',{ascending:false}),
+      sb.from('sekolah_mitra').select('*').order('nama',{ascending:true})
     ]);
     if(pRes.error)throw pRes.error;
     if(dRes.error)throw dRes.error;
@@ -912,9 +990,18 @@ async function loadAll(){
       MASTER_IDS=new Set(MASTER_ROWS.map(r=>r.participant_id));
     }
 
+    if(skRes.error){
+      console.warn('Tabel sekolah_mitra belum tersedia:',skRes.error.message);
+      SEKOLAH_MITRA=[];
+    }else{
+      SEKOLAH_MITRA=skRes.data||[];
+    }
+
     renderStats();
     renderTable();
     renderMasterTable();
+    renderSekolahTable();
+    fillAsalSekolahDatalist();
   }catch(err){
     console.error(err);
     $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Gagal memuat data: '+(err.message||'periksa koneksi/izin akses')+'</td></tr>';
@@ -936,6 +1023,67 @@ function renderStats(){
 }
 
 function participantCode(p){ return p.kode_peserta || (p.id?'JR-'+p.id.slice(0,8).toUpperCase():'—'); }
+
+/* ============ SEKOLAH MITRA ============ */
+function fillAsalSekolahDatalist(){
+  const dl=$('#dlAsalSekolah'); if(!dl)return;
+  dl.innerHTML=SEKOLAH_MITRA.filter(s=>s.aktif).map(s=>`<option value="${escapeHtml(s.nama)}">`).join('');
+}
+function renderSekolahTable(){
+  const body=$('#tblSekolahBody'); if(!body)return;
+  const q=($('#qSekolah')?.value||'').trim().toLowerCase();
+  const rows=SEKOLAH_MITRA.filter(s=>!q||String(s.nama||'').toLowerCase().includes(q));
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="4">Belum ada sekolah mitra. Tambahkan lewat kolom di atas.</td></tr>'; return; }
+  body.innerHTML=rows.map(s=>`
+    <tr data-sid="${s.id}">
+      <td><b>${escapeHtml(s.nama||'-')}</b></td>
+      <td><span class="pill ${s.aktif?'ok':'bad'}">${s.aktif?'Aktif':'Nonaktif'}</span></td>
+      <td>${s.created_at?fmtMailDate(s.created_at):'-'}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="mini" data-toggle="${s.id}">${s.aktif?'Nonaktifkan':'Aktifkan'}</button>
+        <button class="mini r" data-del="${s.id}">Hapus</button>
+      </td>
+    </tr>`).join('');
+  body.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggleSekolah(b.dataset.toggle);}));
+  body.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();deleteSekolah(b.dataset.del);}));
+}
+async function addSekolah(){
+  const input=$('#newSekolahNama');
+  const nama=input.value.trim();
+  if(!nama)return toast('Nama sekolah wajib diisi','err');
+  const btn=$('#btnAddSekolah'); btn.disabled=true;
+  const {data,error}=await sb.from('sekolah_mitra').insert({nama,aktif:true}).select().single();
+  btn.disabled=false;
+  if(error){ 
+    if(error.code==='23505')return toast('Sekolah ini sudah ada di daftar','err');
+    return toast('Gagal menambah sekolah: '+error.message,'err');
+  }
+  SEKOLAH_MITRA.push(data);
+  SEKOLAH_MITRA.sort((a,b)=>String(a.nama).localeCompare(String(b.nama)));
+  input.value='';
+  renderSekolahTable(); fillAsalSekolahDatalist();
+  toast('Sekolah ditambahkan ✓','ok');
+}
+async function toggleSekolah(sid){
+  const s=SEKOLAH_MITRA.find(x=>x.id===sid); if(!s)return;
+  const {error}=await sb.from('sekolah_mitra').update({aktif:!s.aktif}).eq('id',sid);
+  if(error)return toast('Gagal mengubah status: '+error.message,'err');
+  s.aktif=!s.aktif;
+  renderSekolahTable(); fillAsalSekolahDatalist();
+  toast(s.aktif?'Sekolah diaktifkan ✓':'Sekolah dinonaktifkan','ok');
+}
+async function deleteSekolah(sid){
+  const s=SEKOLAH_MITRA.find(x=>x.id===sid); if(!s)return;
+  if(!confirm(`Hapus "${s.nama}" dari daftar sekolah mitra?`))return;
+  const {error}=await sb.from('sekolah_mitra').delete().eq('id',sid);
+  if(error)return toast('Gagal menghapus: '+error.message,'err');
+  SEKOLAH_MITRA=SEKOLAH_MITRA.filter(x=>x.id!==sid);
+  renderSekolahTable(); fillAsalSekolahDatalist();
+  toast('Sekolah dihapus','ok');
+}
+$('#btnAddSekolah')?.addEventListener('click',addSekolah);
+$('#newSekolahNama')?.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();addSekolah();} });
+$('#qSekolah')?.addEventListener('input',renderSekolahTable);
 
 function renderTable(){
   const q=$('#qSearch').value.trim().toLowerCase();
@@ -1084,6 +1232,11 @@ function openDetail(pid){
   $('#mNama').textContent=p.nama||'-';
   $('#mKode').textContent=participantCode(p);
   $('#eNama').value=p.nama||''; $('#eNik').value=p.nik||''; $('#eWa').value=p.telepon||''; $('#eKota').value=p.kota||'';
+  $('#eJk').value=p.jenis_kelamin||''; $('#eStatusNikah').value=p.status_nikah||'';
+  $('#eTempatLahir').value=p.tempat_lahir||''; $('#eTglLahir').value=p.tgl_lahir||'';
+  $('#ePendidikan').value=p.pendidikan||''; $('#eAgama').value=p.agama||'';
+  $('#eProvinsi').value=p.provinsi||''; $('#eAlamat').value=p.alamat||'';
+  $('#eAsalSekolah').value=p.asal_sekolah||'';
   $('#eStage').value=String(STAGE_BY_PID[pid]??0);
   ensureCsel($('#eStage'));
   renderDocList(pid);
@@ -1135,7 +1288,14 @@ async function setDocStatus(pid,jenis,status){
 
 $('#btnSaveInfo').addEventListener('click', async ()=>{
   if(!ACTIVE_PID)return;
-  const payload={ nama:$('#eNama').value.trim(), telepon:$('#eWa').value.trim(), kota:$('#eKota').value.trim() };
+  const payload={
+    nama:$('#eNama').value.trim(), telepon:$('#eWa').value.trim(), kota:$('#eKota').value.trim(),
+    jenis_kelamin:$('#eJk').value||null, status_nikah:$('#eStatusNikah').value||null,
+    tempat_lahir:$('#eTempatLahir').value.trim()||null, tgl_lahir:$('#eTglLahir').value||null,
+    pendidikan:$('#ePendidikan').value||null, agama:$('#eAgama').value||null,
+    provinsi:$('#eProvinsi').value||null, alamat:$('#eAlamat').value.trim()||null,
+    asal_sekolah:$('#eAsalSekolah').value.trim()||null
+  };
   const {error}=await sb.from('participants_v2').update(payload).eq('id',ACTIVE_PID);
   if(error)return toast('Gagal menyimpan data: '+error.message,'err');
   const p=PARTICIPANTS.find(x=>x.id===ACTIVE_PID); Object.assign(p,payload);
