@@ -1149,6 +1149,22 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL LIHAT BUKTI PEMBAYARAN (preview inline) ============ -->
+<div class="modal" id="buktiViewModal">
+  <div class="box" style="max-width:640px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>🧾 Bukti Pembayaran</h3><p id="bvSub">-</p></div>
+      <button class="x" id="btnCloseBuktiView">✕</button>
+    </div>
+    <div class="box-body" style="max-height:78vh;display:flex;flex-direction:column;align-items:center;gap:14px">
+      <div id="bvLoading" style="padding:40px 0;color:var(--mut);font:600 .85rem var(--body)">Memuat berkas…</div>
+      <img id="bvImg" style="display:none;max-width:100%;max-height:60vh;border-radius:12px;border:1.5px solid var(--line);object-fit:contain" alt="Bukti pembayaran">
+      <iframe id="bvPdf" style="display:none;width:100%;height:60vh;border:1.5px solid var(--line);border-radius:12px" title="Bukti pembayaran"></iframe>
+      <a id="bvOpenNew" href="#" target="_blank" rel="noopener" class="btn b-ghost sm" style="display:none">Buka di tab baru</a>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL TOLAK BUKTI PEMBAYARAN (alasan opsional) ============ -->
 <div class="modal" id="buktiRejectModal">
   <div class="confirm-box">
@@ -1704,12 +1720,34 @@ $('#qBuktiStatus')?.addEventListener('change',renderBuktiTable);
 
 async function viewBuktiProof(ppid){
   const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp?.storage_path)return toast('Berkas tidak ditemukan','err');
-  const newTab=window.open('','_blank'); // dibuka LANGSUNG saat klik, sebelum await, biar tidak diblokir Safari
-  const {data,error}=await sb.storage.from('juara-v2-payment-proofs').createSignedUrl(pp.storage_path,300);
-  if(error||!data){ if(newTab)newTab.close(); return toast('Gagal membuka berkas: '+(error?.message||''),'err'); }
-  if(newTab) newTab.location.href=data.signedUrl;
-  else window.open(data.signedUrl,'_blank');
+  const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
+  const modal=$('#buktiViewModal');
+  $('#bvSub').textContent=(p?.nama||'Peserta')+' · '+formatRupiah(pp.jumlah_klaim);
+  const imgEl=$('#bvImg'), pdfEl=$('#bvPdf'), loadEl=$('#bvLoading'), openEl=$('#bvOpenNew');
+  imgEl.style.display='none'; pdfEl.style.display='none'; openEl.style.display='none';
+  imgEl.src=''; pdfEl.src='';
+  loadEl.textContent='Memuat berkas…'; loadEl.style.display='block';
+  modal.classList.add('show');
+  try{
+    const {data,error}=await sb.storage.from('juara-v2-payment-proofs').createSignedUrl(pp.storage_path,300);
+    if(error||!data)throw new Error(error?.message||'Gagal membuat tautan berkas');
+    const isPdf=/\.pdf($|\?)/i.test(pp.storage_path);
+    loadEl.style.display='none';
+    if(isPdf){
+      pdfEl.src=data.signedUrl; pdfEl.style.display='block';
+    }else{
+      imgEl.src=data.signedUrl; imgEl.style.display='block';
+    }
+    openEl.href=data.signedUrl; openEl.style.display='inline-flex';
+  }catch(err){
+    loadEl.textContent='Gagal memuat berkas: '+(err.message||'terjadi kesalahan');
+  }
 }
+$('#btnCloseBuktiView')?.addEventListener('click',()=>{
+  $('#buktiViewModal').classList.remove('show');
+  $('#bvImg').src=''; $('#bvPdf').src='';
+});
+$('#buktiViewModal')?.addEventListener('click',e=>{ if(e.target.id==='buktiViewModal'){ $('#buktiViewModal').classList.remove('show'); $('#bvImg').src=''; $('#bvPdf').src=''; } });
 async function approveBuktiProof(ppid){
   const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp)return;
   const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
