@@ -197,6 +197,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .pill.ok{background:#E9FBF2;border-color:#B7EED2;color:#0E8F55}
 .pill.wait{background:rgba(255,255,255,.55);border-color:#111111;color:#111111}
 .pill.bad{background:#FDEAEA;border-color:#F5C2C2;color:#B32C2C}
+.pill.kolektif{background:#EAF4FD;border-color:#BFDCF5;color:#1B6FB3}
 .stagebar{display:flex;align-items:center;justify-content:center;gap:8px}
 .stagebar .track{width:70px;height:7px;border-radius:99px;background:#EDEAE0;overflow:hidden}
 .stagebar .fill{height:100%;background:#3B6D11;border-radius:99px}
@@ -1806,8 +1807,10 @@ function renderTable(){
     const docs=DOCS_BY_PID[p.id]||{};
     const totalReq=DOCS.length;
     const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
+    const kolektif=DOCS.filter(d=>docs[d.k]?.status==='kolektif').length;
+    const accepted=verified+kolektif;
     const uploaded=DOCS.filter(d=>docs[d.k]).length;
-    const isComplete=totalReq>0&&verified===totalReq;
+    const isComplete=totalReq>0&&accepted===totalReq;
     const isMaster=MASTER_IDS.has(p.id);
     let aksiHtml;
     if(isMaster){
@@ -1815,7 +1818,7 @@ function renderTable(){
     }else if(isComplete){
       aksiHtml=`<button class="btn b-navy sm" data-convert="${p.id}" title="Pindahkan ke Data Master">➜ Convert</button>`;
     }else{
-      aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi semua dokumen dahulu">➜ Convert</button>`;
+      aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">➜ Convert</button>`;
     }
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
@@ -1823,7 +1826,7 @@ function renderTable(){
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
-      <td><span class="pill ${verified===totalReq?'ok':uploaded===0?'wait':'wait'}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi</span></td>
+      <td><span class="pill ${accepted===totalReq?'ok':uploaded===0?'wait':'wait'}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></td>
       <td class="aksi-cell"><div class="aksi-cell-in">${aksiHtml}</div></td>
     </tr>`;
   }).join('');
@@ -1852,12 +1855,37 @@ function runConvertProgress(host, durationMs){
     requestAnimationFrame(tick);
   });
 }
+/* Pemetaan dokumen kolektif -> kategori biaya di Kelola Keuangan. Begitu
+   peserta di-convert dan salah satu dokumen ini berstatus 'kolektif', tagihan
+   untuk kategori terkait otomatis dibuat (kategori dibuat otomatis juga kalau
+   belum ada) supaya admin finance tinggal isi nominalnya. */
+const KOLEKTIF_BILL_LABEL={paspor:'Pembuatan Paspor (Kolektif)',medis:'Medical Check-Up (Kolektif)'};
+async function autoAddKolektifBills(pid){
+  const docs=DOCS_BY_PID[pid]||{};
+  for(const jenis of Object.keys(KOLEKTIF_BILL_LABEL)){
+    if(docs[jenis]?.status!=='kolektif')continue;
+    const nama=KOLEKTIF_BILL_LABEL[jenis];
+    let cat=FIN_CATS.find(c=>(c.nama||'').trim().toLowerCase()===nama.toLowerCase());
+    if(!cat){
+      const {data,error}=await sb.from('finance_categories_v2').insert({nama,aktif:true,urutan:FIN_CATS.length,nominal_default:0}).select().single();
+      if(error){console.error('Gagal membuat kategori biaya kolektif:',error);continue;}
+      cat=data; FIN_CATS.push(cat);
+    }
+    if(FIN_BILLS.some(b=>b.participant_id===pid&&b.category_id===cat.id))continue;
+    const {data:bill,error:err2}=await sb.from('finance_bills_v2')
+      .upsert({participant_id:pid,category_id:cat.id,nominal:Number(cat.nominal_default||0),updated_at:new Date().toISOString()},{onConflict:'participant_id,category_id'})
+      .select().single();
+    if(err2){console.error('Gagal menambah tagihan kolektif:',err2);continue;}
+    FIN_BILLS.push(bill);
+  }
+}
 async function convertToMaster(pid, btn){
   const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
   const docs=DOCS_BY_PID[pid]||{};
   const totalReq=DOCS.length;
   const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
-  if(verified!==totalReq)return toast('Dokumen peserta belum lengkap terverifikasi','err');
+  const kolektif=DOCS.filter(d=>docs[d.k]?.status==='kolektif').length;
+  if(verified+kolektif!==totalReq)return toast('Dokumen peserta belum lengkap terverifikasi/ditandai kolektif','err');
   if(MASTER_IDS.has(pid))return toast('Peserta sudah ada di Data Master','err');
 
   const host=btn?btn.closest('.aksi-cell-in'):null;
@@ -1885,10 +1913,11 @@ async function convertToMaster(pid, btn){
   MASTER_IDS.add(pid);
   MASTER_ROWS=MASTER_ROWS.filter(r=>r.participant_id!==pid);
   MASTER_ROWS.unshift(data);
+  await autoAddKolektifBills(pid);
   renderTable();
   renderMasterTable();
   renderFinanceTable();
-  toast('Peserta dipindahkan ke Data Master ✓','ok');
+  toast(kolektif>0?`Peserta dipindahkan ke Data Master ✓ — tagihan ${kolektif} dokumen kolektif otomatis ditambahkan ke Kelola Keuangan`:'Peserta dipindahkan ke Data Master ✓','ok');
   document.querySelectorAll('.sb-link').forEach(l=>l.classList.toggle('active', l.dataset.target==='secMaster'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='secMaster'));
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1961,22 +1990,29 @@ function closeDetail(){ $('#detailModal').classList.remove('show'); ACTIVE_PID=n
 $('#btnCloseModal').addEventListener('click', closeDetail);
 $('#detailModal').addEventListener('click', e=>{ if(e.target.id==='detailModal')closeDetail(); });
 
+/* Dokumen dianggap "diterima" untuk kebutuhan progres/convert kalau sudah
+   terverifikasi ASLI, ATAU ditandai peserta sebagai diproses kolektif oleh
+   agensi (Paspor/MCU yang belum ada, tapi diurus kolektif). */
+function isDocAccepted(docObj){ return docObj?.status==='terverifikasi'||docObj?.status==='kolektif'; }
+
 function renderDocList(pid){
   const docs=DOCS_BY_PID[pid]||{};
   $('#docList').innerHTML=DOCS.map(d=>{
     const up=docs[d.k];
     const status=up?.status||'belum';
-    const pillClass=status==='terverifikasi'?'ok':status==='ditolak'?'bad':'wait';
-    const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':status==='menunggu'?'Menunggu':'Belum diunggah';
+    const isKolektif=status==='kolektif';
+    const pillClass=status==='terverifikasi'?'ok':status==='ditolak'?'bad':isKolektif?'kolektif':'wait';
+    const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':isKolektif?'📋 Kolektif (Agensi)':status==='menunggu'?'Menunggu':'Belum diunggah';
     return `<div class="doc">
       <div class="ic">${d.ic}</div>
       <div class="doc-body">
         <h5>${d.t}</h5>
         <div class="act">
           <span class="pill ${pillClass}">${pillText}</span>
-          ${up?`<button class="mini" data-view="${d.k}">Lihat</button>
+          ${up&&!isKolektif?`<button class="mini" data-view="${d.k}">Lihat</button>
             <button class="mini g" data-verify="${d.k}" ${status==='terverifikasi'?'disabled':''}>Verifikasi</button>
             <button class="mini r" data-reject="${d.k}" ${status==='ditolak'?'disabled':''}>Tolak</button>`:''}
+          ${isKolektif?`<button class="mini r" data-unkolektif="${d.k}">Batalkan Kolektif</button>`:''}
         </div>
       </div>
     </div>`;
@@ -1984,6 +2020,20 @@ function renderDocList(pid){
   $('#docList').querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>viewDoc(pid,b.dataset.view)));
   $('#docList').querySelectorAll('[data-verify]').forEach(b=>b.addEventListener('click',()=>setDocStatus(pid,b.dataset.verify,'terverifikasi')));
   $('#docList').querySelectorAll('[data-reject]').forEach(b=>b.addEventListener('click',()=>setDocStatus(pid,b.dataset.reject,'ditolak')));
+  $('#docList').querySelectorAll('[data-unkolektif]').forEach(b=>b.addEventListener('click',()=>cancelKolektif(pid,b.dataset.unkolektif)));
+}
+/* Admin membatalkan penandaan kolektif (mis. peserta sudah bawa paspor/MCU
+   asli lewat jalur lain) — baris dokumen dihapus, peserta jadi perlu unggah
+   berkas ini lagi sendiri lewat portal. */
+async function cancelKolektif(pid,jenis){
+  const doc=(DOCS_BY_PID[pid]||{})[jenis]; if(!doc||doc.status!=='kolektif')return;
+  const label=DOCS.find(d=>d.k===jenis)?.t||jenis;
+  if(!await customConfirm(`Batalkan penandaan kolektif untuk "${label}"? Peserta perlu mengunggah berkas ini sendiri lagi.`))return;
+  const {error}=await sb.from('documents_v2').delete().eq('id',doc.id);
+  if(error)return toast('Gagal membatalkan kolektif: '+error.message,'err');
+  delete DOCS_BY_PID[pid][jenis];
+  renderDocList(pid); renderTable(); renderStats();
+  toast('Penandaan kolektif dibatalkan ✓','ok');
 }
 
 async function viewDoc(pid,jenis){
@@ -2011,7 +2061,7 @@ async function setDocStatus(pid,jenis,status){
    admin sudah geser manual ke tahap 3+) tidak diutak-atik oleh fungsi ini. */
 async function maybeAdvanceStage(pid){
   const docs=DOCS_BY_PID[pid]||{};
-  const allVerified=DOCS.every(d=>docs[d.k]?.status==='terverifikasi');
+  const allVerified=DOCS.every(d=>isDocAccepted(docs[d.k]));
   if(!allVerified)return;
   const currentStage=STAGE_BY_PID[pid]??0;
   if(currentStage>=2)return;
@@ -2033,7 +2083,7 @@ async function sweepStaleStages(){
     .filter(pid=>(STAGE_BY_PID[pid]??0)<2)
     .filter(pid=>{
       const docs=DOCS_BY_PID[pid]||{};
-      return DOCS.every(d=>docs[d.k]?.status==='terverifikasi');
+      return DOCS.every(d=>isDocAccepted(docs[d.k]));
     });
   if(!stuckPids.length)return;
   const rows=stuckPids.map(pid=>({participant_id:pid,tahap:2,updated_at:new Date().toISOString()}));
