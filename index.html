@@ -2015,7 +2015,9 @@ $('#btnShareInvoiceWA')?.addEventListener('click', ()=>{
   const num=normalizePhoneWa(INVOICE_ACTIVE.p.telepon);
   const text=encodeURIComponent(invoiceWaText(INVOICE_ACTIVE));
   const url=num?`https://wa.me/${num}?text=${text}`:`https://wa.me/?text=${text}`;
-  window.open(url,'_blank');
+  const waWin=window.open(url,'_blank','noopener');
+  window.focus();
+  if(waWin)setTimeout(()=>window.focus(),150);
 });
 
 function renderTable(){
