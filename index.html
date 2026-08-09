@@ -179,8 +179,8 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 
 .tbl-wrap{background:var(--card);border-radius:16px;border:1.5px solid var(--line);overflow:hidden}
 table{width:100%;border-collapse:collapse}
-thead th{text-align:left;font:800 .68rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:14px 16px;background:#F7F5EF;border-bottom:1.5px solid var(--line)}
-tbody td{padding:14px 16px;border-bottom:1px solid var(--line);font-size:.88rem;vertical-align:middle}
+thead th{text-align:center;font:800 .68rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:14px 16px;background:#F7F5EF;border-bottom:1.5px solid var(--line)}
+tbody td{padding:14px 16px;border-bottom:1px solid var(--line);font-size:.88rem;vertical-align:middle;text-align:center}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:#FBFAF6}
 tbody tr{cursor:pointer}
@@ -192,9 +192,9 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .pill.ok{background:#E9FBF2;border-color:#B7EED2;color:#0E8F55}
 .pill.wait{background:rgba(255,255,255,.55);border-color:#111111;color:#111111}
 .pill.bad{background:#FDEAEA;border-color:#F5C2C2;color:#B32C2C}
-.stagebar{display:flex;align-items:center;gap:8px}
+.stagebar{display:flex;align-items:center;justify-content:center;gap:8px}
 .stagebar .track{width:70px;height:7px;border-radius:99px;background:#EDEAE0;overflow:hidden}
-.stagebar .fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:99px}
+.stagebar .fill{height:100%;background:#3B6D11;border-radius:99px}
 .stagebar b{font:700 .74rem var(--body);color:var(--navy);white-space:nowrap}
 .empty-row td{text-align:center;color:var(--mut);padding:40px 16px}
 
@@ -311,8 +311,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
   .dnd-hint-icon svg{width:16px;height:16px}
 }
 
-.aksi-cell{text-align:right}
-.aksi-cell-in{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.aksi-cell{text-align:center}
+.aksi-cell-in{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 
 .convert-progress{display:flex;align-items:center;gap:8px;width:150px;max-width:100%}
 .convert-progress .cp-track{flex:1;height:9px;background:#EAE6DA;border-radius:99px;overflow:hidden;position:relative}
