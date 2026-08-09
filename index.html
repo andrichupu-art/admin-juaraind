@@ -20,7 +20,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
 /* ============ TOKENS — disamakan persis dengan portal pendaftaran ============ */
@@ -2094,37 +2093,115 @@ function openInvoiceEmailModal(){
 }
 function closeInvoiceEmailModal(){ $('#invoiceEmailModal').classList.remove('show'); }
 async function generateInvoicePdfBlob(inv){
-  const wrap=document.createElement('div');
-  wrap.style.position='fixed';
-  wrap.style.left='-9999px';
-  wrap.style.top='0';
-  wrap.style.width='780px';
-  wrap.style.background='#ffffff';
-  wrap.innerHTML=invoiceHtml(inv);
-  document.body.appendChild(wrap);
-  try{
-    await new Promise(r=>setTimeout(r,60));
-    const canvas=await html2canvas(wrap,{scale:2,backgroundColor:'#ffffff'});
-    const imgData=canvas.toDataURL('image/png');
-    const { jsPDF }=window.jspdf;
-    const pdf=new jsPDF({unit:'pt',format:'a4'});
-    const pageWidth=pdf.internal.pageSize.getWidth();
-    const pageHeight=pdf.internal.pageSize.getHeight();
-    const imgWidth=pageWidth;
-    const imgHeight=canvas.height*imgWidth/canvas.width;
-    let heightLeft=imgHeight, position=0;
-    pdf.addImage(imgData,'PNG',0,position,imgWidth,imgHeight);
-    heightLeft-=pageHeight;
-    while(heightLeft>0){
-      position=heightLeft-imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData,'PNG',0,position,imgWidth,imgHeight);
-      heightLeft-=pageHeight;
-    }
-    return pdf.output('blob');
-  }finally{
-    document.body.removeChild(wrap);
-  }
+  const {p,items,totalTagihan,totalDibayar,totalSisa,lunas,invoiceNo,tglStr}=inv;
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const pageWidth=doc.internal.pageSize.getWidth();
+  const marginX=48;
+  let y=56;
+
+  // Header
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(20,30,60);
+  doc.text('PT. JUARA', marginX, y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(100,100,110);
+  doc.text('Pejuang Devisa Negara', marginX, y+14);
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(20,30,60);
+  doc.text('INVOICE', pageWidth-marginX, y, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(100,100,110);
+  doc.text(invoiceNo, pageWidth-marginX, y+14, {align:'right'});
+  doc.text(tglStr, pageWidth-marginX, y+26, {align:'right'});
+
+  y+=48;
+  doc.setDrawColor(220,222,230); doc.setLineWidth(1);
+  doc.line(marginX, y, pageWidth-marginX, y);
+  y+=24;
+
+  // Meta peserta
+  doc.setFontSize(9); doc.setTextColor(120,120,130);
+  doc.text('DITAGIHKAN KEPADA', marginX, y);
+  doc.text('KODE PESERTA', marginX+220, y);
+  y+=14;
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,30);
+  doc.text(String(p.nama||'-'), marginX, y);
+  doc.text(String(participantCode(p)), marginX+220, y);
+  y+=22;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(120,120,130);
+  doc.text('NO. WHATSAPP', marginX, y);
+  doc.text('KOTA', marginX+220, y);
+  y+=14;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(40,40,50);
+  doc.text(String(p.telepon||'-'), marginX, y);
+  doc.text(String(p.kota||'-'), marginX+220, y);
+  y+=28;
+
+  // Tabel
+  const colX=[marginX, marginX+220, marginX+330, marginX+440];
+  const tableRight=pageWidth-marginX;
+  doc.setFillColor(28,42,74);
+  doc.rect(marginX, y, tableRight-marginX, 22, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+  doc.text('KATEGORI', colX[0]+8, y+15);
+  doc.text('TAGIHAN', colX[1], y+15);
+  doc.text('DIBAYAR', colX[2], y+15);
+  doc.text('SISA', colX[3], y+15);
+  y+=22;
+
+  doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(30,30,40);
+  items.length?items.forEach((it,i)=>{
+    const rowH=20;
+    if(i%2===1){ doc.setFillColor(246,247,250); doc.rect(marginX, y, tableRight-marginX, rowH, 'F'); }
+    doc.text(String(it.catNama||'-'), colX[0]+8, y+14, {maxWidth:200});
+    doc.text(formatRupiah(it.tagihan), colX[1], y+14);
+    doc.text(formatRupiah(it.dibayar), colX[2], y+14);
+    doc.text(formatRupiah(it.sisa), colX[3], y+14);
+    y+=rowH;
+  }):(()=>{
+    doc.setTextColor(140,140,150);
+    doc.text('Belum ada tagihan tercatat untuk peserta ini.', marginX+8, y+14);
+    doc.setTextColor(30,30,40);
+    y+=20;
+  })();
+  doc.setDrawColor(220,222,230);
+  doc.line(marginX, y, tableRight, y);
+  y+=26;
+
+  // Totals
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(70,70,80);
+  doc.text('Total Tagihan', tableRight-150, y);
+  doc.setFont('helvetica','bold'); doc.setTextColor(20,20,30);
+  doc.text(formatRupiah(totalTagihan), tableRight, y, {align:'right'});
+  y+=18;
+  doc.setFont('helvetica','normal'); doc.setTextColor(70,70,80);
+  doc.text('Total Dibayar', tableRight-150, y);
+  doc.setFont('helvetica','bold'); doc.setTextColor(20,20,30);
+  doc.text(formatRupiah(totalDibayar), tableRight, y, {align:'right'});
+  y+=18;
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,30);
+  doc.text('Sisa Tagihan', tableRight-150, y);
+  doc.text(formatRupiah(totalSisa), tableRight, y, {align:'right'});
+  y+=30;
+
+  // Status pill
+  doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  const statusText=lunas?'LUNAS':'BELUM LUNAS';
+  const padX=10, pillW=doc.getTextWidth(statusText)+padX*2, pillH=20;
+  if(lunas){ doc.setFillColor(214,240,222); doc.setTextColor(20,120,60); }
+  else{ doc.setFillColor(250,222,222); doc.setTextColor(170,40,40); }
+  doc.roundedRect(marginX, y-14, pillW, pillH, 10, 10, 'F');
+  doc.text(statusText, marginX+padX, y);
+  y+=56;
+
+  // Footer tanda tangan
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(120,120,130);
+  doc.text('Peserta', marginX, y);
+  doc.text('PT. Juara', tableRight-100, y);
+  y+=36;
+  doc.setDrawColor(180,182,190);
+  doc.line(marginX, y, marginX+140, y);
+  doc.line(tableRight-100, y, tableRight, y);
+
+  return doc.output('blob');
 }
 async function uploadInvoicePdf(inv){
   const blob=await generateInvoicePdfBlob(inv);
