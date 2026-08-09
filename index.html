@@ -162,7 +162,9 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   font:700 .85rem var(--body);color:var(--navy);text-align:left;transition:.15s}
 .csel-btn:hover{border-color:#b7c6db}
 .csel-btn:focus-visible{outline:none;border-color:var(--navy)}
-.csel-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csel-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;display:flex;align-items:baseline;gap:8px}
+.csel-label-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csel-label-price{flex-shrink:0;margin-left:auto;color:var(--mut);font-weight:700;font-size:.76rem;font-variant-numeric:tabular-nums}
 .csel-chev{flex-shrink:0;color:var(--mut);transition:transform .18s}
 .csel.open .csel-btn{border-color:var(--navy)}
 .csel.open .csel-chev{transform:rotate(180deg)}
@@ -171,7 +173,10 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   padding:6px;z-index:80;max-height:280px;overflow-y:auto;
   opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .15s,transform .15s}
 .csel.open .csel-menu{opacity:1;transform:translateY(0);pointer-events:auto}
-.csel-opt{padding:8px 12px;border-radius:8px;font:600 .78rem/1.4 var(--body);color:var(--ink);cursor:pointer;transition:.1s}
+.csel-opt{display:flex;align-items:baseline;gap:10px;padding:9px 12px;border-radius:8px;font:600 .78rem/1.4 var(--body);color:var(--ink);cursor:pointer;transition:.1s}
+.csel-opt-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csel-opt-price{flex-shrink:0;margin-left:auto;color:var(--mut);font-weight:700;font-size:.74rem;font-variant-numeric:tabular-nums}
+.csel-opt.sel .csel-opt-price{color:#cfe0f5}
 .csel-opt:hover,.csel-opt.hi{background:#EEF3FA}
 .csel-opt.sel{background:var(--navy);color:#fff;font-weight:700}
 .stage-row .csel{flex:1}
@@ -291,6 +296,18 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .toast{background:var(--navy2);color:#fff;padding:13px 18px;border-radius:11px;font:600 .85rem var(--body);box-shadow:0 8px 24px rgba(0,0,0,.25);border-left:4px solid var(--gold);animation:tin .25s}
 .toast.err{border-left-color:var(--red)}
 .toast.ok{border-left-color:var(--green)}
+/* ============ CUSTOM CONFIRM MODAL ============ */
+#confirmModal{align-items:center;z-index:400}
+.confirm-box{background:var(--card);border-radius:20px;max-width:400px;width:100%;
+  padding:32px 28px 26px;text-align:center;box-shadow:0 24px 60px rgba(8,21,39,.35);
+  animation:confirmIn .18s ease-out}
+@keyframes confirmIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.confirm-icon{width:52px;height:52px;border-radius:50%;background:#FDECEC;color:var(--red);
+  font:800 1.5rem var(--disp);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.confirm-box h3{font:800 1.1rem var(--disp);color:var(--ink);margin-bottom:8px}
+.confirm-box p{font:600 .88rem/1.5 var(--body);color:var(--mut);margin-bottom:24px}
+.confirm-actions{display:flex;gap:10px;justify-content:center}
+.confirm-actions .btn{flex:1;justify-content:center}
 @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 .hint{background:#FFF6E9;border:1px solid #F3D9A6;border-radius:12px;padding:12px 14px;color:var(--navy);font-size:.78rem;line-height:1.5;margin-bottom:18px}
@@ -368,6 +385,78 @@ td.nama span{color:var(--mut);font-size:.78rem}
   tbody tr{border-bottom:1px solid var(--line);padding:12px 16px}
   tbody td{border:none;padding:4px 0}
   td.kode{order:1} td.nama{order:0;margin-bottom:4px}
+}
+
+/* ============ KELOLA KEUANGAN ============ */
+#financeModal{justify-content:flex-start;align-items:stretch;padding:0}
+#financeModal .box{max-width:780px;width:100%;height:100vh;border-radius:0;display:flex;flex-direction:column;animation:panelIn .22s ease-out}
+#financeModal .box-body{max-height:none;flex:1;overflow-y:auto}
+@media(max-width:860px){#financeModal .box{max-width:100%}}
+
+#finCatModal{justify-content:flex-start;align-items:stretch;padding:0}
+#finCatModal .box{max-width:600px;width:100%;height:100vh;border-radius:0;display:flex;flex-direction:column;animation:panelIn .22s ease-out}
+#finCatModal .box-body{max-height:none;flex:1;overflow-y:auto}
+@media(max-width:640px){#finCatModal .box{max-width:100%}}
+.fin-cat-list{display:flex;flex-direction:column;gap:12px}
+.fin-cat-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px}
+.fin-cat-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fin-cat-top b{font:800 .95rem var(--disp);color:var(--ink)}
+.fin-cat-row{margin-bottom:14px}
+.fin-cat-row label{display:block;font:800 .66rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:7px}
+.fin-cat-row-in{display:flex;gap:8px}
+.fin-cat-row-in .fin-bill-input{flex:1;min-width:0}
+.fin-cat-row-in .fin-bill-input[readonly]{background:#f4f5f7;color:var(--mut);cursor:default}
+.fin-cat-row-in .fin-bill-input.editing{background:#fff;color:var(--ink);border-color:var(--navy)}
+.fp-cat-list{display:flex;flex-direction:column;gap:8px}
+.fp-cat-item{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:#fff}
+.fp-cat-item-l{display:flex;align-items:center;gap:10px;min-width:0}
+.fp-cat-name{font:700 .88rem var(--body);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fp-cat-item-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.fp-cat-price{flex-shrink:0;font:700 .8rem var(--body);color:var(--mut);font-variant-numeric:tabular-nums}
+.fp-cat-del{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
+  color:var(--mut);font-size:.7rem;line-height:1;display:flex;align-items:center;justify-content:center;transition:.15s}
+.fp-cat-del:hover{border-color:var(--red);color:var(--red);background:#FDECEC}
+.fp-cat-total{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:8px;padding:10px 14px;border-radius:12px;background:var(--navy);border:1.5px solid var(--navy)}
+.fp-cat-total b{font:800 .78rem var(--body);letter-spacing:.03em;text-transform:uppercase;color:#fff}
+.fp-cat-total span{font:800 .95rem var(--body);color:#fff;font-variant-numeric:tabular-nums}
+.fp-catatan-row{display:flex;gap:10px}
+.fp-catatan-row input{width:100%}
+.fp-catatan-row #fpCatatanNominal{background:#f4f5f7;color:var(--mut);cursor:default}
+.fp-catatan-row input:disabled{background:#f4f5f7;color:#b9c0cc;cursor:not-allowed;border-color:var(--line)}
+.fin-cat-actions{display:flex;gap:8px;flex-wrap:wrap}
+.fin-bill-input{width:120px;border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;font:600 .82rem var(--body);color:var(--ink)}
+.fin-bill-input:focus{outline:none;border-color:var(--navy)}
+#finBillList .tbl-wrap,#finPaymentBody{font-size:.86rem}
+#finBillList .tbl-wrap{overflow-x:auto}
+#finBillList table{min-width:620px}
+#finBillList thead th{padding:9px 8px;font-size:.6rem;white-space:nowrap}
+#finBillList tbody td{padding:8px 8px;font-size:.76rem}
+#finBillList thead th:first-child,#finBillList tbody td:first-child{text-align:left}
+#finBillList .fin-bill-input{width:90px;padding:6px 7px;font-size:.74rem}
+#finBillList .pill{font-size:.64rem;padding:4px 9px;white-space:nowrap}
+#finBillList tbody td:last-child{white-space:nowrap;text-align:left}
+#finBillList .mini{padding:5px 7px;font-size:.6rem}
+
+/* ============ KWITANSI CETAK ============ */
+#kwitansiArea{position:fixed;left:-9999px;top:0;width:560px}
+.kw-box{background:#fff;padding:30px;font-family:var(--body);color:var(--ink)}
+.kw-head{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:3px solid var(--gold);padding-bottom:14px;margin-bottom:18px}
+.kw-head b{font:800 1.1rem var(--disp);color:var(--navy);display:block}
+.kw-head span{font:600 .8rem var(--body);color:var(--mut)}
+.kw-no{font:700 .82rem var(--mono);color:var(--navy)}
+.kw-table{width:100%;border-collapse:collapse;margin-bottom:26px}
+.kw-table td{padding:7px 0;font:600 .9rem var(--body);vertical-align:top}
+.kw-table td:first-child{width:150px;color:var(--mut)}
+.kw-sign{display:flex;justify-content:space-between;margin-top:34px;gap:20px}
+.kw-sign>div{flex:1;text-align:center}
+.kw-sign p{font:600 .82rem var(--body);color:var(--mut);margin-bottom:50px}
+.kw-line{border-top:1.5px solid var(--ink);width:80%;margin:0 auto}
+@media print{
+  body *{visibility:hidden}
+  #kwitansiArea,#kwitansiArea *{visibility:visible}
+  #kwitansiArea{position:absolute;left:0;top:0;width:100%}
 }
 </style>
 </head>
@@ -528,10 +617,23 @@ td.nama span{color:var(--mut);font-size:.78rem}
       </div>
 
       <div class="tab-panel" id="secKeuangan">
-        <div class="devnote">
-          <svg viewBox="0 0 24 24" width="40" height="40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor" stroke="none"/></svg>
-          <h3>Kelola Keuangan</h3>
-          <p>Fitur ini sedang dalam pengembangan.</p>
+        <div class="stats">
+          <div class="stat"><b id="finStTagihan">Rp 0</b><span>Total Tagihan</span></div>
+          <div class="stat ok"><b id="finStBayar">Rp 0</b><span>Total Terbayar</span></div>
+          <div class="stat warn"><b id="finStSisa">Rp 0</b><span>Sisa Tagihan</span></div>
+          <div class="stat bad"><b id="finStBelumLunas">0</b><span>Peserta Belum Lunas</span></div>
+        </div>
+        <div class="toolbar">
+          <input type="text" id="qSearchFin" placeholder="Cari nama, kota, atau kode peserta…">
+          <button class="btn b-ghost sm" id="btnKelolaKategori" style="margin-left:auto">⚙ Kelola Kategori Biaya</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Total Tagihan</th><th>Terbayar</th><th>Sisa</th><th>Status</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="tblFinBody"><tr class="empty-row"><td colspan="9">Memuat data…</td></tr></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -801,7 +903,96 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL KELOLA KATEGORI BIAYA ============ -->
+<div class="modal" id="finCatModal">
+  <div class="box">
+    <div class="box-h">
+      <div style="min-width:0"><h3>⚙ Kelola Kategori Biaya</h3><p>Dipakai untuk tagihan &amp; pembayaran tiap peserta</p></div>
+      <button class="x" id="btnCloseFinCat">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="toolbar" style="margin-bottom:14px">
+        <input type="text" id="newFinCatNama" placeholder="Nama kategori baru (cth: Biaya Pelatihan)…" style="flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
+        <input type="text" inputmode="numeric" id="newFinCatNominal" placeholder="Nominal (Rp)" style="width:150px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
+        <button class="btn b-pri sm" id="btnAddFinCat">+ Tambah</button>
+      </div>
+      <div id="finCatList" class="fin-cat-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL DETAIL KEUANGAN PESERTA ============ -->
+<div class="modal" id="financeModal">
+  <div class="box">
+    <div class="box-h">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <div class="ava" id="finAva">-</div>
+        <div style="min-width:0"><h3 id="finNama" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-</h3><p id="finKode">-</p></div>
+      </div>
+      <button class="x" id="btnCloseFinance">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="box-sec">
+        <h4>➕ Catat Pembayaran</h4>
+        <div class="toolbar" style="margin-bottom:14px">
+          <select id="finAddBillCat" style="flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font:600 .84rem var(--body)"></select>
+          <button class="btn b-pri sm" id="btnAddBillCat">+ Tambah Kategori Tagihan</button>
+        </div>
+        <div class="info-grid">
+          <div class="fld full">
+            <label>Kategori</label>
+            <div id="fpCategoryList" class="fp-cat-list"></div>
+            <div id="fpCategoryTotal" class="fp-cat-total"></div>
+            <select id="fpCategory" style="display:none"></select>
+          </div>
+          <div class="fld full"><label>Metode</label>
+            <select id="fpMetode">
+              <option value="Cicilan">Cicilan</option>
+              <option value="Tunai">Tunai</option>
+            </select>
+          </div>
+          <div class="fld"><label>Tanggal</label><input type="date" id="fpTanggal" readonly onkeydown="return false" onwheel="return false" style="background:#f4f5f7;color:var(--mut);cursor:default;pointer-events:none"></div>
+          <div class="fld"><label>Jumlah Bayar (Rp)</label><input type="text" inputmode="numeric" id="fpJumlah" placeholder="0"></div>
+          <div class="fld full">
+            <label>Catatan</label>
+            <div class="fp-catatan-row">
+              <input type="text" id="fpCatatanLabel" placeholder="Cicilan 1">
+              <input type="text" inputmode="numeric" id="fpCatatanNominal" placeholder="0" readonly>
+            </div>
+          </div>
+        </div>
+        <button class="btn b-navy sm" id="btnSavePayment" style="margin-top:6px">💾 Simpan Pembayaran</button>
+      </div>
+      <div class="box-sec">
+        <h4>🧾 Riwayat Pembayaran</h4>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Metode</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+            <tbody id="finPaymentBody"><tr class="empty-row"><td colspan="4">Belum ada pembayaran.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Area khusus cetak kwitansi (tidak tampil di layar, hanya saat print) -->
+<div id="kwitansiArea"></div>
+
 <div id="toastWrap"></div>
+
+<!-- ============ MODAL KONFIRMASI (pengganti confirm() bawaan browser) ============ -->
+<div class="modal" id="confirmModal">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="confirmIcon">!</div>
+    <h3 id="confirmTitle">Konfirmasi</h3>
+    <p id="confirmMsg">Yakin mau lanjutkan?</p>
+    <div class="confirm-actions">
+      <button class="btn b-ghost sm" id="confirmCancelBtn">Batal</button>
+      <button class="btn b-red sm" id="confirmOkBtn">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ============ KONFIGURASI SUPABASE — sama dengan portal pendaftaran ============ */
@@ -829,7 +1020,11 @@ function buildCsel(select){
     [...select.options].forEach(opt=>{
       const o=document.createElement('div');
       o.className='csel-opt'+(opt.value===select.value?' sel':'');
-      o.textContent=opt.textContent; o.dataset.value=opt.value; o.setAttribute('role','option');
+      const price=opt.dataset.price||'';
+      o.innerHTML=price
+        ? `<span class="csel-opt-name">${escapeHtml(opt.textContent)}</span><span class="csel-opt-price">${escapeHtml(price)}</span>`
+        : escapeHtml(opt.textContent);
+      o.dataset.value=opt.value; o.setAttribute('role','option');
       o.addEventListener('click',()=>{
         select.value=opt.value;
         select.dispatchEvent(new Event('change',{bubbles:true}));
@@ -840,7 +1035,11 @@ function buildCsel(select){
   }
   function syncLabel(){
     const opt=select.options[select.selectedIndex];
-    btn.querySelector('.csel-label').textContent=opt?opt.textContent:'';
+    const label=btn.querySelector('.csel-label');
+    const price=opt?.dataset.price||'';
+    label.innerHTML=opt
+      ? (price?`<span class="csel-label-name">${escapeHtml(opt.textContent)}</span><span class="csel-label-price">${escapeHtml(price)}</span>`:escapeHtml(opt.textContent))
+      : '';
     menu.querySelectorAll('.csel-opt').forEach(o=>o.classList.toggle('sel',o.dataset.value===select.value));
   }
   function open(){ document.querySelectorAll('.csel.open').forEach(c=>{ if(c!==wrap)c.classList.remove('open'); }); wrap.classList.add('open'); }
@@ -888,6 +1087,7 @@ const DOCS=[
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
 let MASTER_ROWS=[], MASTER_IDS=new Set();
 let SEKOLAH_MITRA=[];
+let FIN_CATS=[], FIN_BILLS=[], FIN_PAYMENTS=[], FIN_ACTIVE_PID=null;
 
 const PROVINSI_LIST=['Aceh','Sumatera Utara','Sumatera Barat','Riau','Kepulauan Riau','Jambi','Sumatera Selatan','Bangka Belitung','Bengkulu','Lampung','DKI Jakarta','Jawa Barat','Jawa Tengah','DI Yogyakarta','Jawa Timur','Banten','Bali','Nusa Tenggara Barat','Nusa Tenggara Timur','Kalimantan Barat','Kalimantan Tengah','Kalimantan Selatan','Kalimantan Timur','Kalimantan Utara','Sulawesi Utara','Gorontalo','Sulawesi Tengah','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tenggara','Maluku','Maluku Utara','Papua','Papua Barat','Papua Barat Daya','Papua Tengah','Papua Pegunungan','Papua Selatan'];
 (function fillProvinsiAdmin(){
@@ -909,7 +1109,47 @@ function toast(msg,type='ok'){
   $('#toastWrap').appendChild(el);
   setTimeout(()=>el.remove(),3400);
 }
+function customConfirm(msg,opts={}){
+  const {title='Konfirmasi',okLabel='Ya, Hapus',cancelLabel='Batal'}=opts;
+  return new Promise(resolve=>{
+    const modal=$('#confirmModal'); if(!modal){ resolve(window.confirm(msg)); return; }
+    $('#confirmTitle').textContent=title;
+    $('#confirmMsg').textContent=msg;
+    $('#confirmOkBtn').textContent=okLabel;
+    $('#confirmCancelBtn').textContent=cancelLabel;
+    modal.classList.add('show');
+    function cleanup(result){
+      modal.classList.remove('show');
+      okBtn.removeEventListener('click',onOk);
+      cancelBtn.removeEventListener('click',onCancel);
+      modal.removeEventListener('click',onBackdrop);
+      document.removeEventListener('keydown',onKey);
+      resolve(result);
+    }
+    const okBtn=$('#confirmOkBtn'), cancelBtn=$('#confirmCancelBtn');
+    function onOk(){ cleanup(true); }
+    function onCancel(){ cleanup(false); }
+    function onBackdrop(e){ if(e.target.id==='confirmModal')cleanup(false); }
+    function onKey(e){ if(e.key==='Escape')cleanup(false); }
+    okBtn.addEventListener('click',onOk);
+    cancelBtn.addEventListener('click',onCancel);
+    modal.addEventListener('click',onBackdrop);
+    document.addEventListener('keydown',onKey);
+  });
+}
 function fmtSz(b){ if(!b)return '-'; if(b<1024)return b+' B'; if(b<1048576)return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
+function formatRupiah(n){ return 'Rp '+Math.round(Number(n||0)).toLocaleString('id-ID'); }
+function formatRupiahInput(v){ const digits=String(v||'').replace(/[^\d]/g,''); if(!digits)return ''; return Number(digits).toLocaleString('id-ID'); }
+function parseRupiahInput(v){ return Number(String(v||'').replace(/[^\d]/g,''))||0; }
+function attachRupiahMask(el){
+  if(!el||el._rpMasked)return; el._rpMasked=true;
+  el.addEventListener('input',()=>{
+    const before=el.value; const cursorFromEnd=before.length-(el.selectionStart||before.length);
+    el.value=formatRupiahInput(before);
+    const pos=Math.max(0,el.value.length-cursorFromEnd);
+    try{ el.setSelectionRange(pos,pos); }catch(e){}
+  });
+}
 
 /* ============ AUTH ============ */
 async function checkSession(){
@@ -976,12 +1216,15 @@ $('#btnLogout').addEventListener('click', async ()=>{
 async function loadAll(){
   $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Memuat data…</td></tr>';
   try{
-    const [pRes,dRes,sRes,mRes,skRes]=await Promise.all([
+    const [pRes,dRes,sRes,mRes,skRes,fcRes,fbRes,fpRes]=await Promise.all([
       sb.from('participants_v2').select('*').order('created_at',{ascending:false}),
       sb.from('documents_v2').select('*'),
       sb.from('progress_v2').select('*'),
       sb.from('master_data_v2').select('*').order('converted_at',{ascending:false}),
-      sb.from('sekolah_mitra').select('*').order('nama',{ascending:true})
+      sb.from('sekolah_mitra').select('*').order('nama',{ascending:true}),
+      sb.from('finance_categories_v2').select('*').order('urutan',{ascending:true}),
+      sb.from('finance_bills_v2').select('*'),
+      sb.from('finance_payments_v2').select('*').order('tanggal',{ascending:false})
     ]);
     if(pRes.error)throw pRes.error;
     if(dRes.error)throw dRes.error;
@@ -1008,11 +1251,32 @@ async function loadAll(){
       SEKOLAH_MITRA=skRes.data||[];
     }
 
+    if(fcRes.error){
+      console.warn('Tabel finance_categories_v2 belum tersedia:',fcRes.error.message);
+      FIN_CATS=[];
+    }else{
+      FIN_CATS=fcRes.data||[];
+    }
+    if(fbRes.error){
+      console.warn('Tabel finance_bills_v2 belum tersedia:',fbRes.error.message);
+      FIN_BILLS=[];
+    }else{
+      FIN_BILLS=fbRes.data||[];
+    }
+    if(fpRes.error){
+      console.warn('Tabel finance_payments_v2 belum tersedia:',fpRes.error.message);
+      FIN_PAYMENTS=[];
+    }else{
+      FIN_PAYMENTS=fpRes.data||[];
+    }
+
     renderStats();
     renderTable();
     renderMasterTable();
     renderSekolahTable();
     fillAsalSekolahDatalist();
+    renderFinanceTable();
+    refreshFpCategoryOptions();
   }catch(err){
     console.error(err);
     $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Gagal memuat data: '+(err.message||'periksa koneksi/izin akses')+'</td></tr>';
@@ -1085,7 +1349,7 @@ async function toggleSekolah(sid){
 }
 async function deleteSekolah(sid){
   const s=SEKOLAH_MITRA.find(x=>x.id===sid); if(!s)return;
-  if(!confirm(`Hapus "${s.nama}" dari daftar sekolah mitra?`))return;
+  if(!await customConfirm(`Hapus "${s.nama}" dari daftar sekolah mitra?`))return;
   const {error}=await sb.from('sekolah_mitra').delete().eq('id',sid);
   if(error)return toast('Gagal menghapus: '+error.message,'err');
   SEKOLAH_MITRA=SEKOLAH_MITRA.filter(x=>x.id!==sid);
@@ -1095,6 +1359,399 @@ async function deleteSekolah(sid){
 $('#btnAddSekolah')?.addEventListener('click',addSekolah);
 $('#newSekolahNama')?.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();addSekolah();} });
 $('#qSekolah')?.addEventListener('input',renderSekolahTable);
+
+/* ============ KELOLA KEUANGAN ============ */
+function financeSummaryFor(pid){
+  const totalTagihan=FIN_BILLS.filter(b=>b.participant_id===pid).reduce((s,b)=>{
+    const c=FIN_CATS.find(x=>x.id===b.category_id);
+    return s+(c?Number(c.nominal_default||0):Number(b.nominal||0));
+  },0);
+  const totalDibayar=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid).reduce((s,pm)=>s+Number(pm.jumlah||0),0);
+  const sisa=totalTagihan-totalDibayar;
+  let status;
+  if(totalTagihan<=0)status='belum-ada';
+  else if(sisa<=0)status='lunas';
+  else if(totalDibayar>0)status='cicilan';
+  else status='belum-bayar';
+  return {totalTagihan,totalDibayar,sisa,status};
+}
+const FIN_STATUS_LABEL={ 'belum-ada':['wait','Belum Ada Tagihan'], 'lunas':['ok','Lunas'], 'cicilan':['wait','Cicilan'], 'belum-bayar':['bad','Belum Bayar'] };
+
+function renderFinanceTable(){
+  const body=$('#tblFinBody'); if(!body)return;
+  const q=($('#qSearchFin')?.value||'').trim().toLowerCase();
+  const rows=PARTICIPANTS.filter(p=>{
+    if(!q)return true;
+    return [p.nama,p.kota,participantCode(p)].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
+  });
+
+  let sumTagihan=0,sumBayar=0,sumSisa=0,belumLunas=0;
+  PARTICIPANTS.forEach(p=>{
+    const s=financeSummaryFor(p.id);
+    sumTagihan+=s.totalTagihan; sumBayar+=s.totalDibayar; sumSisa+=Math.max(s.sisa,0);
+    if(s.status==='belum-bayar'||s.status==='cicilan')belumLunas++;
+  });
+  if($('#finStTagihan')){
+    $('#finStTagihan').textContent=formatRupiah(sumTagihan);
+    $('#finStBayar').textContent=formatRupiah(sumBayar);
+    $('#finStSisa').textContent=formatRupiah(sumSisa);
+    $('#finStBelumLunas').textContent=belumLunas;
+  }
+
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="9">Tidak ada data yang cocok.</td></tr>'; return; }
+  body.innerHTML=rows.map((p,i)=>{
+    const s=financeSummaryFor(p.id);
+    const [cls,label]=FIN_STATUS_LABEL[s.status];
+    return `<tr data-pid="${p.id}">
+      <td>${i+1}</td>
+      <td class="kode">${participantCode(p)}</td>
+      <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
+      <td>${escapeHtml(p.kota||'-')}</td>
+      <td>${formatRupiah(s.totalTagihan)}</td>
+      <td>${formatRupiah(s.totalDibayar)}</td>
+      <td>${formatRupiah(Math.max(s.sisa,0))}</td>
+      <td><span class="pill ${cls}">${label}</span></td>
+      <td class="aksi-cell"><div class="aksi-cell-in"><button class="btn b-navy sm" data-fin="${p.id}">Kelola</button></div></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('[data-fin]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); openFinance(b.dataset.fin); }));
+}
+$('#qSearchFin')?.addEventListener('input',renderFinanceTable);
+
+/* ---- Kategori biaya ---- */
+function renderFinCatTable(){
+  const host=$('#finCatList'); if(!host)return;
+  if(!FIN_CATS.length){ host.innerHTML='<p style="font:600 .82rem var(--body);color:var(--mut)">Belum ada kategori biaya. Tambahkan lewat kolom di atas.</p>'; return; }
+  host.innerHTML=FIN_CATS.map(c=>`
+    <div class="fin-cat-card" data-cid="${c.id}">
+      <div class="fin-cat-top">
+        <b>${escapeHtml(c.nama||'-')}</b>
+        <span class="pill ${c.aktif?'ok':'bad'}">${c.aktif?'Aktif':'Nonaktif'}</span>
+      </div>
+      <div class="fin-cat-row">
+        <label>Nominal Standar (Rp)</label>
+        <div class="fin-cat-row-in">
+          <input type="text" inputmode="numeric" class="fin-bill-input" data-cat-nominal="${c.id}" value="${c.nominal_default?formatRupiahInput(c.nominal_default):''}" placeholder="0" readonly>
+          <button class="mini" data-edit-cat-nominal="${c.id}">✎ Edit</button>
+          <button class="mini" data-save-cat-nominal="${c.id}" disabled>Simpan</button>
+        </div>
+      </div>
+      <div class="fin-cat-actions">
+        <button class="mini" data-toggle-cat="${c.id}">${c.aktif?'Nonaktifkan':'Aktifkan'}</button>
+        <button class="mini r" data-del-cat="${c.id}">Hapus</button>
+      </div>
+    </div>`).join('');
+  host.querySelectorAll('[data-toggle-cat]').forEach(b=>b.addEventListener('click',()=>toggleFinCat(b.dataset.toggleCat)));
+  host.querySelectorAll('[data-del-cat]').forEach(b=>b.addEventListener('click',()=>deleteFinCat(b.dataset.delCat)));
+  host.querySelectorAll('[data-edit-cat-nominal]').forEach(b=>b.addEventListener('click',()=>enableFinCatNominalEdit(b.dataset.editCatNominal)));
+  host.querySelectorAll('[data-save-cat-nominal]').forEach(b=>b.addEventListener('click',()=>saveFinCatNominal(b.dataset.saveCatNominal)));
+  host.querySelectorAll('[data-cat-nominal]').forEach(attachRupiahMask);
+}
+function refreshFpCategoryOptions(){
+  const sel=$('#fpCategory'); const host=$('#fpCategoryList'); if(!sel||!host)return;
+  const pid=FIN_ACTIVE_PID;
+  const billedIds=new Set(FIN_BILLS.filter(b=>b.participant_id===pid).map(b=>b.category_id));
+  const options=FIN_CATS.filter(c=>c.aktif&&billedIds.has(c.id));
+  sel.innerHTML=options.length?options.map(c=>`<option value="${c.id}">${escapeHtml(c.nama)}</option>`).join(''):'<option value=""></option>';
+  if(!options.length){
+    host.innerHTML='<p style="font:600 .82rem var(--body);color:var(--mut);margin:0">Belum ada tagihan untuk peserta ini. Tambahkan dulu di "Rincian Tagihan per Kategori" di atas.</p>';
+    const totalHost=$('#fpCategoryTotal'); if(totalHost)totalHost.innerHTML='';
+    return;
+  }
+  const selectedVal=options.some(c=>c.id===sel.value)?sel.value:options[0].id;
+  sel.value=selectedVal;
+  updateCicilanAuto();
+  function renderList(){
+    host.innerHTML=options.map(c=>{
+      return `<div class="fp-cat-item" data-fp-cat="${c.id}">
+        <div class="fp-cat-item-l"><span class="fp-cat-name">${escapeHtml(c.nama)}</span></div>
+        <div class="fp-cat-item-r">
+          <span class="fp-cat-price">${formatRupiah(Number(c.nominal_default||0))}</span>
+          <button type="button" class="fp-cat-del" data-fp-cat-del="${c.id}" title="Hapus kategori ini dari tagihan peserta">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+    const totalSisa=options.reduce((s,c)=>{
+      const dibayar=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid&&pm.category_id===c.id).reduce((s2,pm)=>s2+Number(pm.jumlah||0),0);
+      return s+Math.max(Number(c.nominal_default||0)-dibayar,0);
+    },0);
+    const totalHost=$('#fpCategoryTotal');
+    if(totalHost)totalHost.innerHTML=`<b>Jumlah Seluruh Kategori</b><span>${formatRupiah(totalSisa)}</span>`;
+    host.querySelectorAll('[data-fp-cat]').forEach(el=>el.addEventListener('click',e=>{
+      if(e.target.closest('[data-fp-cat-del]'))return;
+      sel.value=el.dataset.fpCat;
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+      updateCicilanAuto();
+    }));
+    host.querySelectorAll('[data-fp-cat-del]').forEach(el=>el.addEventListener('click',e=>{
+      e.stopPropagation();
+      deleteBillCategory(el.dataset.fpCatDel);
+    }));
+  }
+  renderList();
+}
+function updateCicilanAuto(){
+  const pid=FIN_ACTIVE_PID; const category_id=$('#fpCategory')?.value;
+  const labelInput=$('#fpCatatanLabel'); if(!labelInput)return;
+  const count=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid&&pm.category_id===category_id&&pm.metode==='Cicilan').length;
+  labelInput.value='Cicilan '+(count+1);
+}
+function toggleCicilanFields(){
+  const isCicilan=$('#fpMetode')?.value==='Cicilan';
+  const labelInput=$('#fpCatatanLabel'); const nominalInput=$('#fpCatatanNominal');
+  if(labelInput)labelInput.disabled=!isCicilan;
+  if(nominalInput)nominalInput.disabled=!isCicilan;
+  if(!isCicilan){ if(labelInput)labelInput.value=''; if(nominalInput)nominalInput.value=''; }
+  else{ updateCicilanAuto(); syncCatatanNominal(); }
+}
+function syncCatatanNominal(){
+  const nominalInput=$('#fpCatatanNominal'); if(!nominalInput)return;
+  nominalInput.value=$('#fpJumlah').value||'';
+}
+async function addFinCat(){
+  const input=$('#newFinCatNama'); const nama=input.value.trim();
+  const nominalInput=$('#newFinCatNominal'); const nominal_default=parseRupiahInput(nominalInput.value);
+  if(!nama)return toast('Nama kategori wajib diisi','err');
+  const btn=$('#btnAddFinCat'); btn.disabled=true;
+  const {data,error}=await sb.from('finance_categories_v2').insert({nama,aktif:true,urutan:FIN_CATS.length,nominal_default}).select().single();
+  btn.disabled=false;
+  if(error){
+    if(error.code==='23505')return toast('Kategori ini sudah ada','err');
+    return toast('Gagal menambah kategori: '+error.message,'err');
+  }
+  FIN_CATS.push(data); input.value=''; nominalInput.value='';
+  renderFinCatTable(); refreshFpCategoryOptions();
+  toast('Kategori & nominal ditambahkan ✓','ok');
+}
+function enableFinCatNominalEdit(cid){
+  const input=document.querySelector(`[data-cat-nominal="${cid}"]`);
+  const saveBtn=document.querySelector(`[data-save-cat-nominal="${cid}"]`);
+  if(!input||!saveBtn)return;
+  input.readOnly=false; input.classList.add('editing'); input.focus();
+  input.setSelectionRange(input.value.length,input.value.length);
+  saveBtn.disabled=false;
+}
+async function saveFinCatNominal(cid){
+  const c=FIN_CATS.find(x=>x.id===cid); if(!c)return;
+  const input=document.querySelector(`[data-cat-nominal="${cid}"]`);
+  const saveBtn=document.querySelector(`[data-save-cat-nominal="${cid}"]`);
+  const nominal_default=parseRupiahInput(input?.value);
+  if(saveBtn){ saveBtn.disabled=true; saveBtn.textContent='Menyimpan…'; }
+  const {error}=await sb.from('finance_categories_v2').update({nominal_default}).eq('id',cid);
+  if(error){
+    if(saveBtn){ saveBtn.disabled=false; saveBtn.textContent='Simpan'; }
+    return toast('Gagal menyimpan nominal: '+error.message,'err');
+  }
+  c.nominal_default=nominal_default;
+  if(input){ input.readOnly=true; input.classList.remove('editing'); }
+  if(saveBtn){
+    saveBtn.textContent='✓ Tersimpan'; saveBtn.classList.add('g'); saveBtn.disabled=true;
+    setTimeout(()=>{ saveBtn.textContent='Simpan'; saveBtn.classList.remove('g'); },1500);
+  }
+  toast('Nominal standar disimpan ✓','ok');
+}
+async function toggleFinCat(cid){
+  const c=FIN_CATS.find(x=>x.id===cid); if(!c)return;
+  const {error}=await sb.from('finance_categories_v2').update({aktif:!c.aktif}).eq('id',cid);
+  if(error)return toast('Gagal mengubah status: '+error.message,'err');
+  c.aktif=!c.aktif;
+  renderFinCatTable(); refreshFpCategoryOptions();
+  toast(c.aktif?'Kategori diaktifkan ✓':'Kategori dinonaktifkan','ok');
+}
+async function deleteFinCat(cid){
+  const c=FIN_CATS.find(x=>x.id===cid); if(!c)return;
+  if(!await customConfirm(`Hapus kategori "${c.nama}"? Tagihan & pembayaran terkait kategori ini akan ikut terhapus.`))return;
+  const {error}=await sb.from('finance_categories_v2').delete().eq('id',cid);
+  if(error)return toast('Gagal menghapus: '+error.message,'err');
+  FIN_CATS=FIN_CATS.filter(x=>x.id!==cid);
+  FIN_BILLS=FIN_BILLS.filter(x=>x.category_id!==cid);
+  FIN_PAYMENTS=FIN_PAYMENTS.filter(x=>x.category_id!==cid);
+  renderFinCatTable(); renderFinanceTable(); refreshFpCategoryOptions();
+  if(FIN_ACTIVE_PID){ renderFinBillList(); renderFinPaymentList(); }
+  toast('Kategori dihapus','ok');
+}
+$('#btnAddFinCat')?.addEventListener('click',addFinCat);
+$('#newFinCatNama')?.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();addFinCat();} });
+$('#newFinCatNominal')?.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();addFinCat();} });
+$('#btnKelolaKategori')?.addEventListener('click', ()=>{ renderFinCatTable(); $('#finCatModal').classList.add('show'); });
+attachRupiahMask($('#newFinCatNominal'));
+$('#btnCloseFinCat')?.addEventListener('click', ()=>$('#finCatModal').classList.remove('show'));
+$('#finCatModal')?.addEventListener('click', e=>{ if(e.target.id==='finCatModal')$('#finCatModal').classList.remove('show'); });
+
+/* ---- Detail keuangan per peserta ---- */
+function openFinance(pid){
+  const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
+  FIN_ACTIVE_PID=pid;
+  $('#finNama').textContent=p.nama||'-';
+  $('#finKode').textContent=participantCode(p);
+  $('#finAva').textContent=(p.nama||'?').trim().charAt(0).toUpperCase();
+  refreshFpCategoryOptions();
+  refreshFinAddBillCatOptions();
+  $('#fpJumlah').value=''; $('#fpCatatanNominal').value='';
+  attachRupiahMask($('#fpJumlah'));
+  $('#fpMetode').value='Tunai';
+  updateCicilanAuto();
+  toggleCicilanFields();
+  $('#fpTanggal').value=new Date().toISOString().slice(0,10);
+  renderFinBillList();
+  renderFinPaymentList();
+  $('#financeModal').classList.add('show');
+}
+function closeFinance(){ $('#financeModal').classList.remove('show'); FIN_ACTIVE_PID=null; }
+$('#btnCloseFinance')?.addEventListener('click', closeFinance);
+$('#financeModal')?.addEventListener('click', e=>{ if(e.target.id==='financeModal')closeFinance(); });
+$('#fpJumlah')?.addEventListener('input', ()=>setTimeout(syncCatatanNominal,0));
+$('#fpMetode')?.addEventListener('change', toggleCicilanFields);
+
+function renderFinBillList(){
+  const host=$('#finBillList'); if(!host)return;
+  const pid=FIN_ACTIVE_PID;
+  const myBills=FIN_BILLS.filter(b=>b.participant_id===pid);
+  if(!myBills.length){
+    host.innerHTML='<p style="font:600 .82rem var(--body);color:var(--mut)">Belum ada tagihan untuk peserta ini. Pilih kategori di atas lalu klik "+ Tambah Kategori Tagihan" — tiap peserta bisa punya rincian berbeda.</p>';
+    return;
+  }
+  const rows=myBills.map(bill=>{
+    const c=FIN_CATS.find(x=>x.id===bill.category_id);
+    const catNama=c?c.nama:'(kategori dihapus)';
+    const tagihan=c?Number(c.nominal_default||0):Number(bill?.nominal||0);
+    const dibayar=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid&&pm.category_id===bill.category_id).reduce((s,pm)=>s+Number(pm.jumlah||0),0);
+    const sisa=tagihan-dibayar;
+    let statusCls,statusLabel;
+    if(tagihan<=0){statusCls='wait';statusLabel='Nominal Rp0';}
+    else if(sisa<=0){statusCls='ok';statusLabel='Lunas';}
+    else if(dibayar>0){statusCls='wait';statusLabel='Cicilan';}
+    else{statusCls='bad';statusLabel='Belum Bayar';}
+    return `<tr>
+      <td><b>${escapeHtml(catNama)}</b></td>
+      <td>${formatRupiah(tagihan)}</td>
+      <td>${formatRupiah(dibayar)}</td>
+      <td>${formatRupiah(Math.max(sisa,0))}</td>
+      <td><span class="pill ${statusCls}">${statusLabel}</span></td>
+    </tr>`;
+  }).join('');
+  host.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Kategori</th><th>Tagihan (Rp)</th><th>Dibayar</th><th>Sisa</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function refreshFinAddBillCatOptions(){
+  const sel=$('#finAddBillCat'); if(!sel)return;
+  const pid=FIN_ACTIVE_PID;
+  const already=new Set(FIN_BILLS.filter(b=>b.participant_id===pid).map(b=>b.category_id));
+  const options=FIN_CATS.filter(c=>c.aktif&&!already.has(c.id));
+  sel.innerHTML=options.length?options.map(c=>`<option value="${c.id}" data-price="${c.nominal_default?formatRupiah(c.nominal_default):''}">${escapeHtml(c.nama)}</option>`).join(''):'<option value="">— Semua kategori sudah ditambahkan —</option>';
+  ensureCsel(sel);
+}
+async function addBillCategory(){
+  const pid=FIN_ACTIVE_PID; if(!pid)return;
+  const sel=$('#finAddBillCat'); const catId=sel?.value;
+  if(!catId)return toast('Pilih kategori yang mau ditambahkan','err');
+  const c=FIN_CATS.find(x=>x.id===catId);
+  const btn=$('#btnAddBillCat'); if(btn)btn.disabled=true;
+  const {data,error}=await sb.from('finance_bills_v2')
+    .upsert({participant_id:pid,category_id:catId,nominal:Number(c?.nominal_default||0),updated_at:new Date().toISOString()},{onConflict:'participant_id,category_id'})
+    .select().single();
+  if(btn)btn.disabled=false;
+  if(error)return toast('Gagal menambah kategori tagihan: '+error.message,'err');
+  const idx=FIN_BILLS.findIndex(b=>b.participant_id===pid&&b.category_id===catId);
+  if(idx>=0)FIN_BILLS[idx]=data; else FIN_BILLS.push(data);
+  renderFinBillList(); refreshFinAddBillCatOptions(); refreshFpCategoryOptions(); renderFinanceTable();
+  toast('Kategori tagihan ditambahkan ✓','ok');
+}
+async function deleteBillCategory(catId){
+  const pid=FIN_ACTIVE_PID; if(!pid)return;
+  const c=FIN_CATS.find(x=>x.id===catId);
+  if(!await customConfirm(`Hapus tagihan "${c?.nama||'kategori ini'}" dari peserta ini? Riwayat pembayaran kategori ini tidak ikut terhapus.`))return;
+  const {error}=await sb.from('finance_bills_v2').delete().eq('participant_id',pid).eq('category_id',catId);
+  if(error)return toast('Gagal menghapus tagihan: '+error.message,'err');
+  FIN_BILLS=FIN_BILLS.filter(b=>!(b.participant_id===pid&&b.category_id===catId));
+  renderFinBillList(); refreshFinAddBillCatOptions(); refreshFpCategoryOptions(); renderFinanceTable();
+  toast('Tagihan kategori dihapus ✓','ok');
+}
+$('#btnAddBillCat')?.addEventListener('click', addBillCategory);
+
+function renderFinPaymentList(){
+  const body=$('#finPaymentBody'); if(!body)return;
+  const pid=FIN_ACTIVE_PID;
+  const rows=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid);
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="4">Belum ada pembayaran.</td></tr>'; return; }
+  body.innerHTML=rows.map(pm=>{
+    const tgl=pm.tanggal?new Date(pm.tanggal).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'-';
+    let metodeInfo='Tunai';
+    if(pm.metode==='Cicilan'){
+      const m=/Cicilan\s+(\d+)/i.exec(pm.catatan||'');
+      metodeInfo=m?`Cicilan ke-${m[1]}`:'Cicilan';
+    }
+    return `<tr>
+      <td>${tgl}</td>
+      <td>${escapeHtml(metodeInfo)}</td>
+      <td>${formatRupiah(pm.jumlah)}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="mini" data-print="${pm.id}">🧾 Kwitansi</button>
+        <button class="mini r" data-del-pay="${pm.id}">Hapus</button>
+      </td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('[data-print]').forEach(b=>b.addEventListener('click',()=>printKwitansi(b.dataset.print)));
+  body.querySelectorAll('[data-del-pay]').forEach(b=>b.addEventListener('click',()=>deletePayment(b.dataset.delPay)));
+}
+$('#btnSavePayment')?.addEventListener('click', async ()=>{
+  const pid=FIN_ACTIVE_PID; if(!pid)return;
+  const category_id=$('#fpCategory').value;
+  const jumlah=parseRupiahInput($('#fpJumlah').value);
+  const tanggal=$('#fpTanggal').value||new Date().toISOString().slice(0,10);
+  const metode=$('#fpMetode').value;
+  const isCicilan=metode==='Cicilan';
+  const cicilanLabel=$('#fpCatatanLabel').value.trim()||'Cicilan 1';
+  const catatan=isCicilan?(jumlah>0?`${cicilanLabel} - ${formatRupiah(jumlah)}`:cicilanLabel):'';
+  if(!category_id)return toast('Pilih kategori biaya dahulu','err');
+  if(!jumlah||jumlah<=0)return toast('Jumlah bayar harus lebih dari 0','err');
+  const no_kwitansi='KW-'+Date.now().toString(36).toUpperCase();
+  const btn=$('#btnSavePayment'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Menyimpan…';
+  const {data,error}=await sb.from('finance_payments_v2').insert({participant_id:pid,category_id,jumlah,tanggal,metode,catatan,no_kwitansi}).select().single();
+  btn.disabled=false; btn.textContent=orig;
+  if(error)return toast('Gagal menyimpan pembayaran: '+error.message,'err');
+  FIN_PAYMENTS.unshift(data);
+  $('#fpJumlah').value=''; $('#fpCatatanNominal').value='';
+  updateCicilanAuto();
+  renderFinBillList(); renderFinPaymentList(); renderFinanceTable();
+  toast('Pembayaran tercatat ✓','ok');
+});
+async function deletePayment(payId){
+  if(!await customConfirm('Hapus catatan pembayaran ini?'))return;
+  const {error}=await sb.from('finance_payments_v2').delete().eq('id',payId);
+  if(error)return toast('Gagal menghapus: '+error.message,'err');
+  FIN_PAYMENTS=FIN_PAYMENTS.filter(x=>x.id!==payId);
+  renderFinBillList(); renderFinPaymentList(); renderFinanceTable();
+  updateCicilanAuto();
+  toast('Pembayaran dihapus','ok');
+}
+
+/* ---- Cetak kwitansi ---- */
+function printKwitansi(payId){
+  const pm=FIN_PAYMENTS.find(x=>x.id===payId); if(!pm)return;
+  const p=PARTICIPANTS.find(x=>x.id===pm.participant_id);
+  const cat=FIN_CATS.find(c=>c.id===pm.category_id);
+  const tglStr=pm.tanggal?new Date(pm.tanggal).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}):'-';
+  $('#kwitansiArea').innerHTML=`
+    <div class="kw-box">
+      <div class="kw-head">
+        <div><b>PT. JUARA</b><span>Kwitansi Pembayaran</span></div>
+        <div class="kw-no">No: ${escapeHtml(pm.no_kwitansi||pm.id.slice(0,8).toUpperCase())}</div>
+      </div>
+      <table class="kw-table">
+        <tr><td>Sudah terima dari</td><td>: <b>${escapeHtml(p?.nama||'-')}</b> (${escapeHtml(p?participantCode(p):'-')})</td></tr>
+        <tr><td>Untuk pembayaran</td><td>: ${escapeHtml(cat?.nama||'-')}</td></tr>
+        <tr><td>Jumlah</td><td>: <b>${formatRupiah(pm.jumlah)}</b></td></tr>
+        <tr><td>Metode</td><td>: ${escapeHtml(pm.metode||'-')}</td></tr>
+        <tr><td>Tanggal</td><td>: ${tglStr}</td></tr>
+        ${pm.catatan?`<tr><td>Catatan</td><td>: ${escapeHtml(pm.catatan)}</td></tr>`:''}
+      </table>
+      <div class="kw-sign">
+        <div><p>Yang Membayar</p><div class="kw-line"></div></div>
+        <div><p>Yang Menerima</p><div class="kw-line"></div></div>
+      </div>
+    </div>`;
+  window.print();
+}
 
 function renderTable(){
   const q=$('#qSearch').value.trim().toLowerCase();
@@ -1601,7 +2258,7 @@ function renderMailAccList(){
 }
 
 async function deleteMailAccount(id){
-  if(!confirm('Hapus akun email ini? Password tersimpan juga akan terhapus.'))return;
+  if(!await customConfirm('Hapus akun email ini? Password tersimpan juga akan terhapus.'))return;
   try{
     const {data,error}=await sb.functions.invoke('email-accounts',{body:{action:'delete',id}});
     if(error)throw new Error(error.message||'Gagal menghapus akun');
@@ -1726,7 +2383,7 @@ async function openMailMessage(uid){
 }
 
 async function deleteMailMessage(uid){
-  if(!confirm('Hapus email ini? Tindakan ini tidak bisa dibatalkan.'))return;
+  if(!await customConfirm('Hapus email ini? Tindakan ini tidak bisa dibatalkan.'))return;
   const folder=$('#mailFolder').value||'INBOX';
   const btn=$('#btnMailDelete'); if(btn){ btn.disabled=true; btn.textContent='Menghapus…'; }
   try{
