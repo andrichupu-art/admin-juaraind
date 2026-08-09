@@ -187,8 +187,8 @@ tbody tr{cursor:pointer}
 td.kode{font:700 .82rem var(--mono);color:var(--navy)}
 td.nama b{display:block;color:var(--ink);font-weight:700}
 td.nama span{color:var(--mut);font-size:.78rem}
-.pill{display:inline-flex;align-items:center;gap:5px;font:700 .68rem var(--body);letter-spacing:.03em;
-  padding:5px 11px;border-radius:100px;border:1.5px solid var(--line);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:5px;font:700 .68rem var(--body);letter-spacing:.03em;
+  padding:5px 11px;border-radius:100px;border:1.5px solid var(--line);white-space:nowrap;min-width:118px}
 .pill.ok{background:#E9FBF2;border-color:#B7EED2;color:#0E8F55}
 .pill.wait{background:rgba(255,255,255,.55);border-color:#111111;color:#111111}
 .pill.bad{background:#FDEAEA;border-color:#F5C2C2;color:#B32C2C}
@@ -247,7 +247,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .modal.show{display:flex}
 .box{background:var(--card);border-radius:20px;max-width:640px;width:100%;padding:0;overflow:hidden}
 .box-h{background:var(--navy);color:#fff;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.box-h .ava{width:46px;height:46px;border-radius:12px;background:var(--gold);display:flex;align-items:center;justify-content:center;font:800 1.1rem var(--disp);flex-shrink:0}
+.box-h .ava{width:46px;height:46px;border-radius:12px;background:var(--gold);display:flex;align-items:center;justify-content:center;font:800 1.1rem var(--disp);flex-shrink:0;overflow:hidden}
+.box-h .ava img{width:100%;height:100%;object-fit:cover;display:block}
 .box-h h3{font:800 1.1rem var(--disp)}
 .box-h p{font:600 .78rem var(--body);color:#cfe0f4}
 .box-h .x{background:rgba(255,255,255,.14);border:none;color:#fff;width:32px;height:32px;border-radius:9px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -259,19 +260,31 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .info-grid .fld input,.info-grid .fld select,.info-grid .fld textarea{padding:10px 12px;font-size:.86rem}
 .info-grid .fld label{font-size:.65rem}
 .stage-row{display:flex;gap:10px;align-items:center}
-.doc{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.doc{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .doc:last-child{border-bottom:none}
-.doc .ic{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.doc .ic{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .doc .ic svg{width:22px;height:22px}
-.doc .nm{flex:1;min-width:0}
-.doc .nm h5{font:700 .86rem var(--body);color:var(--ink)}
-.doc .nm span{font-size:.74rem;color:var(--mut);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.doc .act{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
-.mini{font:700 .72rem var(--body);padding:7px 12px;border-radius:8px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);transition:.2s}
+.doc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.doc-body h5{font:700 .86rem var(--body);color:var(--ink)}
+.doc .act{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-start}
+.mini{font:700 .66rem var(--body);padding:6px 8px;border-radius:8px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);transition:.2s;white-space:nowrap}
 .mini:hover{background:var(--navy);color:#fff}
 .mini.g{border-color:var(--green);color:var(--green)} .mini.g:hover{background:var(--green);color:#fff}
 .mini.r{border-color:var(--red);color:var(--red)} .mini.r:hover{background:var(--red);color:#fff}
 .mini[disabled]{opacity:.4;pointer-events:none}
+
+/* Detail peserta sebagai panel samping kiri, tinggi penuh */
+#detailModal{justify-content:flex-start;align-items:stretch;padding:0}
+#detailModal .box{max-width:520px;width:100%;height:100vh;border-radius:0;display:flex;flex-direction:column;animation:panelIn .22s ease-out}
+#detailModal .box-body{max-height:none;flex:1;overflow-y:auto}
+@keyframes panelIn{from{transform:translateX(-24px);opacity:0}to{transform:translateX(0);opacity:1}}
+@media(max-width:560px){#detailModal .box{max-width:100%}}
+
+/* Kelola Dokumen (data master) juga sebagai panel samping kiri, tinggi penuh */
+#masterDocModal{justify-content:flex-start;align-items:stretch;padding:0}
+#masterDocModal .box{height:100vh;border-radius:0;display:flex;flex-direction:column;animation:panelIn .22s ease-out}
+#masterDocModal .box-body{max-height:none;flex:1;overflow-y:auto}
+@media(max-width:940px){#masterDocModal .box{max-width:100%}}
 
 /* ============ TOAST ============ */
 #toastWrap{position:fixed;bottom:20px;right:20px;z-index:400;display:flex;flex-direction:column;gap:8px}
@@ -439,9 +452,9 @@ td.nama span{color:var(--mut);font-size:.78rem}
         <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dokumen</th><th>Aksi</th>
+              <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dokumen</th><th>Aksi</th>
             </tr></thead>
-            <tbody id="tblBody"><tr class="empty-row"><td colspan="6">Memuat data…</td></tr></tbody>
+            <tbody id="tblBody"><tr class="empty-row"><td colspan="7">Memuat data…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -453,9 +466,9 @@ td.nama span{color:var(--mut);font-size:.78rem}
         <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
+              <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
             </tr></thead>
-            <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr></tbody>
+            <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -466,7 +479,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
           <input type="text" id="newSekolahNama" placeholder="Nama sekolah baru…" style="flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
           <button class="btn b-pri sm" id="btnAddSekolah">+ Tambah Sekolah</button>
         </div>
-        <p style="font:600 .8rem var(--body);color:var(--mut);margin:-8px 0 14px">Daftar ini yang muncul sebagai pilihan "Asal Sekolah" di form pendaftaran peserta. Nonaktifkan sekolah kalau kerja sama sudah berhenti — data peserta lama tidak akan berubah.</p>
         <div class="tbl-wrap">
           <table>
             <thead><tr>
@@ -538,7 +550,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
     </div>
     <div class="box-body">
       <div class="box-sec">
-        <h4>📋 Data Peserta</h4>
         <div class="info-grid">
           <div class="fld-sec">Data Pribadi</div>
           <div class="fld"><label>Nama</label><input type="text" id="eNama"></div>
@@ -1094,8 +1105,8 @@ function renderTable(){
     return [p.nama,p.nik,p.kota,participantCode(p)].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
   });
   const body=$('#tblBody');
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="5">Tidak ada data yang cocok.</td></tr>'; return; }
-  body.innerHTML=rows.map(p=>{
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Tidak ada data yang cocok.</td></tr>'; return; }
+  body.innerHTML=rows.map((p,i)=>{
     const stage=STAGE_BY_PID[p.id]??0;
     const docs=DOCS_BY_PID[p.id]||{};
     const totalReq=DOCS.length;
@@ -1112,11 +1123,12 @@ function renderTable(){
       aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi semua dokumen dahulu">➜ Convert</button>`;
     }
     return `<tr data-pid="${p.id}">
+      <td>${i+1}</td>
       <td class="kode">${participantCode(p)}</td>
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
-      <td><span class="pill ${verified===totalReq?'ok':uploaded===0?'wait':'wait'}">${verified}/${totalReq} terverifikasi · ${uploaded}/${totalReq} unggah</span></td>
+      <td><span class="pill ${verified===totalReq?'ok':uploaded===0?'wait':'wait'}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi</span></td>
       <td class="aksi-cell"><div class="aksi-cell-in">${aksiHtml}</div></td>
     </tr>`;
   }).join('');
@@ -1203,10 +1215,11 @@ function renderMasterTable(){
     return [r.nama,r.kota,r.kode_peserta].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
   });
   const body=$('#tblMasterBody'); if(!body)return;
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="6">Belum ada peserta di Data Master.</td></tr>'; return; }
-  body.innerHTML=rows.map(r=>{
-    const tgl=r.converted_at?new Date(r.converted_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}):'-';
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr>'; return; }
+  body.innerHTML=rows.map((r,i)=>{
+    const tgl=r.converted_at?new Date(r.converted_at).toLocaleString('id-ID',{dateStyle:'medium'}):'-';
     return `<tr data-pid="${r.participant_id}">
+      <td>${i+1}</td>
       <td class="kode">${r.kode_peserta||'-'}</td>
       <td class="nama"><b>${r.nama||'-'}</b><span>${r.telepon||'-'}</span></td>
       <td>${r.kota||'-'}</td>
@@ -1225,10 +1238,10 @@ function renderMasterTable(){
 $('#qSearchMaster')?.addEventListener('input', renderMasterTable);
 
 /* ============ DETAIL MODAL ============ */
-function openDetail(pid){
+async function openDetail(pid){
   const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
   ACTIVE_PID=pid;
-  $('#mAva').textContent=(p.nama||'?')[0].toUpperCase();
+  $('#mAva').innerHTML=(p.nama||'?')[0].toUpperCase();
   $('#mNama').textContent=p.nama||'-';
   $('#mKode').textContent=participantCode(p);
   $('#eNama').value=p.nama||''; $('#eNik').value=p.nik||''; $('#eWa').value=p.telepon||''; $('#eKota').value=p.kota||'';
@@ -1241,6 +1254,11 @@ function openDetail(pid){
   ensureCsel($('#eStage'));
   renderDocList(pid);
   $('#detailModal').classList.add('show');
+  const fotoDoc=(DOCS_BY_PID[pid]||{}).foto;
+  if(fotoDoc?.storage_path){
+    const {data,error}=await sb.storage.from('juara-v2-documents').createSignedUrl(fotoDoc.storage_path,3600);
+    if(!error&&data&&ACTIVE_PID===pid) $('#mAva').innerHTML=`<img src="${data.signedUrl}" alt="">`;
+  }
 }
 function closeDetail(){ $('#detailModal').classList.remove('show'); ACTIVE_PID=null; }
 $('#btnCloseModal').addEventListener('click', closeDetail);
@@ -1255,12 +1273,14 @@ function renderDocList(pid){
     const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':status==='menunggu'?'Menunggu':'Belum diunggah';
     return `<div class="doc">
       <div class="ic">${d.ic}</div>
-      <div class="nm"><h5>${d.t}</h5><span>${up?up.file_name+' · '+fmtSz(up.size||0):'Belum ada berkas'}</span></div>
-      <div class="act">
-        <span class="pill ${pillClass}">${pillText}</span>
-        ${up?`<button class="mini" data-view="${d.k}">Lihat</button>
-          <button class="mini g" data-verify="${d.k}" ${status==='terverifikasi'?'disabled':''}>Verifikasi</button>
-          <button class="mini r" data-reject="${d.k}" ${status==='ditolak'?'disabled':''}>Tolak</button>`:''}
+      <div class="doc-body">
+        <h5>${d.t}</h5>
+        <div class="act">
+          <span class="pill ${pillClass}">${pillText}</span>
+          ${up?`<button class="mini" data-view="${d.k}">Lihat</button>
+            <button class="mini g" data-verify="${d.k}" ${status==='terverifikasi'?'disabled':''}>Verifikasi</button>
+            <button class="mini r" data-reject="${d.k}" ${status==='ditolak'?'disabled':''}>Tolak</button>`:''}
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -1681,7 +1701,10 @@ async function openMailMessage(uid){
     const msg=data.message;
     $('#mailRead').innerHTML=`
       <div class="mail-read-hd">
-        <h4>${escapeHtml(msg.subject||'(tanpa subjek)')}</h4>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <h4>${escapeHtml(msg.subject||'(tanpa subjek)')}</h4>
+          <button class="btn b-red sm" id="btnMailDelete" style="flex-shrink:0">🗑 Hapus</button>
+        </div>
         <div class="mail-read-meta">Dari: <b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</div>
       </div>
       <div class="mail-read-body" id="mailReadBody"></div>
@@ -1694,10 +1717,31 @@ async function openMailMessage(uid){
     $('#mailReadBody').appendChild(ifr);
     ifr.srcdoc = msg.html || ('<pre style="white-space:pre-wrap;font-family:inherit;padding:16px;margin:0">'+escapeHtml(msg.text||'(tidak ada isi)')+'</pre>');
     $('#btnMailReplySend').addEventListener('click', ()=>sendMailReply(msg));
+    $('#btnMailDelete').addEventListener('click', ()=>deleteMailMessage(uid));
     const m=MAIL_MSGS.find(x=>x.uid===uid); if(m)m.seen=true;
   }catch(err){
     console.error(err);
     $('#mailRead').innerHTML='<div class="mail-empty">Gagal memuat pesan: '+escapeHtml(err.message)+'</div>';
+  }
+}
+
+async function deleteMailMessage(uid){
+  if(!confirm('Hapus email ini? Tindakan ini tidak bisa dibatalkan.'))return;
+  const folder=$('#mailFolder').value||'INBOX';
+  const btn=$('#btnMailDelete'); if(btn){ btn.disabled=true; btn.textContent='Menghapus…'; }
+  try{
+    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'delete',account_id:MAIL_ACTIVE,folder,uid}});
+    if(error)throw new Error(error.message||'Gagal menghapus email');
+    if(data?.error)throw new Error(data.error);
+    MAIL_MSGS=MAIL_MSGS.filter(m=>m.uid!==uid);
+    MAIL_OPEN=null;
+    renderMailList();
+    $('#mailRead').innerHTML='<div class="mail-empty"><p>Pilih email untuk membaca</p></div>';
+    toast('Email dihapus','ok');
+  }catch(err){
+    console.error(err);
+    toast('Gagal menghapus email: '+err.message,'err');
+    if(btn){ btn.disabled=false; btn.textContent='🗑 Hapus'; }
   }
 }
 
