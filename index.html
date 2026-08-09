@@ -473,7 +473,34 @@ td.nama span{color:var(--mut);font-size:.78rem}
   body *{visibility:hidden}
   #kwitansiArea,#kwitansiArea *{visibility:visible}
   #kwitansiArea{position:absolute;left:0;top:0;width:100%}
+  #invoicePrintArea,#invoicePrintArea *{visibility:visible}
+  #invoicePrintArea{position:absolute;left:0;top:0;width:100%}
 }
+
+/* ============ INVOICE ============ */
+#invoiceModal .box{max-width:660px}
+.inv-box{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:26px 24px}
+.inv-head{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:3px solid var(--gold);padding-bottom:16px;margin-bottom:18px;gap:12px}
+.inv-head b{font:800 1.15rem var(--disp);color:var(--navy);display:block}
+.inv-head span{font:600 .8rem var(--body);color:var(--mut)}
+.inv-no{font:700 .82rem var(--mono);color:var(--navy);text-align:right}
+.inv-no small{display:block;font:600 .68rem var(--body);color:var(--mut);margin-top:2px}
+.inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-bottom:20px}
+.inv-meta div{font:600 .82rem var(--body);color:var(--ink)}
+.inv-meta div b{display:block;font:800 .64rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:18px}
+.inv-table th{text-align:left;font:800 .64rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--mut);padding:0 8px 8px;border-bottom:2px solid var(--line)}
+.inv-table td{padding:10px 8px;font:600 .84rem var(--body);border-bottom:1px solid var(--line);vertical-align:middle}
+.inv-table th:not(:first-child),.inv-table td:not(:first-child){text-align:right}
+.inv-total-row td{border-bottom:none;padding-top:14px}
+.inv-total-row.grand td{border-top:2px solid var(--navy);padding-top:12px;font:800 .92rem var(--body);color:var(--navy)}
+.inv-status{margin:4px 0 18px;text-align:center}
+.inv-status .pill{font-size:.76rem;padding:8px 20px;border-radius:999px}
+.inv-foot{display:flex;justify-content:space-between;margin-top:30px;gap:20px}
+.inv-foot>div{flex:1;text-align:center}
+.inv-foot p{font:600 .82rem var(--body);color:var(--mut);margin-bottom:50px}
+.inv-line{border-top:1.5px solid var(--ink);width:80%;margin:0 auto}
+@media(max-width:520px){.inv-meta{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -948,7 +975,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
         <div class="ava" id="finAva">-</div>
         <div style="min-width:0"><h3 id="finNama" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-</h3><p id="finKode">-</p></div>
       </div>
-      <button class="x" id="btnCloseFinance">✕</button>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <button class="btn b-pri sm" id="btnOpenInvoice">🧾 Lihat Invoice</button>
+        <button class="x" id="btnCloseFinance">✕</button>
+      </div>
     </div>
     <div class="box-body">
       <div class="box-sec">
@@ -996,8 +1026,28 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL INVOICE PESERTA ============ -->
+<div class="modal" id="invoiceModal">
+  <div class="box">
+    <div class="box-h">
+      <div style="min-width:0"><h3>🧾 Invoice Peserta</h3><p id="invSubtitle">Rincian tagihan &amp; pembayaran</p></div>
+      <button class="x" id="btnCloseInvoice">✕</button>
+    </div>
+    <div class="box-body">
+      <div id="invoiceArea"></div>
+      <div class="toolbar" style="margin-top:18px;gap:10px;flex-wrap:wrap">
+        <button class="btn b-navy sm" id="btnPrintInvoice">🖨️ Cetak / Simpan PDF</button>
+        <button class="btn b-pri sm" id="btnShareInvoiceWA">📲 Kirim ke WhatsApp</button>
+      </div>
+      <p id="invWaWarn" style="display:none;margin-top:10px;font:600 .78rem var(--body);color:var(--red)">Nomor WhatsApp peserta belum terdaftar. Lengkapi data telepon peserta terlebih dahulu.</p>
+    </div>
+  </div>
+</div>
+
 <!-- Area khusus cetak kwitansi (tidak tampil di layar, hanya saat print) -->
 <div id="kwitansiArea"></div>
+<!-- Area khusus cetak invoice (tidak tampil di layar, hanya saat print) -->
+<div id="invoicePrintArea" style="position:fixed;left:-9999px;top:0;width:560px"></div>
 
 <div id="toastWrap"></div>
 
@@ -1862,6 +1912,111 @@ function printKwitansi(payId){
     </div>`;
   window.print();
 }
+
+/* ---- Invoice peserta (rekap seluruh kategori tagihan) ---- */
+function normalizePhoneWa(phone){
+  let d=String(phone||'').replace(/[^\d]/g,'');
+  if(!d)return '';
+  if(d.startsWith('0'))d='62'+d.slice(1);
+  else if(!d.startsWith('62'))d='62'+d;
+  return d;
+}
+function buildInvoiceData(pid){
+  const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return null;
+  const bills=FIN_BILLS.filter(b=>b.participant_id===pid);
+  const items=bills.map(bill=>{
+    const c=FIN_CATS.find(x=>x.id===bill.category_id);
+    const catNama=c?c.nama:'(kategori dihapus)';
+    const tagihan=c?Number(c.nominal_default||0):Number(bill?.nominal||0);
+    const dibayar=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid&&pm.category_id===bill.category_id).reduce((s,pm)=>s+Number(pm.jumlah||0),0);
+    const sisa=Math.max(tagihan-dibayar,0);
+    let status;
+    if(tagihan<=0)status='Nominal Rp0';
+    else if(sisa<=0)status='Lunas';
+    else if(dibayar>0)status='Cicilan';
+    else status='Belum Bayar';
+    return {catNama,tagihan,dibayar,sisa,status};
+  });
+  const totalTagihan=items.reduce((s,it)=>s+it.tagihan,0);
+  const totalDibayar=items.reduce((s,it)=>s+it.dibayar,0);
+  const totalSisa=items.reduce((s,it)=>s+it.sisa,0);
+  const lunas=totalTagihan>0&&totalSisa<=0;
+  const invoiceNo='INV-'+(p.id?p.id.slice(0,8).toUpperCase():Date.now().toString(36).toUpperCase())+'-'+new Date().getFullYear();
+  const tglStr=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+  return {p,items,totalTagihan,totalDibayar,totalSisa,lunas,invoiceNo,tglStr};
+}
+function invoiceHtml(inv){
+  const {p,items,totalTagihan,totalDibayar,totalSisa,lunas,invoiceNo,tglStr}=inv;
+  const rows=items.length?items.map(it=>`<tr>
+      <td>${escapeHtml(it.catNama)}</td>
+      <td>${formatRupiah(it.tagihan)}</td>
+      <td>${formatRupiah(it.dibayar)}</td>
+      <td>${formatRupiah(it.sisa)}</td>
+    </tr>`).join(''):`<tr><td colspan="4" style="text-align:center;color:var(--mut)">Belum ada tagihan tercatat untuk peserta ini.</td></tr>`;
+  return `
+    <div class="inv-box">
+      <div class="inv-head">
+        <div><b>PT. JUARA</b><span>Pejuang Devisa Negara</span></div>
+        <div class="inv-no">INVOICE<br>${escapeHtml(invoiceNo)}<small>${tglStr}</small></div>
+      </div>
+      <div class="inv-meta">
+        <div><b>Ditagihkan kepada</b>${escapeHtml(p.nama||'-')}</div>
+        <div><b>Kode Peserta</b>${escapeHtml(participantCode(p))}</div>
+        <div><b>No. WhatsApp</b>${escapeHtml(p.telepon||'-')}</div>
+        <div><b>Kota</b>${escapeHtml(p.kota||'-')}</div>
+      </div>
+      <table class="inv-table">
+        <thead><tr><th>Kategori</th><th>Tagihan</th><th>Dibayar</th><th>Sisa</th></tr></thead>
+        <tbody>${rows}</tbody>
+        <tr class="inv-total-row"><td></td><td colspan="3" style="text-align:right;padding-top:14px">Total Tagihan&nbsp;&nbsp;<b>${formatRupiah(totalTagihan)}</b></td></tr>
+        <tr class="inv-total-row"><td></td><td colspan="3" style="text-align:right">Total Dibayar&nbsp;&nbsp;<b>${formatRupiah(totalDibayar)}</b></td></tr>
+        <tr class="inv-total-row grand"><td></td><td colspan="3" style="text-align:right">Sisa Tagihan&nbsp;&nbsp;${formatRupiah(totalSisa)}</td></tr>
+      </table>
+      <div class="inv-status"><span class="pill ${lunas?'ok':'bad'}">${lunas?'✓ LUNAS':'BELUM LUNAS'}</span></div>
+      <div class="inv-foot">
+        <div><p>Peserta</p><div class="inv-line"></div></div>
+        <div><p>PT. Juara</p><div class="inv-line"></div></div>
+      </div>
+    </div>`;
+}
+function invoiceWaText(inv){
+  const {p,items,totalTagihan,totalDibayar,totalSisa,lunas,invoiceNo,tglStr}=inv;
+  let msg=`*INVOICE PT. JUARA*\nNo: ${invoiceNo}\nTanggal: ${tglStr}\n\n`;
+  msg+=`Kepada Yth. *${p.nama||'-'}*\nKode Peserta: ${participantCode(p)}\n\n`;
+  msg+=`Rincian Tagihan:\n`;
+  if(items.length){
+    items.forEach(it=>{ msg+=`• ${it.catNama}: ${formatRupiah(it.tagihan)} (Dibayar ${formatRupiah(it.dibayar)}, Sisa ${formatRupiah(it.sisa)})\n`; });
+  }else{
+    msg+=`Belum ada tagihan tercatat.\n`;
+  }
+  msg+=`\nTotal Tagihan: ${formatRupiah(totalTagihan)}\nTotal Dibayar: ${formatRupiah(totalDibayar)}\nSisa Tagihan: ${formatRupiah(totalSisa)}\nStatus: ${lunas?'LUNAS':'BELUM LUNAS'}\n\nTerima kasih.\nPT. Juara`;
+  return msg;
+}
+let INVOICE_ACTIVE=null;
+function openInvoice(pid){
+  const inv=buildInvoiceData(pid); if(!inv)return;
+  INVOICE_ACTIVE=inv;
+  $('#invSubtitle').textContent=`${inv.p.nama||'-'} · ${participantCode(inv.p)}`;
+  $('#invoiceArea').innerHTML=invoiceHtml(inv);
+  $('#invWaWarn').style.display=normalizePhoneWa(inv.p.telepon)?'none':'block';
+  $('#invoiceModal').classList.add('show');
+}
+function closeInvoice(){ $('#invoiceModal').classList.remove('show'); INVOICE_ACTIVE=null; }
+$('#btnOpenInvoice')?.addEventListener('click', ()=>{ if(FIN_ACTIVE_PID)openInvoice(FIN_ACTIVE_PID); });
+$('#btnCloseInvoice')?.addEventListener('click', closeInvoice);
+$('#invoiceModal')?.addEventListener('click', e=>{ if(e.target.id==='invoiceModal')closeInvoice(); });
+$('#btnPrintInvoice')?.addEventListener('click', ()=>{
+  if(!INVOICE_ACTIVE)return;
+  $('#invoicePrintArea').innerHTML=invoiceHtml(INVOICE_ACTIVE);
+  window.print();
+});
+$('#btnShareInvoiceWA')?.addEventListener('click', ()=>{
+  if(!INVOICE_ACTIVE)return;
+  const num=normalizePhoneWa(INVOICE_ACTIVE.p.telepon);
+  const text=encodeURIComponent(invoiceWaText(INVOICE_ACTIVE));
+  const url=num?`https://wa.me/${num}?text=${text}`:`https://wa.me/?text=${text}`;
+  window.open(url,'_blank');
+});
 
 function renderTable(){
   const q=$('#qSearch').value.trim().toLowerCase();
