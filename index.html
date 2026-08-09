@@ -1625,6 +1625,15 @@ async function saveFinCatNominal(cid){
     saveBtn.textContent='✓ Tersimpan'; saveBtn.classList.add('g'); saveBtn.disabled=true;
     setTimeout(()=>{ saveBtn.textContent='Simpan'; saveBtn.classList.remove('g'); },1500);
   }
+  // PENTING: nominal_default kategori dipakai bareng-bareng oleh tabel utama Kelola
+  // Keuangan (kolom Total Tagihan/Sisa) dan modal detail peserta yang sedang terbuka
+  // (kalau ada). Tanpa refresh eksplisit di sini, kedua tempat itu tetap nampilin
+  // angka lama sampai ada aksi lain yang kebetulan me-render ulang — sehingga admin
+  // bisa lihat total yang beda-beda antara tabel & modal padahal sumber datanya sama.
+  renderFinanceTable();
+  refreshFpCategoryOptions();
+  refreshFinAddBillCatOptions();
+  if(FIN_ACTIVE_PID){ renderFinBillList(); updateFpSisaPembayaran(FIN_ACTIVE_PID); }
   toast('Nominal standar disimpan ✓','ok');
 }
 async function toggleFinCat(cid){
