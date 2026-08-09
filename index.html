@@ -1905,8 +1905,9 @@ $('#qStage').addEventListener('change', renderTable);
 /* ============ HAPUS PESERTA TOTAL (data + berkas storage) ============
    Dipicu dengan klik kode peserta di tabel Data Peserta. Menghapus baris terkait
    di documents_v2, progress_v2, master_data_v2, finance_bills_v2, finance_payments_v2,
-   berkas fisik di storage bucket 'juara-v2-documents', lalu baris participants_v2
-   itu sendiri. Akun login (Supabase Auth) TIDAK ikut terhapus — hanya data peserta. */
+   qr_sessions_v2, berkas fisik di storage bucket 'juara-v2-documents', lalu baris
+   participants_v2 itu sendiri. Akun login (Supabase Auth) TIDAK ikut terhapus —
+   hanya data peserta. */
 async function deleteParticipant(pid){
   const p=PARTICIPANTS.find(x=>x.id===pid);
   if(!p){ toast('Peserta tidak ditemukan','err'); return; }
@@ -1943,20 +1944,59 @@ async function deleteParticipant(pid){
       if(rmErr)console.warn('Gagal hapus sebagian/semua berkas storage:',rmErr.message);
     }
 
-    // 2) Hapus baris-baris terkait di semua tabel anak
-    const delOps=[
-      sb.from('documents_v2').delete().eq('participant_id',pid),
-      sb.from('progress_v2').delete().eq('participant_id',pid),
-      sb.from('master_data_v2').delete().eq('participant_id',pid),
-      sb.from('finance_bills_v2').delete().eq('participant_id',pid),
-      sb.from('finance_payments_v2').delete().eq('participant_id',pid)
-    ];
-    const delResults=await Promise.all(delOps);
-    delResults.forEach(r=>{ if(r.error)console.warn('Gagal hapus data terkait:',r.error.message); });
+    // 2) Hapus baris-baris terkait di semua tabel anak.
+    //    PENTING: .delete() Supabase TIDAK melempar error kalau RLS diam-diam
+    //    menyaring/memblokir baris yang mau dihapus — responsnya tetap "sukses" walau
+    //    0 baris yang benar-benar terhapus. Makanya di sini WAJIB pakai .select() supaya
+    //    baris yang benar-benar terhapus bisa dihitung, lalu dicocokkan dengan jumlah yang
+    //    diharapkan dari cache lokal. Kalau tidak cocok, hentikan SEBELUM baris peserta
+    //    ikut terhapus — supaya tidak menyisakan data anak yang "yatim piatu" di database.
+    const expectedDocs=Object.keys(docs).length;
+    const expectedProgress=Object.prototype.hasOwnProperty.call(STAGE_BY_PID,pid)?1:0;
+    const expectedBills=FIN_BILLS.filter(b=>b.participant_id===pid).length;
+    const expectedPayments=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid).length;
+    const expectedMaster=MASTER_IDS.has(pid)?1:0;
+    // qr_sessions_v2 tidak dicache di client, jadi hitung expected-nya lewat count
+    // terpisah sebelum delete (bukan {count:'exact'} di request delete itu sendiri,
+    // karena select() pada delete() Supabase mengembalikan baris yang benar-benar
+    // terhapus, bukan hasil hitung sebelum aksi).
+    // qr_sessions_v2 tidak punya kolom "id" (primary key-nya anon_user_id),
+    // jadi count & select delete-nya WAJIB pakai anon_user_id, bukan id.
+    const {count:expectedQr}=await sb.from('qr_sessions_v2').select('anon_user_id',{count:'exact',head:true}).eq('participant_id',pid);
 
-    // 3) Hapus baris peserta itu sendiri (paling akhir)
-    const {error:pErr}=await sb.from('participants_v2').delete().eq('id',pid);
+    const [docsRes,progressRes,masterRes,billsRes,paymentsRes,qrRes]=await Promise.all([
+      sb.from('documents_v2').delete().eq('participant_id',pid).select('id'),
+      sb.from('progress_v2').delete().eq('participant_id',pid).select('participant_id'),
+      sb.from('master_data_v2').delete().eq('participant_id',pid).select('participant_id'),
+      sb.from('finance_bills_v2').delete().eq('participant_id',pid).select('participant_id'),
+      sb.from('finance_payments_v2').delete().eq('participant_id',pid).select('id'),
+      sb.from('qr_sessions_v2').delete().eq('participant_id',pid).select('anon_user_id')
+    ]);
+
+    const checks=[
+      {label:'dokumen (documents_v2)',res:docsRes,expected:expectedDocs},
+      {label:'progres tahap (progress_v2)',res:progressRes,expected:expectedProgress},
+      {label:'data master (master_data_v2)',res:masterRes,expected:expectedMaster},
+      {label:'tagihan keuangan (finance_bills_v2)',res:billsRes,expected:expectedBills},
+      {label:'pembayaran (finance_payments_v2)',res:paymentsRes,expected:expectedPayments},
+      {label:'sesi QR (qr_sessions_v2)',res:qrRes,expected:expectedQr||0}
+    ];
+    for(const c of checks){
+      if(c.res.error)throw new Error(`Gagal menghapus ${c.label}: ${c.res.error.message}`);
+      const deleted=(c.res.data||[]).length;
+      if(deleted<c.expected){
+        throw new Error(`Sebagian data ${c.label} gagal terhapus (${deleted}/${c.expected} baris) — kemungkinan diblokir kebijakan RLS. Peserta belum jadi dihapus, hubungi developer untuk cek RLS policy DELETE tabel terkait.`);
+      }
+    }
+
+    // 3) Hapus baris peserta itu sendiri (paling akhir, setelah semua tabel anak dipastikan bersih).
+    //    Sama seperti tabel anak, cek jumlah baris yang benar-benar terhapus — jangan cuma
+    //    andalkan "tidak ada error", karena itu juga bisa diam-diam 0 baris kalau RLS memblokir.
+    const {data:pDeleted,error:pErr}=await sb.from('participants_v2').delete().eq('id',pid).select('id');
     if(pErr)throw pErr;
+    if(!pDeleted||pDeleted.length===0){
+      throw new Error('Baris peserta di participants_v2 tidak berhasil terhapus (kemungkinan diblokir kebijakan RLS DELETE). Data anak sudah terlanjur bersih, tapi baris peserta ini masih ada — cek RLS policy DELETE tabel participants_v2.');
+    }
 
     // 4) Bersihkan cache lokal
     PARTICIPANTS=PARTICIPANTS.filter(x=>x.id!==pid);
