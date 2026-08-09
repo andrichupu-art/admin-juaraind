@@ -1039,9 +1039,40 @@ td.nama span{color:var(--mut);font-size:.78rem}
         <button class="btn b-navy sm" id="btnPrintInvoice">🖨️ Cetak / Simpan PDF</button>
         <a class="btn b-pri sm" id="btnShareInvoiceWA" href="#" target="_blank" rel="noopener">📲 Kirim ke WhatsApp</a>
         <button class="btn b-ghost sm" id="btnCopyInvoiceWA">📋 Salin Pesan</button>
+        <button class="btn b-navy sm" id="btnOpenInvoiceEmail">✉️ Kirim ke Email</button>
       </div>
       <p style="margin-top:8px;font:600 .74rem var(--body);color:var(--mut)">Tips: tahan <b>Ctrl</b> (Windows) / <b>Cmd</b> (Mac) saat klik "Kirim ke WhatsApp" supaya tab terbuka di background tanpa berpindah halaman.</p>
       <p id="invWaWarn" style="display:none;margin-top:10px;font:600 .78rem var(--body);color:var(--red)">Nomor WhatsApp peserta belum terdaftar. Lengkapi data telepon peserta terlebih dahulu.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL KIRIM INVOICE VIA EMAIL ============ -->
+<div class="modal" id="invoiceEmailModal">
+  <div class="box" style="max-width:480px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>✉️ Kirim Invoice via Email</h3><p id="ivEmFor">-</p></div>
+      <button class="x" id="btnCloseInvoiceEmail">✕</button>
+    </div>
+    <div class="box-body">
+      <div class="fld">
+        <label>Kirim Dari</label>
+        <select id="ivEmFrom"></select>
+      </div>
+      <div class="fld">
+        <label>Kirim Ke</label>
+        <input type="email" id="ivEmTo" placeholder="contoh@perusahaan.com" required>
+      </div>
+      <div class="fld">
+        <label>Subjek</label>
+        <input type="text" id="ivEmSubject">
+      </div>
+      <div class="fld">
+        <label>Pesan</label>
+        <textarea id="ivEmMessage" rows="10" style="width:100%;border:2px solid var(--line);border-radius:11px;padding:12px 14px;font:600 .82rem var(--body);color:var(--ink);resize:vertical"></textarea>
+      </div>
+      <button class="btn b-pri" id="btnInvoiceEmailSend" style="width:100%;justify-content:center">Kirim Sekarang</button>
+      <p class="err-txt" id="ivEmErr"></p>
     </div>
   </div>
 </div>
@@ -1994,6 +2025,21 @@ function invoiceWaText(inv){
   msg+=`\nTotal Tagihan: ${formatRupiah(totalTagihan)}\nTotal Dibayar: ${formatRupiah(totalDibayar)}\nSisa Tagihan: ${formatRupiah(totalSisa)}\nStatus: ${lunas?'LUNAS':'BELUM LUNAS'}\n\nTerima kasih.\nPT. Juara`;
   return msg;
 }
+function invoiceEmailText(inv){
+  const {p,items,totalTagihan,totalDibayar,totalSisa,lunas,invoiceNo,tglStr}=inv;
+  let msg=`Kepada Yth. ${p.nama||'-'} (${participantCode(p)}),\n\n`;
+  msg+=`Berikut kami sampaikan invoice pembayaran Anda.\n\n`;
+  msg+=`No. Invoice : ${invoiceNo}\nTanggal     : ${tglStr}\n\n`;
+  msg+=`Rincian Tagihan:\n`;
+  if(items.length){
+    items.forEach(it=>{ msg+=`- ${it.catNama}\n  Tagihan: ${formatRupiah(it.tagihan)} | Dibayar: ${formatRupiah(it.dibayar)} | Sisa: ${formatRupiah(it.sisa)} | Status: ${it.status}\n`; });
+  }else{
+    msg+=`Belum ada tagihan tercatat.\n`;
+  }
+  msg+=`\nTotal Tagihan : ${formatRupiah(totalTagihan)}\nTotal Dibayar : ${formatRupiah(totalDibayar)}\nSisa Tagihan  : ${formatRupiah(totalSisa)}\nStatus        : ${lunas?'LUNAS':'BELUM LUNAS'}\n\n`;
+  msg+=`Mohon segera melunasi sisa tagihan apabila belum lunas. Terima kasih.\n\nHormat kami,\nPT. Juara`;
+  return msg;
+}
 let INVOICE_ACTIVE=null;
 function openInvoice(pid){
   const inv=buildInvoiceData(pid); if(!inv)return;
@@ -2024,6 +2070,44 @@ $('#btnCopyInvoiceWA')?.addEventListener('click', async ()=>{
     toast('Pesan invoice disalin ✓ Tinggal paste ke WhatsApp','ok');
   }catch(err){
     toast('Gagal menyalin otomatis, silakan salin manual','err');
+  }
+});
+function openInvoiceEmailModal(){
+  if(!INVOICE_ACTIVE)return;
+  const {p,invoiceNo}=INVOICE_ACTIVE;
+  $('#ivEmFor').textContent=`${p.nama||'-'} · ${participantCode(p)}`;
+  $('#ivEmFrom').innerHTML=EMAIL_SENDERS.map(e=>`<option value="${e}">${e}</option>`).join('');
+  ensureCsel($('#ivEmFrom'));
+  $('#ivEmTo').value=(p.email&&p.email!=='—')?p.email:'';
+  $('#ivEmSubject').value=`Invoice Pembayaran — ${p.nama||'-'} (${participantCode(p)})`;
+  $('#ivEmMessage').value=invoiceEmailText(INVOICE_ACTIVE);
+  $('#ivEmErr').textContent='';
+  $('#invoiceEmailModal').classList.add('show');
+}
+function closeInvoiceEmailModal(){ $('#invoiceEmailModal').classList.remove('show'); }
+$('#btnOpenInvoiceEmail')?.addEventListener('click', openInvoiceEmailModal);
+$('#btnCloseInvoiceEmail')?.addEventListener('click', closeInvoiceEmailModal);
+$('#invoiceEmailModal')?.addEventListener('click', e=>{ if(e.target.id==='invoiceEmailModal')closeInvoiceEmailModal(); });
+$('#btnInvoiceEmailSend')?.addEventListener('click', async ()=>{
+  const from=$('#ivEmFrom').value;
+  const to=$('#ivEmTo').value.trim();
+  const subject=$('#ivEmSubject').value.trim();
+  const message=$('#ivEmMessage').value.trim();
+  $('#ivEmErr').textContent='';
+  if(!to){ $('#ivEmErr').textContent='Alamat tujuan wajib diisi.'; return; }
+  const btn=$('#btnInvoiceEmailSend'); const orig=btn.textContent;
+  btn.disabled=true; btn.textContent='Mengirim…';
+  try{
+    const {data,error}=await sb.functions.invoke('send-email',{ body:{ from, to, subject, message, storage_paths:[] } });
+    if(error) throw new Error(error.message||'Gagal memanggil layanan email');
+    if(data?.error) throw new Error(data.error);
+    toast('Invoice terkirim via email ✓','ok');
+    closeInvoiceEmailModal();
+  }catch(err){
+    console.error(err);
+    $('#ivEmErr').textContent='Gagal mengirim: '+(err.message||'terjadi kesalahan');
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
   }
 });
 
