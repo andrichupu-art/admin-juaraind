@@ -201,6 +201,11 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .pill.wait{background:rgba(255,255,255,.55);border-color:#111111;color:#111111}
 .pill.bad{background:#FDEAEA;border-color:#F5C2C2;color:#B32C2C}
 .pill.kolektif{background:#EAF4FD;border-color:#BFDCF5;color:#1B6FB3}
+.sb-nav a{position:relative}
+.sb-badge{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--red);color:#fff;
+  font:800 .66rem var(--body);min-width:19px;height:19px;padding:0 5px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.sb-nav a.active .sb-badge{background:#fff;color:var(--gold)}
 .stagebar{display:flex;align-items:center;justify-content:center;gap:8px}
 .stagebar .track{width:70px;height:7px;border-radius:99px;background:#EDEAE0;overflow:hidden}
 .stagebar .fill{height:100%;background:#3B6D11;border-radius:99px}
@@ -551,6 +556,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <a class="sb-link" data-target="secAdministrasi"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2.06 2.06 0 1 1-2.92 2.92l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56v.16a2.06 2.06 0 1 1-4.12 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2.06 2.06 0 1 1-2.92-2.92l.06-.06a1.7 1.7 0 0 0 .34-1.87A1.7 1.7 0 0 0 2.7 12.47h-.16a2.06 2.06 0 1 1 0-4.12h.09A1.7 1.7 0 0 0 4.2 7.24a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.06 2.06 0 1 1 2.92-2.92l.06.06a1.7 1.7 0 0 0 1.87.34h.08a1.7 1.7 0 0 0 1.03-1.56V1.06a2.06 2.06 0 1 1 4.12 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.06 2.06 0 1 1 2.92 2.92l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.56 1.03h.16a2.06 2.06 0 1 1 0 4.12h-.09a1.7 1.7 0 0 0-1.56 1.03z"/></svg></span> Administrasi</a>
       <a class="sb-link" data-target="secEmail"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span> Kelola Email</a>
       <a class="sb-link" data-target="secKeuangan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span> Kelola Keuangan</a>
+      <a class="sb-link" data-target="secBukti"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15.5 15.5 1.3 1.3 2.2-2.4" stroke="var(--green,#17B26A)"/></svg></span> Bukti Pembayaran<span class="sb-badge" id="sbBuktiBadge" style="display:none">0</span></a>
       <a id="sbRefresh"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.34 5.66"/><polyline points="20 4 20 11 13 11"/></svg></span> Muat Ulang</a>
       <span class="sb-label">Akun</span>
       <a id="sbLogout"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</a>
@@ -679,6 +685,31 @@ td.nama span{color:var(--mut);font-size:.78rem}
               <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Total Tagihan</th><th>Terbayar</th><th>Sisa</th><th>Status</th><th>Aksi</th>
             </tr></thead>
             <tbody id="tblFinBody"><tr class="empty-row"><td colspan="9">Memuat data…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="secBukti">
+        <div class="stats">
+          <div class="stat warn"><b id="bpStPending">0</b><span>Menunggu Verifikasi</span></div>
+          <div class="stat ok"><b id="bpStApproved">0</b><span>Disetujui</span></div>
+          <div class="stat bad"><b id="bpStRejected">0</b><span>Ditolak</span></div>
+        </div>
+        <div class="toolbar">
+          <input type="text" id="qSearchBukti" placeholder="Cari nama, kode, atau kota peserta…">
+          <select id="qBuktiStatus">
+            <option value="pending">Menunggu Verifikasi</option>
+            <option value="approved">Disetujui</option>
+            <option value="rejected">Ditolak</option>
+            <option value="">Semua Status</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>No</th><th>Kode</th><th>Peserta</th><th>Nominal Diklaim</th><th>Diunggah</th><th>Status</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="tblBuktiBody"><tr class="empty-row"><td colspan="7">Memuat data…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1118,6 +1149,20 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL TOLAK BUKTI PEMBAYARAN (alasan opsional) ============ -->
+<div class="modal" id="buktiRejectModal">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="buktiRejectIcon">!</div>
+    <h3>Tolak Bukti Pembayaran</h3>
+    <p>Kasih tau peserta kenapa buktinya ditolak (opsional, tapi disarankan).</p>
+    <div class="fld"><textarea id="buktiRejectReason" rows="3" placeholder="Contoh: Nominal di struk tidak sesuai, foto buram, dll." style="width:100%;border:2px solid var(--line);border-radius:11px;padding:12px 14px;font:600 .9rem var(--body);resize:vertical"></textarea></div>
+    <div class="confirm-actions">
+      <button class="btn b-ghost sm" id="buktiRejectCancelBtn">Batal</button>
+      <button class="btn b-red sm" id="buktiRejectOkBtn">Ya, Tolak</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============ KONFIGURASI SUPABASE — sama dengan portal pendaftaran ============ */
 const SUPABASE_URL = 'https://xkfxiuiaxswwqnybzfvd.supabase.co';
@@ -1212,6 +1257,7 @@ let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
 let MASTER_ROWS=[], MASTER_IDS=new Set();
 let SEKOLAH_MITRA=[];
 let FIN_CATS=[], FIN_BILLS=[], FIN_PAYMENTS=[], FIN_ACTIVE_PID=null;
+let PAY_PROOFS=[];
 
 const PROVINSI_LIST=['Aceh','Sumatera Utara','Sumatera Barat','Riau','Kepulauan Riau','Jambi','Sumatera Selatan','Bangka Belitung','Bengkulu','Lampung','DKI Jakarta','Jawa Barat','Jawa Tengah','DI Yogyakarta','Jawa Timur','Banten','Bali','Nusa Tenggara Barat','Nusa Tenggara Timur','Kalimantan Barat','Kalimantan Tengah','Kalimantan Selatan','Kalimantan Timur','Kalimantan Utara','Sulawesi Utara','Gorontalo','Sulawesi Tengah','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tenggara','Maluku','Maluku Utara','Papua','Papua Barat','Papua Barat Daya','Papua Tengah','Papua Pegunungan','Papua Selatan'];
 (function fillProvinsiAdmin(){
@@ -1380,7 +1426,7 @@ $('#btnLogout').addEventListener('click', async ()=>{
 async function loadAll(){
   $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Memuat data…</td></tr>';
   try{
-    const [pRes,dRes,sRes,mRes,skRes,fcRes,fbRes,fpRes]=await Promise.all([
+    const [pRes,dRes,sRes,mRes,skRes,fcRes,fbRes,fpRes,ppRes]=await Promise.all([
       sb.from('participants_v2').select('*').order('created_at',{ascending:false}),
       sb.from('documents_v2').select('*'),
       sb.from('progress_v2').select('*'),
@@ -1388,7 +1434,8 @@ async function loadAll(){
       sb.from('sekolah_mitra').select('*').order('nama',{ascending:true}),
       sb.from('finance_categories_v2').select('*').order('urutan',{ascending:true}),
       sb.from('finance_bills_v2').select('*'),
-      sb.from('finance_payments_v2').select('*').order('tanggal',{ascending:false})
+      sb.from('finance_payments_v2').select('*').order('tanggal',{ascending:false}),
+      sb.from('payment_proofs_v2').select('*').order('created_at',{ascending:false})
     ]);
     if(pRes.error)throw pRes.error;
     if(dRes.error)throw dRes.error;
@@ -1433,6 +1480,12 @@ async function loadAll(){
     }else{
       FIN_PAYMENTS=fpRes.data||[];
     }
+    if(ppRes.error){
+      console.warn('Tabel payment_proofs_v2 belum tersedia:',ppRes.error.message);
+      PAY_PROOFS=[];
+    }else{
+      PAY_PROOFS=ppRes.data||[];
+    }
 
     renderStats();
     renderTable();
@@ -1440,6 +1493,7 @@ async function loadAll(){
     renderSekolahTable();
     fillAsalSekolahDatalist();
     renderFinanceTable();
+    renderBuktiTable();
     refreshFpCategoryOptions();
     sweepStaleStages();
   }catch(err){
@@ -1587,6 +1641,122 @@ function renderFinanceTable(){
   body.querySelectorAll('[data-fin]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); openFinance(b.dataset.fin); }));
 }
 $('#qSearchFin')?.addEventListener('input',renderFinanceTable);
+
+/* ============ VERIFIKASI BUKTI PEMBAYARAN ============
+   Peserta unggah bukti transfer lewat portal -> masuk ke payment_proofs_v2
+   dengan status 'pending' (default). Admin di sini yang menyetujui/menolak.
+   Begitu status diubah jadi 'approved', trigger database yang sudah ada
+   otomatis mengalokasikan jumlah_klaim ke kategori-kategori tagihan peserta
+   (finance_payments_v2) — makanya setelah approve kita muat ulang FIN_PAYMENTS
+   biar tabel Kelola Keuangan langsung ikut ter-update. */
+const PP_STATUS_LABEL={ pending:['wait','Menunggu'], approved:['ok','Disetujui'], rejected:['bad','Ditolak'] };
+function ppStatusOf(pp){ return pp.status||'pending'; }
+function renderBuktiBadge(){
+  const el=$('#sbBuktiBadge'); if(!el)return;
+  const n=PAY_PROOFS.filter(pp=>ppStatusOf(pp)==='pending').length;
+  el.textContent=n>99?'99+':String(n);
+  el.style.display=n>0?'flex':'none';
+}
+function renderBuktiTable(){
+  const body=$('#tblBuktiBody'); if(!body)return;
+  const q=($('#qSearchBukti')?.value||'').trim().toLowerCase();
+  const statusFilter=$('#qBuktiStatus')?.value||'';
+  let pending=0,approved=0,rejected=0;
+  PAY_PROOFS.forEach(pp=>{ const s=ppStatusOf(pp); if(s==='pending')pending++; else if(s==='approved')approved++; else if(s==='rejected')rejected++; });
+  if($('#bpStPending')){ $('#bpStPending').textContent=pending; $('#bpStApproved').textContent=approved; $('#bpStRejected').textContent=rejected; }
+  renderBuktiBadge();
+
+  const rows=PAY_PROOFS.filter(pp=>{
+    if(statusFilter&&ppStatusOf(pp)!==statusFilter)return false;
+    if(!q)return true;
+    const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
+    return [p?.nama,p?.kota,(p?participantCode(p):'')].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
+  });
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Belum ada bukti pembayaran'+(statusFilter?' dengan status ini':'')+'.</td></tr>'; return; }
+  body.innerHTML=rows.map((pp,i)=>{
+    const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
+    const s=ppStatusOf(pp);
+    const [cls,label]=PP_STATUS_LABEL[s]||PP_STATUS_LABEL.pending;
+    const ocrDiff=pp.ocr_terbaca&&Number(pp.ocr_terbaca)!==Number(pp.jumlah_klaim);
+    return `<tr data-ppid="${pp.id}">
+      <td>${i+1}</td>
+      <td class="kode">${p?participantCode(p):'—'}</td>
+      <td class="nama"><b>${escapeHtml(p?.nama||'Peserta tidak ditemukan')}</b><span>${escapeHtml(p?.kota||'-')}</span></td>
+      <td>${formatRupiah(pp.jumlah_klaim)}${ocrDiff?`<div style="font:600 .68rem var(--body);color:var(--mut);margin-top:2px">OCR baca: ${formatRupiah(pp.ocr_terbaca)}</div>`:''}</td>
+      <td>${fmtMailDate(pp.created_at)}</td>
+      <td><span class="pill ${cls}">${label}</span></td>
+      <td class="aksi-cell"><div class="aksi-cell-in" style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="mini" data-view-bukti="${pp.id}">Lihat Bukti</button>
+        ${s==='pending'?`<button class="mini g" data-approve-bukti="${pp.id}">Setujui</button>
+          <button class="mini r" data-reject-bukti="${pp.id}">Tolak</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('[data-view-bukti]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();viewBuktiProof(b.dataset.viewBukti);}));
+  body.querySelectorAll('[data-approve-bukti]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();approveBuktiProof(b.dataset.approveBukti);}));
+  body.querySelectorAll('[data-reject-bukti]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openRejectBuktiModal(b.dataset.rejectBukti);}));
+}
+$('#qSearchBukti')?.addEventListener('input',renderBuktiTable);
+$('#qBuktiStatus')?.addEventListener('change',renderBuktiTable);
+
+async function viewBuktiProof(ppid){
+  const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp?.storage_path)return toast('Berkas tidak ditemukan','err');
+  const newTab=window.open('','_blank'); // dibuka LANGSUNG saat klik, sebelum await, biar tidak diblokir Safari
+  const {data,error}=await sb.storage.from('juara-v2-payment-proofs').createSignedUrl(pp.storage_path,300);
+  if(error||!data){ if(newTab)newTab.close(); return toast('Gagal membuka berkas: '+(error?.message||''),'err'); }
+  if(newTab) newTab.location.href=data.signedUrl;
+  else window.open(data.signedUrl,'_blank');
+}
+async function approveBuktiProof(ppid){
+  const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp)return;
+  const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
+  if(!await customConfirm(`Setujui bukti pembayaran ${formatRupiah(pp.jumlah_klaim)} dari ${p?.nama||'peserta ini'}? Nominal ini akan otomatis dialokasikan ke tagihan peserta.`,{okLabel:'Ya, Setujui'}))return;
+  const {data,error}=await sb.from('payment_proofs_v2').update({status:'approved',reviewed_at:new Date().toISOString()}).eq('id',ppid).select().single();
+  if(error)return toast(ppSchemaErrHint(error),'err');
+  Object.assign(pp,data);
+  renderBuktiTable();
+  toast('Bukti pembayaran disetujui ✓','ok');
+  // Trigger database yang sudah ada otomatis mengalokasikan ke finance_payments_v2 —
+  // muat ulang biar tabel Kelola Keuangan langsung mencerminkan alokasi terbaru.
+  await reloadFinancePayments();
+}
+function openRejectBuktiModal(ppid){
+  const modal=$('#buktiRejectModal'); if(!modal)return;
+  $('#buktiRejectReason').value='';
+  modal.dataset.ppid=ppid;
+  modal.classList.add('show');
+}
+$('#buktiRejectCancelBtn')?.addEventListener('click',()=>$('#buktiRejectModal').classList.remove('show'));
+$('#buktiRejectModal')?.addEventListener('click',e=>{ if(e.target.id==='buktiRejectModal')$('#buktiRejectModal').classList.remove('show'); });
+$('#buktiRejectOkBtn')?.addEventListener('click', async ()=>{
+  const modal=$('#buktiRejectModal');
+  const ppid=modal?.dataset.ppid; if(!ppid)return;
+  const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp)return;
+  const reason=$('#buktiRejectReason')?.value.trim()||null;
+  const btn=$('#buktiRejectOkBtn'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Menolak…';
+  const {data,error}=await sb.from('payment_proofs_v2').update({status:'rejected',catatan_admin:reason,reviewed_at:new Date().toISOString()}).eq('id',ppid).select().single();
+  btn.disabled=false; btn.textContent=orig;
+  if(error)return toast(ppSchemaErrHint(error),'err');
+  Object.assign(pp,data);
+  modal.classList.remove('show');
+  renderBuktiTable();
+  toast('Bukti pembayaran ditolak','ok');
+});
+/* Kolom status/catatan_admin/reviewed_at diasumsikan sudah ada di payment_proofs_v2.
+   Kalau belum, Postgrest bakal balikin error "column ... does not exist" — kita
+   tangkap dan kasih pesan yang jelas biar gampang ditelusuri, bukan cuma error mentah. */
+function ppSchemaErrHint(error){
+  const msg=error?.message||'terjadi kesalahan';
+  if(/column .* does not exist/i.test(msg))return 'Gagal update: kolom status/catatan_admin/reviewed_at belum ada di tabel payment_proofs_v2. Tambahkan dulu kolomnya di Supabase.';
+  return 'Gagal memproses: '+msg;
+}
+async function reloadFinancePayments(){
+  const {data,error}=await sb.from('finance_payments_v2').select('*').order('tanggal',{ascending:false});
+  if(error)return console.warn('Gagal memuat ulang finance_payments_v2:',error.message);
+  FIN_PAYMENTS=data||[];
+  renderFinanceTable();
+}
+
 
 /* ---- Kategori biaya ---- */
 function renderFinCatTable(){
