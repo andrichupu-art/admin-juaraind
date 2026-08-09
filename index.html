@@ -141,7 +141,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .tab-panel{display:none}
 .tab-panel.active{display:block;animation:tabIn .2s ease}
 @keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
 .stat{background:var(--card);border-radius:16px;border:1.5px solid var(--line);padding:18px 20px}
 .stat b{display:block;font:800 1.9rem var(--disp);color:var(--navy)}
 .stat span{font:700 .72rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
@@ -438,6 +438,14 @@ td.nama span{color:var(--mut);font-size:.78rem}
 #finBillList .pill{font-size:.64rem;padding:4px 9px;white-space:nowrap}
 #finBillList tbody td:last-child{white-space:nowrap;text-align:left}
 #finBillList .mini{padding:5px 7px;font-size:.6rem}
+#secKeuangan .tbl-wrap{overflow-x:auto}
+#secKeuangan table{min-width:760px}
+#secKeuangan thead th{padding:11px 10px;font-size:.62rem}
+#secKeuangan tbody td{padding:11px 10px;font-size:.8rem}
+#secKeuangan td.kode{white-space:nowrap;font-size:.74rem}
+#secKeuangan td.nama b{font-size:.82rem;white-space:nowrap}
+#secKeuangan td.nama span{font-size:.72rem}
+#secKeuangan .pill{font-size:.68rem;padding:5px 10px;white-space:nowrap}
 
 /* ============ KWITANSI CETAK ============ */
 #kwitansiArea{position:fixed;left:-9999px;top:0;width:560px}
@@ -521,6 +529,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
           <div class="stat warn"><b id="stWait">0</b><span>Dokumen Menunggu</span></div>
           <div class="stat bad"><b id="stReject">0</b><span>Dokumen Ditolak</span></div>
           <div class="stat ok"><b id="stDone">0</b><span>Sudah Tahap 6</span></div>
+          <div class="stat"><b id="stPria">0</b><span>Peserta Laki-laki</span></div>
+          <div class="stat"><b id="stWanita">0</b><span>Peserta Perempuan</span></div>
         </div>
       </div>
 
@@ -965,6 +975,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
       </div>
       <div class="box-sec">
         <h4>🧾 Riwayat Pembayaran</h4>
+        <div id="fpSisaPembayaran" class="fp-cat-total" style="margin-bottom:10px"><b>Sisa Pembayaran</b><span>Rp 0</span></div>
         <div class="tbl-wrap">
           <table>
             <thead><tr><th>Tanggal</th><th>Metode</th><th>Jumlah</th><th>Aksi</th></tr></thead>
@@ -1285,16 +1296,20 @@ async function loadAll(){
 }
 
 function renderStats(){
-  let wait=0,reject=0,done=0;
+  let wait=0,reject=0,done=0,pria=0,wanita=0;
   PARTICIPANTS.forEach(p=>{
     const docs=DOCS_BY_PID[p.id]||{};
     Object.values(docs).forEach(d=>{ if(d.status==='menunggu')wait++; if(d.status==='ditolak')reject++; });
     if((STAGE_BY_PID[p.id]??0)>=5)done++;
+    if(p.jenis_kelamin==='Laki-laki')pria++;
+    else if(p.jenis_kelamin==='Perempuan')wanita++;
   });
   $('#stTotal').textContent=PARTICIPANTS.length;
   $('#stWait').textContent=wait;
   $('#stReject').textContent=reject;
   $('#stDone').textContent=done;
+  $('#stPria').textContent=pria;
+  $('#stWanita').textContent=wanita;
 }
 
 function participantCode(p){ return p.kode_peserta || (p.id?'JR-'+p.id.slice(0,8).toUpperCase():'—'); }
@@ -1380,13 +1395,14 @@ const FIN_STATUS_LABEL={ 'belum-ada':['wait','Belum Ada Tagihan'], 'lunas':['ok'
 function renderFinanceTable(){
   const body=$('#tblFinBody'); if(!body)return;
   const q=($('#qSearchFin')?.value||'').trim().toLowerCase();
-  const rows=PARTICIPANTS.filter(p=>{
+  const masterParticipants=PARTICIPANTS.filter(p=>MASTER_IDS.has(p.id));
+  const rows=masterParticipants.filter(p=>{
     if(!q)return true;
     return [p.nama,p.kota,participantCode(p)].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
   });
 
   let sumTagihan=0,sumBayar=0,sumSisa=0,belumLunas=0;
-  PARTICIPANTS.forEach(p=>{
+  masterParticipants.forEach(p=>{
     const s=financeSummaryFor(p.id);
     sumTagihan+=s.totalTagihan; sumBayar+=s.totalDibayar; sumSisa+=Math.max(s.sisa,0);
     if(s.status==='belum-bayar'||s.status==='cicilan')belumLunas++;
@@ -1398,7 +1414,7 @@ function renderFinanceTable(){
     $('#finStBelumLunas').textContent=belumLunas;
   }
 
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="9">Tidak ada data yang cocok.</td></tr>'; return; }
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="9">Belum ada peserta yang di-convert ke Data Master.</td></tr>'; return; }
   body.innerHTML=rows.map((p,i)=>{
     const s=financeSummaryFor(p.id);
     const [cls,label]=FIN_STATUS_LABEL[s.status];
@@ -1471,12 +1487,9 @@ function refreshFpCategoryOptions(){
         </div>
       </div>`;
     }).join('');
-    const totalSisa=options.reduce((s,c)=>{
-      const dibayar=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid&&pm.category_id===c.id).reduce((s2,pm)=>s2+Number(pm.jumlah||0),0);
-      return s+Math.max(Number(c.nominal_default||0)-dibayar,0);
-    },0);
+    const totalKategori=options.reduce((s,c)=>s+Number(c.nominal_default||0),0);
     const totalHost=$('#fpCategoryTotal');
-    if(totalHost)totalHost.innerHTML=`<b>Jumlah Seluruh Kategori</b><span>${formatRupiah(totalSisa)}</span>`;
+    if(totalHost)totalHost.innerHTML=`<b>Jumlah Seluruh Kategori</b><span>${formatRupiah(totalKategori)}</span>`;
     host.querySelectorAll('[data-fp-cat]').forEach(el=>el.addEventListener('click',e=>{
       if(e.target.closest('[data-fp-cat-del]'))return;
       sel.value=el.dataset.fpCat;
@@ -1582,9 +1595,16 @@ $('#finCatModal')?.addEventListener('click', e=>{ if(e.target.id==='finCatModal'
 function openFinance(pid){
   const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
   FIN_ACTIVE_PID=pid;
+  updateFpSisaPembayaran(pid);
   $('#finNama').textContent=p.nama||'-';
   $('#finKode').textContent=participantCode(p);
   $('#finAva').textContent=(p.nama||'?').trim().charAt(0).toUpperCase();
+  const finFotoDoc=(DOCS_BY_PID[pid]||{}).foto;
+  if(finFotoDoc?.storage_path){
+    sb.storage.from('juara-v2-documents').createSignedUrl(finFotoDoc.storage_path,3600).then(({data,error})=>{
+      if(!error&&data&&FIN_ACTIVE_PID===pid) $('#finAva').innerHTML=`<img src="${data.signedUrl}" alt="">`;
+    });
+  }
   refreshFpCategoryOptions();
   refreshFinAddBillCatOptions();
   $('#fpJumlah').value=''; $('#fpCatatanNominal').value='';
@@ -1603,10 +1623,27 @@ $('#financeModal')?.addEventListener('click', e=>{ if(e.target.id==='financeModa
 $('#fpJumlah')?.addEventListener('input', ()=>setTimeout(syncCatatanNominal,0));
 $('#fpMetode')?.addEventListener('change', toggleCicilanFields);
 
+function updateFpSisaPembayaran(pid,myBills){
+  const el=$('#fpSisaPembayaran'); if(!el)return;
+  try{
+    const bills=myBills||FIN_BILLS.filter(b=>b.participant_id===pid);
+    const totalSisa=bills.reduce((s,bill)=>{
+      const c=FIN_CATS.find(x=>x.id===bill.category_id);
+      const tagihan=c?Number(c.nominal_default||0):Number(bill?.nominal||0);
+      const dibayar=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid&&pm.category_id===bill.category_id).reduce((s2,pm)=>s2+Number(pm.jumlah||0),0);
+      return s+Math.max(tagihan-dibayar,0);
+    },0);
+    el.innerHTML=`<b>Sisa Pembayaran</b><span>${formatRupiah(totalSisa)}</span>`;
+  }catch(err){
+    console.error('updateFpSisaPembayaran error:',err);
+    el.innerHTML=`<b>Sisa Pembayaran</b><span>Rp 0</span>`;
+  }
+}
 function renderFinBillList(){
   const host=$('#finBillList'); if(!host)return;
   const pid=FIN_ACTIVE_PID;
   const myBills=FIN_BILLS.filter(b=>b.participant_id===pid);
+  updateFpSisaPembayaran(pid,myBills);
   if(!myBills.length){
     host.innerHTML='<p style="font:600 .82rem var(--body);color:var(--mut)">Belum ada tagihan untuk peserta ini. Pilih kategori di atas lalu klik "+ Tambah Kategori Tagihan" — tiap peserta bisa punya rincian berbeda.</p>';
     return;
@@ -1849,6 +1886,7 @@ async function convertToMaster(pid, btn){
   MASTER_ROWS.unshift(data);
   renderTable();
   renderMasterTable();
+  renderFinanceTable();
   toast('Peserta dipindahkan ke Data Master ✓','ok');
   document.querySelectorAll('.sb-link').forEach(l=>l.classList.toggle('active', l.dataset.target==='secMaster'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='secMaster'));
@@ -1862,6 +1900,7 @@ async function removeFromMaster(masterId,pid){
   MASTER_IDS.delete(pid);
   renderTable();
   renderMasterTable();
+  renderFinanceTable();
   toast('Peserta dikeluarkan dari Data Master','ok');
 }
 
