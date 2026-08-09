@@ -190,6 +190,8 @@ tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:#FBFAF6}
 tbody tr{cursor:pointer}
 td.kode{font:700 .82rem var(--mono);color:var(--navy)}
+.kode-del{cursor:pointer;border-bottom:1.5px dashed rgba(27,58,102,.4);transition:.15s;padding:2px 0}
+.kode-del:hover{color:var(--red);border-bottom-color:var(--red)}
 td.nama b{display:block;color:var(--ink);font-weight:700}
 td.nama span{color:var(--mut);font-size:.78rem}
 .pill{display:inline-flex;align-items:center;justify-content:center;gap:5px;font:700 .68rem var(--body);letter-spacing:.03em;
@@ -309,6 +311,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .confirm-box p{font:600 .88rem/1.5 var(--body);color:var(--mut);margin-bottom:24px}
 .confirm-actions{display:flex;gap:10px;justify-content:center}
 .confirm-actions .btn{flex:1;justify-content:center}
+.confirm-box p{white-space:pre-line}
+#promptModal .fld{margin-bottom:20px;text-align:left}
 @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 .hint{background:#FFF6E9;border:1px solid #F3D9A6;border-radius:12px;padding:12px 14px;color:var(--navy);font-size:.78rem;line-height:1.5;margin-bottom:18px}
@@ -712,6 +716,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 
           <div class="fld-sec">Kontak &amp; Domisili</div>
           <div class="fld"><label>WhatsApp</label><input type="text" id="eWa"></div>
+          <div class="fld"><label>Email</label><input type="text" id="eEmail" disabled placeholder="—"></div>
           <div class="fld"><label>Provinsi</label><select id="eProvinsi"><option value="">—</option></select></div>
           <div class="fld"><label>Kota/Kabupaten</label><input type="text" id="eKota"></div>
           <div class="fld full"><label>Alamat Lengkap</label><textarea id="eAlamat" placeholder="Alamat sesuai KTP"></textarea></div>
@@ -1006,6 +1011,20 @@ td.nama span{color:var(--mut);font-size:.78rem}
   </div>
 </div>
 
+<!-- ============ MODAL KONFIRMASI KETIK-ULANG (lapis kedua untuk hapus permanen) ============ -->
+<div class="modal" id="promptModal">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="promptIcon">!</div>
+    <h3 id="promptTitle">Konfirmasi</h3>
+    <p id="promptMsg">Ketik untuk melanjutkan</p>
+    <div class="fld"><input type="text" id="promptInput" autocomplete="off"></div>
+    <div class="confirm-actions">
+      <button class="btn b-ghost sm" id="promptCancelBtn">Batal</button>
+      <button class="btn b-red sm" id="promptOkBtn">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============ KONFIGURASI SUPABASE — sama dengan portal pendaftaran ============ */
 const SUPABASE_URL = 'https://xkfxiuiaxswwqnybzfvd.supabase.co';
@@ -1143,6 +1162,41 @@ function customConfirm(msg,opts={}){
     function onCancel(){ cleanup(false); }
     function onBackdrop(e){ if(e.target.id==='confirmModal')cleanup(false); }
     function onKey(e){ if(e.key==='Escape')cleanup(false); }
+    okBtn.addEventListener('click',onOk);
+    cancelBtn.addEventListener('click',onCancel);
+    modal.addEventListener('click',onBackdrop);
+    document.addEventListener('keydown',onKey);
+  });
+}
+/* Prompt ketik-ulang teks tertentu sebelum eksekusi aksi permanen (mis. hapus total peserta).
+   Resolve true hanya kalau teks yang diketik persis sama dengan expected. */
+function customPrompt(msg,expected,opts={}){
+  const {title='Konfirmasi',okLabel='Ya, Hapus',cancelLabel='Batal',placeholder=''}=opts;
+  return new Promise(resolve=>{
+    const modal=$('#promptModal'); if(!modal){ resolve(window.prompt(msg)===expected); return; }
+    $('#promptTitle').textContent=title;
+    $('#promptMsg').textContent=msg;
+    $('#promptOkBtn').textContent=okLabel;
+    $('#promptCancelBtn').textContent=cancelLabel;
+    const input=$('#promptInput'); input.value=''; input.placeholder=placeholder;
+    modal.classList.add('show');
+    setTimeout(()=>input.focus(),50);
+    function cleanup(result){
+      modal.classList.remove('show');
+      okBtn.removeEventListener('click',onOk);
+      cancelBtn.removeEventListener('click',onCancel);
+      modal.removeEventListener('click',onBackdrop);
+      document.removeEventListener('keydown',onKey);
+      resolve(result);
+    }
+    const okBtn=$('#promptOkBtn'), cancelBtn=$('#promptCancelBtn');
+    function onOk(){
+      if(input.value.trim()!==expected){ toast('Teks yang diketik tidak sesuai','err'); input.focus(); return; }
+      cleanup(true);
+    }
+    function onCancel(){ cleanup(false); }
+    function onBackdrop(e){ if(e.target.id==='promptModal')cleanup(false); }
+    function onKey(e){ if(e.key==='Escape')cleanup(false); if(e.key==='Enter'){e.preventDefault();onOk();} }
     okBtn.addEventListener('click',onOk);
     cancelBtn.addEventListener('click',onCancel);
     modal.addEventListener('click',onBackdrop);
@@ -1822,7 +1876,7 @@ function renderTable(){
     }
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
-      <td class="kode">${participantCode(p)}</td>
+      <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
@@ -1835,9 +1889,93 @@ function renderTable(){
     e.stopPropagation();
     convertToMaster(b.dataset.convert, b);
   }));
+  body.querySelectorAll('[data-delpid]').forEach(el=>el.addEventListener('click', e=>{
+    e.stopPropagation();
+    deleteParticipant(el.dataset.delpid);
+  }));
 }
 $('#qSearch').addEventListener('input', renderTable);
 $('#qStage').addEventListener('change', renderTable);
+
+/* ============ HAPUS PESERTA TOTAL (data + berkas storage) ============
+   Dipicu dengan klik kode peserta di tabel Data Peserta. Menghapus baris terkait
+   di documents_v2, progress_v2, master_data_v2, finance_bills_v2, finance_payments_v2,
+   berkas fisik di storage bucket 'juara-v2-documents', lalu baris participants_v2
+   itu sendiri. Akun login (Supabase Auth) TIDAK ikut terhapus — hanya data peserta. */
+async function deleteParticipant(pid){
+  const p=PARTICIPANTS.find(x=>x.id===pid);
+  if(!p){ toast('Peserta tidak ditemukan','err'); return; }
+  const kode=participantCode(p);
+  const isMaster=MASTER_IDS.has(pid);
+
+  const ok=await customConfirm(
+    `Peserta "${p.nama||kode}" (${kode}) akan dihapus PERMANEN, termasuk:\n`+
+    `• Data pendaftaran & progres tahap\n`+
+    `• Seluruh berkas dokumen yang sudah diunggah\n`+
+    (isMaster?`• Data di Data Master (peserta sudah di-convert)\n`:``)+
+    `• Tagihan & riwayat pembayaran keuangan\n\n`+
+    `Aksi ini tidak bisa dibatalkan. Lanjutkan?`,
+    {title:'Hapus Peserta Permanen?',okLabel:'Lanjutkan'}
+  );
+  if(!ok)return;
+
+  const confirmed=await customPrompt(
+    `Untuk konfirmasi akhir, ketik kode peserta di bawah ini:\n${kode}`,
+    kode,
+    {title:'Konfirmasi Terakhir',okLabel:'Ya, Hapus Permanen',placeholder:kode}
+  );
+  if(!confirmed)return;
+
+  const el=document.querySelector(`[data-delpid="${pid}"]`);
+  if(el){ el.style.opacity='.5'; el.style.pointerEvents='none'; }
+
+  try{
+    // 1) Hapus berkas fisik di storage (kalau ada)
+    const docs=DOCS_BY_PID[pid]||{};
+    const paths=Object.values(docs).map(d=>d?.storage_path).filter(Boolean);
+    if(paths.length){
+      const {error:rmErr}=await sb.storage.from('juara-v2-documents').remove(paths);
+      if(rmErr)console.warn('Gagal hapus sebagian/semua berkas storage:',rmErr.message);
+    }
+
+    // 2) Hapus baris-baris terkait di semua tabel anak
+    const delOps=[
+      sb.from('documents_v2').delete().eq('participant_id',pid),
+      sb.from('progress_v2').delete().eq('participant_id',pid),
+      sb.from('master_data_v2').delete().eq('participant_id',pid),
+      sb.from('finance_bills_v2').delete().eq('participant_id',pid),
+      sb.from('finance_payments_v2').delete().eq('participant_id',pid)
+    ];
+    const delResults=await Promise.all(delOps);
+    delResults.forEach(r=>{ if(r.error)console.warn('Gagal hapus data terkait:',r.error.message); });
+
+    // 3) Hapus baris peserta itu sendiri (paling akhir)
+    const {error:pErr}=await sb.from('participants_v2').delete().eq('id',pid);
+    if(pErr)throw pErr;
+
+    // 4) Bersihkan cache lokal
+    PARTICIPANTS=PARTICIPANTS.filter(x=>x.id!==pid);
+    delete DOCS_BY_PID[pid];
+    delete STAGE_BY_PID[pid];
+    MASTER_IDS.delete(pid);
+    MASTER_ROWS=MASTER_ROWS.filter(r=>r.participant_id!==pid);
+    FIN_BILLS=FIN_BILLS.filter(b=>b.participant_id!==pid);
+    FIN_PAYMENTS=FIN_PAYMENTS.filter(pm=>pm.participant_id!==pid);
+    if(ACTIVE_PID===pid)closeDetail();
+    if(FIN_ACTIVE_PID===pid)FIN_ACTIVE_PID=null;
+
+    // 5) Refresh tampilan
+    renderTable();
+    renderMasterTable();
+    renderFinanceTable();
+    renderStats();
+    toast(`Peserta "${p.nama||kode}" berhasil dihapus`,'ok');
+  }catch(err){
+    console.error(err);
+    if(el){ el.style.opacity=''; el.style.pointerEvents=''; }
+    toast('Gagal menghapus peserta: '+(err.message||'terjadi kesalahan'),'err');
+  }
+}
 
 /* ============ CONVERT KE DATA MASTER ============ */
 function runConvertProgress(host, durationMs){
@@ -1971,6 +2109,7 @@ async function openDetail(pid){
   $('#mNama').textContent=p.nama||'-';
   $('#mKode').textContent=participantCode(p);
   $('#eNama').value=p.nama||''; $('#eNik').value=p.nik||''; $('#eWa').value=p.telepon||''; $('#eKota').value=p.kota||'';
+  $('#eEmail').value=p.email||'—';
   $('#eJk').value=p.jenis_kelamin||''; $('#eStatusNikah').value=p.status_nikah||'';
   $('#eTempatLahir').value=p.tempat_lahir||''; $('#eTglLahir').value=p.tgl_lahir||'';
   $('#ePendidikan').value=p.pendidikan||''; $('#eAgama').value=p.agama||'';
