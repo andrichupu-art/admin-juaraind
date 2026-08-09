@@ -1037,8 +1037,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <div id="invoiceArea"></div>
       <div class="toolbar" style="margin-top:18px;gap:10px;flex-wrap:wrap">
         <button class="btn b-navy sm" id="btnPrintInvoice">🖨️ Cetak / Simpan PDF</button>
-        <button class="btn b-pri sm" id="btnShareInvoiceWA">📲 Kirim ke WhatsApp</button>
+        <a class="btn b-pri sm" id="btnShareInvoiceWA" href="#" target="_blank" rel="noopener">📲 Kirim ke WhatsApp</a>
+        <button class="btn b-ghost sm" id="btnCopyInvoiceWA">📋 Salin Pesan</button>
       </div>
+      <p style="margin-top:8px;font:600 .74rem var(--body);color:var(--mut)">Tips: tahan <b>Ctrl</b> (Windows) / <b>Cmd</b> (Mac) saat klik "Kirim ke WhatsApp" supaya tab terbuka di background tanpa berpindah halaman.</p>
       <p id="invWaWarn" style="display:none;margin-top:10px;font:600 .78rem var(--body);color:var(--red)">Nomor WhatsApp peserta belum terdaftar. Lengkapi data telepon peserta terlebih dahulu.</p>
     </div>
   </div>
@@ -1999,6 +2001,10 @@ function openInvoice(pid){
   $('#invSubtitle').textContent=`${inv.p.nama||'-'} · ${participantCode(inv.p)}`;
   $('#invoiceArea').innerHTML=invoiceHtml(inv);
   $('#invWaWarn').style.display=normalizePhoneWa(inv.p.telepon)?'none':'block';
+  const num=normalizePhoneWa(inv.p.telepon);
+  const text=encodeURIComponent(invoiceWaText(inv));
+  const waUrl=num?`https://wa.me/${num}?text=${text}`:`https://wa.me/?text=${text}`;
+  const waBtn=$('#btnShareInvoiceWA'); if(waBtn)waBtn.href=waUrl;
   $('#invoiceModal').classList.add('show');
 }
 function closeInvoice(){ $('#invoiceModal').classList.remove('show'); INVOICE_ACTIVE=null; }
@@ -2010,14 +2016,15 @@ $('#btnPrintInvoice')?.addEventListener('click', ()=>{
   $('#invoicePrintArea').innerHTML=invoiceHtml(INVOICE_ACTIVE);
   window.print();
 });
-$('#btnShareInvoiceWA')?.addEventListener('click', ()=>{
+$('#btnCopyInvoiceWA')?.addEventListener('click', async ()=>{
   if(!INVOICE_ACTIVE)return;
-  const num=normalizePhoneWa(INVOICE_ACTIVE.p.telepon);
-  const text=encodeURIComponent(invoiceWaText(INVOICE_ACTIVE));
-  const url=num?`https://wa.me/${num}?text=${text}`:`https://wa.me/?text=${text}`;
-  const waWin=window.open(url,'_blank','noopener');
-  window.focus();
-  if(waWin)setTimeout(()=>window.focus(),150);
+  const text=invoiceWaText(INVOICE_ACTIVE);
+  try{
+    await navigator.clipboard.writeText(text);
+    toast('Pesan invoice disalin ✓ Tinggal paste ke WhatsApp','ok');
+  }catch(err){
+    toast('Gagal menyalin otomatis, silakan salin manual','err');
+  }
 });
 
 function renderTable(){
