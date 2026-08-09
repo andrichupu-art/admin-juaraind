@@ -1179,6 +1179,10 @@ function customPrompt(msg,expected,opts={}){
     $('#promptOkBtn').textContent=okLabel;
     $('#promptCancelBtn').textContent=cancelLabel;
     const input=$('#promptInput'); input.value=''; input.placeholder=placeholder;
+    // Placeholder langsung dikosongkan begitu kolom diklik/difokus, supaya tidak terlihat
+    // seolah-olah sudah terisi otomatis — admin harus benar-benar mengetik ulang kodenya.
+    function onFocusClear(){ input.placeholder=''; }
+    input.addEventListener('focus',onFocusClear);
     modal.classList.add('show');
     setTimeout(()=>input.focus(),50);
     function cleanup(result){
@@ -1187,6 +1191,7 @@ function customPrompt(msg,expected,opts={}){
       cancelBtn.removeEventListener('click',onCancel);
       modal.removeEventListener('click',onBackdrop);
       document.removeEventListener('keydown',onKey);
+      input.removeEventListener('focus',onFocusClear);
       resolve(result);
     }
     const okBtn=$('#promptOkBtn'), cancelBtn=$('#promptCancelBtn');
