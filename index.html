@@ -1644,16 +1644,19 @@ $('#qSearchFin')?.addEventListener('input',renderFinanceTable);
 
 /* ============ VERIFIKASI BUKTI PEMBAYARAN ============
    Peserta unggah bukti transfer lewat portal -> masuk ke payment_proofs_v2
-   dengan status 'pending' (default). Admin di sini yang menyetujui/menolak.
-   Begitu status diubah jadi 'approved', trigger database yang sudah ada
-   otomatis mengalokasikan jumlah_klaim ke kategori-kategori tagihan peserta
-   (finance_payments_v2) — makanya setelah approve kita muat ulang FIN_PAYMENTS
-   biar tabel Kelola Keuangan langsung ikut ter-update. */
-const PP_STATUS_LABEL={ pending:['wait','Menunggu'], approved:['ok','Disetujui'], rejected:['bad','Ditolak'] };
-function ppStatusOf(pp){ return pp.status||'pending'; }
+   dengan status 'menunggu' (default). Admin di sini yang menyetujui/menolak.
+   Begitu status diubah jadi 'disetujui', trigger database yang sudah ada
+   (trg_payment_proof_approval -> handle_payment_proof_approval) otomatis
+   mengalokasikan jumlah_klaim ke kategori-kategori tagihan peserta
+   (finance_payments_v2) dan mengisi reviewed_at sendiri — makanya setelah
+   approve kita muat ulang FIN_PAYMENTS biar tabel Kelola Keuangan langsung
+   ikut ter-update. Nilai status di DB pakai Bahasa Indonesia (constraint
+   CHECK di kolom status): 'menunggu' | 'disetujui' | 'ditolak'. */
+const PP_STATUS_LABEL={ menunggu:['wait','Menunggu'], disetujui:['ok','Disetujui'], ditolak:['bad','Ditolak'] };
+function ppStatusOf(pp){ return pp.status||'menunggu'; }
 function renderBuktiBadge(){
   const el=$('#sbBuktiBadge'); if(!el)return;
-  const n=PAY_PROOFS.filter(pp=>ppStatusOf(pp)==='pending').length;
+  const n=PAY_PROOFS.filter(pp=>ppStatusOf(pp)==='menunggu').length;
   el.textContent=n>99?'99+':String(n);
   el.style.display=n>0?'flex':'none';
 }
@@ -1662,7 +1665,7 @@ function renderBuktiTable(){
   const q=($('#qSearchBukti')?.value||'').trim().toLowerCase();
   const statusFilter=$('#qBuktiStatus')?.value||'';
   let pending=0,approved=0,rejected=0;
-  PAY_PROOFS.forEach(pp=>{ const s=ppStatusOf(pp); if(s==='pending')pending++; else if(s==='approved')approved++; else if(s==='rejected')rejected++; });
+  PAY_PROOFS.forEach(pp=>{ const s=ppStatusOf(pp); if(s==='menunggu')pending++; else if(s==='disetujui')approved++; else if(s==='ditolak')rejected++; });
   if($('#bpStPending')){ $('#bpStPending').textContent=pending; $('#bpStApproved').textContent=approved; $('#bpStRejected').textContent=rejected; }
   renderBuktiBadge();
 
@@ -1676,7 +1679,7 @@ function renderBuktiTable(){
   body.innerHTML=rows.map((pp,i)=>{
     const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
     const s=ppStatusOf(pp);
-    const [cls,label]=PP_STATUS_LABEL[s]||PP_STATUS_LABEL.pending;
+    const [cls,label]=PP_STATUS_LABEL[s]||PP_STATUS_LABEL.menunggu;
     const ocrDiff=pp.ocr_terbaca&&Number(pp.ocr_terbaca)!==Number(pp.jumlah_klaim);
     return `<tr data-ppid="${pp.id}">
       <td>${i+1}</td>
@@ -1687,7 +1690,7 @@ function renderBuktiTable(){
       <td><span class="pill ${cls}">${label}</span></td>
       <td class="aksi-cell"><div class="aksi-cell-in" style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="mini" data-view-bukti="${pp.id}">Lihat Bukti</button>
-        ${s==='pending'?`<button class="mini g" data-approve-bukti="${pp.id}">Setujui</button>
+        ${s==='menunggu'?`<button class="mini g" data-approve-bukti="${pp.id}">Setujui</button>
           <button class="mini r" data-reject-bukti="${pp.id}">Tolak</button>`:''}
       </div></td>
     </tr>`;
@@ -1711,7 +1714,7 @@ async function approveBuktiProof(ppid){
   const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp)return;
   const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
   if(!await customConfirm(`Setujui bukti pembayaran ${formatRupiah(pp.jumlah_klaim)} dari ${p?.nama||'peserta ini'}? Nominal ini akan otomatis dialokasikan ke tagihan peserta.`,{okLabel:'Ya, Setujui'}))return;
-  const {data,error}=await sb.from('payment_proofs_v2').update({status:'approved',reviewed_at:new Date().toISOString()}).eq('id',ppid).select().single();
+  const {data,error}=await sb.from('payment_proofs_v2').update({status:'disetujui'}).eq('id',ppid).select().single();
   if(error)return toast(ppSchemaErrHint(error),'err');
   Object.assign(pp,data);
   renderBuktiTable();
@@ -1734,7 +1737,7 @@ $('#buktiRejectOkBtn')?.addEventListener('click', async ()=>{
   const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp)return;
   const reason=$('#buktiRejectReason')?.value.trim()||null;
   const btn=$('#buktiRejectOkBtn'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Menolak…';
-  const {data,error}=await sb.from('payment_proofs_v2').update({status:'rejected',catatan_admin:reason,reviewed_at:new Date().toISOString()}).eq('id',ppid).select().single();
+  const {data,error}=await sb.from('payment_proofs_v2').update({status:'ditolak',catatan_admin:reason}).eq('id',ppid).select().single();
   btn.disabled=false; btn.textContent=orig;
   if(error)return toast(ppSchemaErrHint(error),'err');
   Object.assign(pp,data);
@@ -1742,12 +1745,15 @@ $('#buktiRejectOkBtn')?.addEventListener('click', async ()=>{
   renderBuktiTable();
   toast('Bukti pembayaran ditolak','ok');
 });
-/* Kolom status/catatan_admin/reviewed_at diasumsikan sudah ada di payment_proofs_v2.
-   Kalau belum, Postgrest bakal balikin error "column ... does not exist" — kita
-   tangkap dan kasih pesan yang jelas biar gampang ditelusuri, bukan cuma error mentah. */
+/* Kolom status/catatan_admin/reviewed_at sudah dikonfirmasi ada di payment_proofs_v2
+   (dicek langsung lewat Supabase). Kolom status punya CHECK constraint yang hanya
+   menerima 'menunggu' | 'disetujui' | 'ditolak', dan trigger trg_payment_proof_approval
+   yang mengalokasikan pembayaran ke finance_payments_v2 begitu status='disetujui'.
+   Hint di bawah tetap dijaga untuk kasus schema berubah di masa depan. */
 function ppSchemaErrHint(error){
   const msg=error?.message||'terjadi kesalahan';
-  if(/column .* does not exist/i.test(msg))return 'Gagal update: kolom status/catatan_admin/reviewed_at belum ada di tabel payment_proofs_v2. Tambahkan dulu kolomnya di Supabase.';
+  if(/column .* does not exist/i.test(msg))return 'Gagal update: kolom status/catatan_admin/reviewed_at tidak ditemukan di tabel payment_proofs_v2. Cek ulang skema di Supabase.';
+  if(/violates check constraint/i.test(msg))return 'Gagal update: nilai status tidak sesuai dengan constraint di kolom status (harus menunggu/disetujui/ditolak).';
   return 'Gagal memproses: '+msg;
 }
 async function reloadFinancePayments(){
