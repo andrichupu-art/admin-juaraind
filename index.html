@@ -273,7 +273,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .doc .ic{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .doc .ic svg{width:22px;height:22px}
 .doc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
-.doc-body h5{font:700 .86rem var(--body);color:var(--ink)}
+.doc-body h5{font:700 .86rem var(--body);color:var(--ink);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.doc-body h5 .req,.doc-body h5 .opt{font:800 .58rem var(--body);letter-spacing:.06em;padding:2px 7px;border-radius:6px}
+.doc-body h5 .req{background:rgba(229,72,77,.1);color:#C0392B}
+.doc-body h5 .opt{background:rgba(120,130,145,.12);color:#5C6B7A}
 .doc .act{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-start}
 .mini{font:700 .66rem var(--body);padding:6px 8px;border-radius:8px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);transition:.2s;white-space:nowrap}
 .mini:hover{background:var(--navy);color:#fff}
@@ -1106,13 +1109,13 @@ const DOC_ICONS={
  foto:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.2a1.7 1.7 0 0 1 1.7-1.7h2l1-1.7h7.6l1 1.7h2a1.7 1.7 0 0 1 1.7 1.7v9.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7V8.2Z" stroke="var(--navy)" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="var(--gold)" stroke="var(--navy)" stroke-width="1.3"/><circle cx="18" cy="9.6" r=".6" fill="var(--navy)"/></svg>'
 };
 const DOCS=[
- {k:'ktp',ic:DOC_ICONS.ktp,t:'KTP'},
- {k:'kk',ic:DOC_ICONS.kk,t:'Kartu Keluarga'},
- {k:'paspor',ic:DOC_ICONS.paspor,t:'Paspor'},
- {k:'ijazah',ic:DOC_ICONS.ijazah,t:'Ijazah Terakhir'},
- {k:'sertifikat',ic:DOC_ICONS.sertifikat,t:'Sertifikat Kompetensi'},
- {k:'medis',ic:DOC_ICONS.medis,t:'Medical Check-Up'},
- {k:'foto',ic:DOC_ICONS.foto,t:'Pas Foto 4×6'}
+ {k:'ktp',ic:DOC_ICONS.ktp,t:'KTP',req:true},
+ {k:'kk',ic:DOC_ICONS.kk,t:'Kartu Keluarga',req:true},
+ {k:'paspor',ic:DOC_ICONS.paspor,t:'Paspor',req:true},
+ {k:'ijazah',ic:DOC_ICONS.ijazah,t:'Ijazah Terakhir',req:true},
+ {k:'sertifikat',ic:DOC_ICONS.sertifikat,t:'Sertifikat Kompetensi',req:false},
+ {k:'medis',ic:DOC_ICONS.medis,t:'Medical Check-Up',req:true},
+ {k:'foto',ic:DOC_ICONS.foto,t:'Pas Foto 4×6',req:true}
 ];
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
@@ -1864,11 +1867,11 @@ function renderTable(){
   body.innerHTML=rows.map((p,i)=>{
     const stage=STAGE_BY_PID[p.id]??0;
     const docs=DOCS_BY_PID[p.id]||{};
-    const totalReq=DOCS.length;
-    const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
-    const kolektif=DOCS.filter(d=>docs[d.k]?.status==='kolektif').length;
+    const totalReq=DOCS.filter(d=>d.req).length;
+    const verified=DOCS.filter(d=>d.req&&docs[d.k]?.status==='terverifikasi').length;
+    const kolektif=DOCS.filter(d=>d.req&&docs[d.k]?.status==='kolektif').length;
     const accepted=verified+kolektif;
-    const uploaded=DOCS.filter(d=>docs[d.k]).length;
+    const uploaded=DOCS.filter(d=>d.req&&docs[d.k]).length;
     const isComplete=totalReq>0&&accepted===totalReq;
     const isMaster=MASTER_IDS.has(p.id);
     let aksiHtml;
@@ -2065,9 +2068,9 @@ async function autoAddKolektifBills(pid){
 async function convertToMaster(pid, btn){
   const p=PARTICIPANTS.find(x=>x.id===pid); if(!p)return;
   const docs=DOCS_BY_PID[pid]||{};
-  const totalReq=DOCS.length;
-  const verified=DOCS.filter(d=>docs[d.k]?.status==='terverifikasi').length;
-  const kolektif=DOCS.filter(d=>docs[d.k]?.status==='kolektif').length;
+  const totalReq=DOCS.filter(d=>d.req).length;
+  const verified=DOCS.filter(d=>d.req&&docs[d.k]?.status==='terverifikasi').length;
+  const kolektif=DOCS.filter(d=>d.req&&docs[d.k]?.status==='kolektif').length;
   if(verified+kolektif!==totalReq)return toast('Dokumen peserta belum lengkap terverifikasi/ditandai kolektif','err');
   if(MASTER_IDS.has(pid))return toast('Peserta sudah ada di Data Master','err');
 
@@ -2190,7 +2193,7 @@ function renderDocList(pid){
     return `<div class="doc">
       <div class="ic">${d.ic}</div>
       <div class="doc-body">
-        <h5>${d.t}</h5>
+        <h5>${d.t} <span class="${d.req?'req':'opt'}">${d.req?'WAJIB':'OPSIONAL'}</span></h5>
         <div class="act">
           <span class="pill ${pillClass}">${pillText}</span>
           ${up&&!isKolektif?`<button class="mini" data-view="${d.k}">Lihat</button>
