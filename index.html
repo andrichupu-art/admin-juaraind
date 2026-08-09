@@ -1288,6 +1288,7 @@ async function loadAll(){
     fillAsalSekolahDatalist();
     renderFinanceTable();
     refreshFpCategoryOptions();
+    sweepStaleStages();
   }catch(err){
     console.error(err);
     $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Gagal memuat data: '+(err.message||'periksa koneksi/izin akses')+'</td></tr>';
@@ -2000,6 +2001,45 @@ async function setDocStatus(pid,jenis,status){
   doc.status=status;
   renderDocList(pid); renderTable(); renderStats();
   toast(status==='terverifikasi'?'Dokumen diverifikasi ✓':'Dokumen ditandai perlu diperbaiki','ok');
+  await maybeAdvanceStage(pid);
+}
+/* Begitu SEMUA dokumen wajib berstatus 'terverifikasi', tahap Progres Penempatan
+   otomatis dinaikkan dari "Berkas Diterima" (0) ke "Verifikasi Dokumen" (1) —
+   supaya peserta tak perlu menunggu admin mengubahnya manual lewat panel Tahap.
+   Hanya maju otomatis dari tahap 0; tahap yang sudah lebih lanjut (mis. admin
+   sudah geser manual ke tahap 3+) tidak diutak-atik oleh fungsi ini. */
+async function maybeAdvanceStage(pid){
+  const docs=DOCS_BY_PID[pid]||{};
+  const allVerified=DOCS.every(d=>docs[d.k]?.status==='terverifikasi');
+  if(!allVerified)return;
+  const currentStage=STAGE_BY_PID[pid]??0;
+  if(currentStage!==0)return;
+  const {error}=await sb.from('progress_v2').upsert({participant_id:pid,tahap:1,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
+  if(error){console.error('Gagal menaikkan tahap otomatis:',error);return;}
+  STAGE_BY_PID[pid]=1;
+  if(ACTIVE_PID===pid){ $('#eStage').value='1'; ensureCsel($('#eStage')); }
+  renderTable(); renderStats();
+  toast('Semua dokumen terverifikasi — tahap otomatis naik ke "Verifikasi Dokumen" ✓','ok');
+}
+/* Dijalankan sekali tiap loadAll(): menyisir peserta LAMA yang berkasnya sudah
+   lengkap terverifikasi dari sebelumnya (mis. sebelum fitur auto-advance ini
+   ada) tapi tahapnya masih nyangkut di 0, lalu menaikkannya juga. Tidak
+   menampilkan toast per-peserta supaya tidak berisik saat halaman dibuka. */
+async function sweepStaleStages(){
+  const stuckPids=PARTICIPANTS
+    .map(p=>p.id)
+    .filter(pid=>(STAGE_BY_PID[pid]??0)===0)
+    .filter(pid=>{
+      const docs=DOCS_BY_PID[pid]||{};
+      return DOCS.every(d=>docs[d.k]?.status==='terverifikasi');
+    });
+  if(!stuckPids.length)return;
+  const rows=stuckPids.map(pid=>({participant_id:pid,tahap:1,updated_at:new Date().toISOString()}));
+  const {error}=await sb.from('progress_v2').upsert(rows,{onConflict:'participant_id'});
+  if(error){console.error('Gagal menyisir tahap lama:',error);return;}
+  stuckPids.forEach(pid=>{ STAGE_BY_PID[pid]=1; });
+  if(ACTIVE_PID&&stuckPids.includes(ACTIVE_PID)){ $('#eStage').value='1'; ensureCsel($('#eStage')); }
+  renderTable(); renderStats();
 }
 
 $('#btnSaveInfo').addEventListener('click', async ()=>{
