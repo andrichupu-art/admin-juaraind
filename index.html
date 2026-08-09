@@ -190,7 +190,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .pill{display:inline-flex;align-items:center;gap:5px;font:700 .68rem var(--body);letter-spacing:.03em;
   padding:5px 11px;border-radius:100px;border:1.5px solid var(--line);white-space:nowrap}
 .pill.ok{background:#E9FBF2;border-color:#B7EED2;color:#0E8F55}
-.pill.wait{background:#FFF6E9;border-color:#F3D9A6;color:#8A5B12}
+.pill.wait{background:rgba(255,255,255,.55);border-color:#111111;color:#111111}
 .pill.bad{background:#FDEAEA;border-color:#F5C2C2;color:#B32C2C}
 .stagebar{display:flex;align-items:center;gap:8px}
 .stagebar .track{width:70px;height:7px;border-radius:99px;background:#EDEAE0;overflow:hidden}
@@ -316,7 +316,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 
 .convert-progress{display:flex;align-items:center;gap:8px;width:150px;max-width:100%}
 .convert-progress .cp-track{flex:1;height:9px;background:#EAE6DA;border-radius:99px;overflow:hidden;position:relative}
-.convert-progress .cp-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--gold),#DDA45E);position:relative;transition:width .1s linear}
+.convert-progress .cp-fill{height:100%;width:0%;border-radius:99px;background:#3B6D11;position:relative;transition:width .1s linear}
 .convert-progress .cp-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);width:40px;animation:cp-shine 1.1s linear infinite}
 .convert-progress .cp-pct{font:800 .72rem var(--body);color:var(--navy);min-width:34px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
 @keyframes cp-shine{0%{transform:translateX(-40px)}100%{transform:translateX(150px)}}
