@@ -143,6 +143,34 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .tab-panel.active{display:block;animation:tabIn .2s ease}
 @keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
+.stats-3col{grid-template-columns:repeat(3,1fr)}
+.stat-clickable{cursor:pointer;transition:.2s}
+.stat-clickable:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px)}
+.nav-cards-wrap{display:flex;flex-direction:column;gap:16px}
+.nav-row{display:grid;gap:16px}
+.nav-row-2{grid-template-columns:repeat(2,1fr)}
+.nav-row-3{grid-template-columns:repeat(3,1fr)}
+.nav-row-1{grid-template-columns:1fr}
+.nav-card{
+  cursor:pointer;border-radius:16px;padding:26px 22px;display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(135deg,#1E4478 0%,#0B1F3A 100%);
+  color:#fff;transition:.2s;border:1.5px solid rgba(255,255,255,.08);
+}
+.nav-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(11,31,58,.35);border-color:var(--gold)}
+.nav-card .ic{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;color:var(--gold)}
+.nav-card .ic svg{width:30px;height:30px;stroke:currentColor;fill:none}
+.nav-card-label{font:800 .95rem var(--body);letter-spacing:.01em}
+.nav-card-stat{padding:22px 26px;flex-direction:row;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.nav-stat-main{display:flex;flex-direction:column;gap:6px}
+.nav-stat-num{font:800 2.4rem var(--body);color:#fff;line-height:1}
+.nav-stat-label{font:700 .78rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.nav-stat-mini-row{display:flex;gap:14px;flex-wrap:wrap}
+.nav-stat-mini{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 16px;min-width:140px}
+.nav-stat-mini b{display:block;font:800 1.3rem var(--body);color:#fff;line-height:1.2}
+.nav-stat-mini span{display:block;font:700 .62rem var(--body);letter-spacing:.04em;text-transform:uppercase;color:#B9C6DC;margin-top:3px}
+@media(max-width:760px){ .nav-card-stat{flex-direction:column;align-items:flex-start} .nav-stat-mini-row{width:100%} .nav-stat-mini{flex:1;min-width:120px} }
+@media(max-width:760px){ .nav-row-2,.nav-row-3{grid-template-columns:1fr 1fr} }
+@media(max-width:480px){ .nav-row-2,.nav-row-3{grid-template-columns:1fr} }
 .stat{background:var(--card);border-radius:16px;border:1.5px solid var(--line);padding:18px 20px}
 .stat b{display:block;font:800 1.9rem var(--disp);color:var(--navy)}
 .stat span{font:700 .72rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
@@ -560,9 +588,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
       <a class="sb-link" data-target="secMaster"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span> Data Master</a>
       <a class="sb-link" data-target="secSekolah"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 8.5v6"/></svg></span> Sekolah Mitra</a>
       <span class="sb-label">Lainnya</span>
-      <a class="sb-link" data-target="secAdministrasi"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2.06 2.06 0 1 1-2.92 2.92l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56v.16a2.06 2.06 0 1 1-4.12 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2.06 2.06 0 1 1-2.92-2.92l.06-.06a1.7 1.7 0 0 0 .34-1.87A1.7 1.7 0 0 0 2.7 12.47h-.16a2.06 2.06 0 1 1 0-4.12h.09A1.7 1.7 0 0 0 4.2 7.24a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.06 2.06 0 1 1 2.92-2.92l.06.06a1.7 1.7 0 0 0 1.87.34h.08a1.7 1.7 0 0 0 1.03-1.56V1.06a2.06 2.06 0 1 1 4.12 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.06 2.06 0 1 1 2.92 2.92l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.56 1.03h.16a2.06 2.06 0 1 1 0 4.12h-.09a1.7 1.7 0 0 0-1.56 1.03z"/></svg></span> Administrasi</a>
+      <a class="sb-link" data-target="secKeuangan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span> ADM Peserta</a>
       <a class="sb-link" data-target="secEmail"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span> Kelola Email</a>
-      <a class="sb-link" data-target="secKeuangan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span> Kelola Keuangan</a>
       <a class="sb-link" data-target="secBukti"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15.5 15.5 1.3 1.3 2.2-2.4" stroke="var(--green,#17B26A)"/></svg></span> Bukti Pembayaran<span class="sb-badge" id="sbBuktiBadge" style="display:none">0</span></a>
       <a id="sbRefresh"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.34 5.66"/><polyline points="20 4 20 11 13 11"/></svg></span> Muat Ulang</a>
       <span class="sb-label">Akun</span>
@@ -573,13 +600,51 @@ td.nama span{color:var(--mut);font-size:.78rem}
   <div class="main-content">
     <div class="wrap">
       <div class="tab-panel active" id="secRingkasan">
-        <div class="stats">
-          <div class="stat"><b id="stTotal">0</b><span>Total Peserta</span></div>
-          <div class="stat warn"><b id="stWait">0</b><span>Dokumen Menunggu</span></div>
-          <div class="stat bad"><b id="stReject">0</b><span>Dokumen Ditolak</span></div>
-          <div class="stat ok"><b id="stDone">0</b><span>Sudah Tahap 6</span></div>
-          <div class="stat"><b id="stPria">0</b><span>Peserta Laki-laki</span></div>
-          <div class="stat"><b id="stWanita">0</b><span>Peserta Perempuan</span></div>
+        <div class="nav-cards-wrap">
+          <div class="nav-row nav-row-1">
+            <div class="nav-card nav-card-stat" data-target="secPeserta">
+              <div class="nav-stat-main">
+                <div class="nav-stat-num" id="stTotal">0</div>
+                <div class="nav-stat-label">Total Pendaftar</div>
+              </div>
+              <div class="nav-stat-mini-row">
+                <div class="nav-stat-mini"><b id="stPria">0</b><span>Jumlah Peserta Laki-laki</span></div>
+                <div class="nav-stat-mini"><b id="stWanita">0</b><span>Jumlah Peserta Perempuan</span></div>
+                <div class="nav-stat-mini"><b id="stVerified">0</b><span>Data Terverifikasi</span></div>
+                <div class="nav-stat-mini"><b id="stLolos">0</b><span>Total Peserta Lolos</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="nav-row nav-row-2">
+            <div class="nav-card" data-target="secPeserta">
+              <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></span>
+              <span class="nav-card-label">Data Peserta</span>
+            </div>
+            <div class="nav-card" data-target="secMaster">
+              <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>
+              <span class="nav-card-label">Data Master</span>
+            </div>
+          </div>
+          <div class="nav-row nav-row-3">
+            <div class="nav-card" data-target="secKeuangan">
+              <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span>
+              <span class="nav-card-label">ADM Peserta</span>
+            </div>
+            <div class="nav-card" data-target="secBukti">
+              <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15.5 15.5 1.3 1.3 2.2-2.4"/></svg></span>
+              <span class="nav-card-label">Bukti Pembayaran</span>
+            </div>
+            <div class="nav-card" data-target="secSekolah">
+              <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 8.5v6"/></svg></span>
+              <span class="nav-card-label">Sekolah Mitra</span>
+            </div>
+          </div>
+          <div class="nav-row nav-row-1">
+            <div class="nav-card" data-target="secEmail">
+              <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span>
+              <span class="nav-card-label">Kelola Email</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -634,14 +699,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
             </tr></thead>
             <tbody id="tblSekolahBody"><tr class="empty-row"><td colspan="4">Memuat data…</td></tr></tbody>
           </table>
-        </div>
-      </div>
-
-      <div class="tab-panel" id="secAdministrasi">
-        <div class="devnote">
-          <svg viewBox="0 0 24 24" width="40" height="40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor" stroke="none"/></svg>
-          <h3>Administrasi</h3>
-          <p>Fitur ini sedang dalam pengembangan.</p>
         </div>
       </div>
 
@@ -1417,16 +1474,18 @@ $('#btnSidebarToggle').addEventListener('click', toggleSidebar);
 $('#sbOverlay').addEventListener('click', closeSidebar);
 $('#sbRefresh').addEventListener('click', ()=>{ loadAll(); if(window.innerWidth<=860)closeSidebar(); });
 $('#sbLogout').addEventListener('click', ()=>{ $('#btnLogout').click(); });
+function goToTab(targetId){
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.toggle('active', l.dataset.target===targetId));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id===targetId));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=860) closeSidebar();
+  if(targetId==='secEmail' && !MAIL_LOADED){ MAIL_LOADED=true; initMailPanel(); }
+}
 document.querySelectorAll('.sb-link').forEach(link=>{
-  link.addEventListener('click', ()=>{
-    document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
-    link.classList.add('active');
-    const targetId=link.dataset.target;
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id===targetId));
-    window.scrollTo({top:0,behavior:'smooth'});
-    if(window.innerWidth<=860) closeSidebar();
-    if(targetId==='secEmail' && !MAIL_LOADED){ MAIL_LOADED=true; initMailPanel(); }
-  });
+  link.addEventListener('click', ()=>{ goToTab(link.dataset.target); });
+});
+document.querySelectorAll('.nav-card').forEach(card=>{
+  card.addEventListener('click', ()=>{ goToTab(card.dataset.target); });
 });
 if(window.innerWidth<=860) closeSidebar();
 $('#frmLogin').addEventListener('submit', async e=>{
@@ -1527,20 +1586,24 @@ async function loadAll(){
 }
 
 function renderStats(){
-  let wait=0,reject=0,done=0,pria=0,wanita=0;
+  let wait=0,reject=0,done=0,pria=0,wanita=0,verified=0;
+  const reqKeys=DOCS.filter(d=>d.req).map(d=>d.k);
   PARTICIPANTS.forEach(p=>{
     const docs=DOCS_BY_PID[p.id]||{};
     Object.values(docs).forEach(d=>{ if(d.status==='menunggu')wait++; if(d.status==='ditolak')reject++; });
     if((STAGE_BY_PID[p.id]??0)>=5)done++;
     if(p.jenis_kelamin==='Laki-laki')pria++;
     else if(p.jenis_kelamin==='Perempuan')wanita++;
+    if(reqKeys.length && reqKeys.every(k=>isDocAccepted(docs[k])))verified++;
   });
-  $('#stTotal').textContent=PARTICIPANTS.length;
-  $('#stWait').textContent=wait;
-  $('#stReject').textContent=reject;
-  $('#stDone').textContent=done;
-  $('#stPria').textContent=pria;
-  $('#stWanita').textContent=wanita;
+  $('#stTotal')&&($('#stTotal').textContent=PARTICIPANTS.length);
+  $('#stWait')&&($('#stWait').textContent=wait);
+  $('#stReject')&&($('#stReject').textContent=reject);
+  $('#stDone')&&($('#stDone').textContent=done);
+  $('#stPria')&&($('#stPria').textContent=pria);
+  $('#stWanita')&&($('#stWanita').textContent=wanita);
+  $('#stVerified')&&($('#stVerified').textContent=verified);
+  $('#stLolos')&&($('#stLolos').textContent=done);
 }
 
 function participantCode(p){ return p.kode_peserta || (p.id?'JR-'+p.id.slice(0,8).toUpperCase():'—'); }
