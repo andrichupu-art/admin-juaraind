@@ -325,6 +325,28 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-acc-item:last-child{border-bottom:none}
 .mail-acc-item b{font:700 .85rem var(--body);color:var(--ink);display:block}
 .mail-acc-item span{font:600 .74rem var(--body);color:var(--mut)}
+.mail-acc-count{font:800 .68rem var(--body);color:var(--navy);background:#EEF3FA;padding:4px 10px;border-radius:100px;flex-shrink:0}
+.mail-acc-search{position:relative;margin-bottom:12px}
+.mail-acc-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--mut);pointer-events:none}
+.mail-acc-search input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px 9px 36px;font:600 .82rem var(--body);color:var(--ink);background:#fff;transition:.15s}
+.mail-acc-search input:focus{outline:none;border-color:var(--navy)}
+.mail-acc-scroll{max-height:296px;overflow-y:auto;border:1.5px solid var(--line);border-radius:12px;padding:2px 12px}
+.mail-acc-row{display:flex;align-items:center;gap:11px;padding:9px 2px;border-bottom:1px solid var(--line)}
+.mail-acc-row:last-child{border-bottom:none}
+.mail-acc-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font:800 .72rem var(--disp);flex-shrink:0;text-transform:uppercase}
+.mail-acc-row-info{flex:1;min-width:0}
+.mail-acc-row-info b{display:block;font:700 .82rem var(--body);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail-acc-row-info span{display:block;font:600 .72rem var(--body);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail-acc-del{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:#fff;color:var(--mut);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:.15s}
+.mail-acc-del svg{width:14px;height:14px}
+.mail-acc-del:hover{border-color:var(--red);color:var(--red);background:#FDEEEE}
+.mail-acc-empty{color:var(--mut);font-size:.82rem;text-align:center;padding:20px 4px}
+.acc-toggle-h{cursor:pointer;user-select:none;justify-content:space-between!important}
+.acc-toggle-h svg{width:15px;height:15px;color:var(--navy);transition:transform .2s;flex-shrink:0}
+.acc-toggle-h.open svg{transform:rotate(180deg)}
+#maAddBody{overflow:hidden;max-height:0;transition:max-height .25s ease}
+#maAddBody.open{max-height:520px}
+#maAddBody .fld:first-child{margin-top:14px}
 
 
 
@@ -1077,22 +1099,36 @@ td.nama span{color:var(--mut);font-size:.78rem}
     </div>
     <div class="box-body">
       <div class="box-sec">
-        <h4>📋 Akun Terdaftar</h4>
-        <div id="mailAccList"><p style="color:var(--mut);font-size:.82rem">Memuat…</p></div>
-      </div>
-      <div class="box-sec">
-        <h4>➕ Tambah Akun</h4>
-        <div class="fld"><label>Label</label><input type="text" id="maLabel" placeholder="Contoh: Juara 199"></div>
-        <div class="fld"><label>Alamat Email</label><input type="email" id="maEmail" placeholder="juara199@juaraind.com"></div>
-        <div class="fld"><label>Kata Sandi Email</label><input type="password" id="maPass" autocomplete="new-password"></div>
-        <div class="info-grid">
-          <div class="fld"><label>IMAP Host</label><input type="text" id="maImapHost" value="mail.juaraind.com"></div>
-          <div class="fld"><label>IMAP Port</label><input type="text" id="maImapPort" value="993"></div>
-          <div class="fld"><label>SMTP Host</label><input type="text" id="maSmtpHost" value="mail.juaraind.com"></div>
-          <div class="fld"><label>SMTP Port</label><input type="text" id="maSmtpPort" value="465"></div>
+        <h4 style="justify-content:space-between">
+          <span style="display:flex;align-items:center;gap:8px">📋 Akun Terdaftar</span>
+          <span class="mail-acc-count" id="maCount">0 akun</span>
+        </h4>
+        <div class="mail-acc-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="maSearch" placeholder="Cari label atau alamat email…">
         </div>
-        <button class="btn b-navy sm" id="btnMailAccAdd" style="margin-top:6px">💾 Simpan Akun</button>
-        <p class="err-txt" id="maErr"></p>
+        <div class="mail-acc-scroll">
+          <div id="mailAccList"><p class="mail-acc-empty">Memuat…</p></div>
+        </div>
+      </div>
+      <div class="box-sec" style="margin-bottom:4px">
+        <h4 class="acc-toggle-h" id="maAddToggle">
+          <span style="display:flex;align-items:center;gap:8px">➕ Tambah Akun</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </h4>
+        <div id="maAddBody">
+          <div class="fld"><label>Label</label><input type="text" id="maLabel" placeholder="Contoh: Juara 199"></div>
+          <div class="fld"><label>Alamat Email</label><input type="email" id="maEmail" placeholder="juara199@juaraind.com"></div>
+          <div class="fld"><label>Kata Sandi Email</label><input type="password" id="maPass" autocomplete="new-password"></div>
+          <div class="info-grid">
+            <div class="fld"><label>IMAP Host</label><input type="text" id="maImapHost" value="mail.juaraind.com"></div>
+            <div class="fld"><label>IMAP Port</label><input type="text" id="maImapPort" value="993"></div>
+            <div class="fld"><label>SMTP Host</label><input type="text" id="maSmtpHost" value="mail.juaraind.com"></div>
+            <div class="fld"><label>SMTP Port</label><input type="text" id="maSmtpPort" value="465"></div>
+          </div>
+          <button class="btn b-navy sm" id="btnMailAccAdd" style="margin-top:6px">💾 Simpan Akun</button>
+          <p class="err-txt" id="maErr"></p>
+        </div>
       </div>
     </div>
   </div>
@@ -3307,16 +3343,43 @@ async function initMailPanel(){
   }
 }
 
+const ACC_TRASH_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+
 function renderMailAccList(){
+  const q=($('#maSearch')?.value||'').trim().toLowerCase();
   const wrap=$('#mailAccList');
-  if(!MAIL_ACCOUNTS.length){ wrap.innerHTML='<p style="color:var(--mut);font-size:.82rem">Belum ada akun terdaftar.</p>'; return; }
-  wrap.innerHTML=MAIL_ACCOUNTS.map(a=>`
-    <div class="mail-acc-item">
-      <div><b>${escapeHtml(a.label||'-')}</b><span>${escapeHtml(a.email)}</span></div>
-      <button class="mini r" data-del-acc="${a.id}">Hapus</button>
-    </div>`).join('');
+  const countEl=$('#maCount');
+  if(countEl)countEl.textContent=MAIL_ACCOUNTS.length+' akun';
+
+  if(!MAIL_ACCOUNTS.length){ wrap.innerHTML='<p class="mail-acc-empty">Belum ada akun terdaftar.</p>'; return; }
+
+  const filtered=q
+    ? MAIL_ACCOUNTS.filter(a=>(a.label||'').toLowerCase().includes(q)||(a.email||'').toLowerCase().includes(q))
+    : MAIL_ACCOUNTS;
+
+  if(!filtered.length){ wrap.innerHTML='<p class="mail-acc-empty">Tidak ada akun yang cocok dengan pencarian.</p>'; return; }
+
+  wrap.innerHTML=filtered.map(a=>{
+    const initial=escapeHtml((a.label||a.email||'?').trim().charAt(0)||'?');
+    return `
+    <div class="mail-acc-row">
+      <div class="mail-acc-avatar">${initial}</div>
+      <div class="mail-acc-row-info">
+        <b>${escapeHtml(a.label||'-')}</b>
+        <span>${escapeHtml(a.email)}</span>
+      </div>
+      <button class="mail-acc-del" data-del-acc="${a.id}" title="Hapus akun">${ACC_TRASH_SVG}</button>
+    </div>`;
+  }).join('');
   wrap.querySelectorAll('[data-del-acc]').forEach(b=>b.addEventListener('click', ()=>deleteMailAccount(b.dataset.delAcc)));
 }
+
+$('#maSearch')?.addEventListener('input', renderMailAccList);
+
+$('#maAddToggle')?.addEventListener('click', ()=>{
+  $('#maAddToggle').classList.toggle('open');
+  $('#maAddBody').classList.toggle('open');
+});
 
 async function deleteMailAccount(id){
   if(!await customConfirm('Hapus akun email ini? Password tersimpan juga akan terhapus.'))return;
@@ -3521,7 +3584,11 @@ $('#mailAcc').addEventListener('change', ()=>{
 });
 $('#btnMailRefresh').addEventListener('click', loadMailList);
 
-$('#btnMailAccounts').addEventListener('click', ()=>{ renderMailAccList(); $('#mailAccModal').classList.add('show'); });
+$('#btnMailAccounts').addEventListener('click', ()=>{
+  const s=$('#maSearch'); if(s)s.value='';
+  renderMailAccList();
+  $('#mailAccModal').classList.add('show');
+});
 $('#btnCloseMailAcc').addEventListener('click', ()=>$('#mailAccModal').classList.remove('show'));
 $('#mailAccModal').addEventListener('click', e=>{ if(e.target.id==='mailAccModal')$('#mailAccModal').classList.remove('show'); });
 
