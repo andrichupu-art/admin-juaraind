@@ -169,6 +169,11 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.25);
   animation:ncPulse 1.8s ease-in-out infinite}
 @keyframes ncPulse{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.55)}50%{box-shadow:0 0 0 6px rgba(211,47,47,0)}}
+/* Varian gold untuk badge yang sifatnya informasi (bukan urgent/menunggu
+   approval seperti nc-badge merah) — dipakai badge jumlah peserta dengan
+   tagihan kolektif di card ADM Peserta. Tidak pakai animasi pulse supaya
+   nggak terkesan "butuh aksi segera" seperti Bukti Pembayaran. */
+.nc-badge.nc-badge-gold{background:var(--gold,#c9a227);color:#1a1a2e;animation:none;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 /* Watermark: ikon besar transparan di balik konten kartu, posisi & rotasi
    berbeda-beda per kartu supaya tidak terasa berulang/monoton. */
 .nav-card .wm{position:absolute;opacity:.10;pointer-events:none;color:#fff;transition:.3s;--wm-rot:0deg}
@@ -695,6 +700,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
               <span class="nav-card-label">Data Master</span>
             </div>
             <div class="nav-card span-1" data-target="secKeuangan">
+              <span class="nc-badge nc-badge-gold" id="ncFinKolektifBadge">0</span>
               <span class="wm wm-br"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span>
               <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span>
               <span class="nav-card-label">ADM Peserta</span>
@@ -1812,6 +1818,32 @@ function financeSummaryFor(pid){
 }
 const FIN_STATUS_LABEL={ 'belum-ada':['wait','Belum Ada Tagihan'], 'lunas':['ok','Lunas'], 'cicilan':['ok','Cicilan'], 'belum-bayar':['bad','Belum Bayar'] };
 
+/* Cek apakah peserta punya tagihan yang berasal dari dokumen kolektif
+   (Pembuatan Paspor / Medical Check-Up Kolektif — lihat KOLEKTIF_BILL_LABEL
+   & autoAddKolektifBills di bagian bawah). Dipakai untuk badge "Kolektif"
+   di tabel ADM Peserta supaya admin finance langsung ngeh tanpa buka
+   modal Kelola satu-satu. */
+function hasKolektifBill(pid){
+  const catIds=new Set(FIN_BILLS.filter(b=>b.participant_id===pid).map(b=>b.category_id));
+  if(!catIds.size)return false;
+  const kolektifNames=new Set(Object.values(KOLEKTIF_BILL_LABEL).map(n=>n.toLowerCase()));
+  return FIN_CATS.some(c=>catIds.has(c.id)&&kolektifNames.has((c.nama||'').trim().toLowerCase()));
+}
+
+/* Badge jumlah peserta dengan tagihan kolektif di card "ADM Peserta" pada
+   dashboard Ringkasan — supaya admin finance langsung lihat dari home,
+   tanpa perlu buka tab ADM Peserta dulu. Dihitung dari peserta yang sudah
+   di Data Master (MASTER_IDS) dan punya minimal satu tagihan kolektif
+   (lihat hasKolektifBill di atas) yang belum lunas. */
+function renderFinKolektifBadge(){
+  const nc=$('#ncFinKolektifBadge'); if(!nc)return;
+  const masterParticipants=PARTICIPANTS.filter(p=>MASTER_IDS.has(p.id));
+  const n=masterParticipants.filter(p=>hasKolektifBill(p.id)&&financeSummaryFor(p.id).status!=='lunas').length;
+  const label=n>99?'99+':String(n);
+  nc.textContent=label;
+  nc.style.display=n>0?'flex':'none';
+}
+
 function renderFinanceTable(){
   const body=$('#tblFinBody'); if(!body)return;
   const q=($('#qSearchFin')?.value||'').trim().toLowerCase();
@@ -1834,6 +1866,7 @@ function renderFinanceTable(){
     $('#finStBelumLunas').textContent=belumLunas;
   }
 
+  renderFinKolektifBadge();
   if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="9">Belum ada peserta yang di-convert ke Data Master.</td></tr>'; return; }
   body.innerHTML=rows.map((p,i)=>{
     const s=financeSummaryFor(p.id);
@@ -1841,7 +1874,7 @@ function renderFinanceTable(){
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
       <td class="kode">${participantCode(p)}</td>
-      <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
+      <td class="nama"><b>${escapeHtml(p.nama||'-')}${hasKolektifBill(p.id)?' <span class="pill kolektif" style="font-size:.6rem;padding:2px 7px;vertical-align:middle" title="Salah satu tagihan berasal dari dokumen kolektif">Kolektif</span>':''}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
       <td>${escapeHtml(p.kota||'-')}</td>
       <td>${formatRupiah(s.totalTagihan)}</td>
       <td>${formatRupiah(s.totalDibayar)}</td>
