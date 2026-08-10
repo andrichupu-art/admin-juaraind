@@ -1871,10 +1871,10 @@ function renderFinanceTable(){
   body.innerHTML=rows.map((p,i)=>{
     const s=financeSummaryFor(p.id);
     const [cls,label]=FIN_STATUS_LABEL[s.status];
-    return `<tr data-pid="${p.id}">
+    return `<tr data-pid="${p.id}"${hasKolektifBill(p.id)?' style="background:#EAF4FD" title="Salah satu tagihan berasal dari dokumen kolektif"':''}>
       <td>${i+1}</td>
       <td class="kode">${participantCode(p)}</td>
-      <td class="nama"${hasKolektifBill(p.id)?' style="background:#EAF4FD" title="Salah satu tagihan berasal dari dokumen kolektif"':''}><b>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
+      <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
       <td>${escapeHtml(p.kota||'-')}</td>
       <td>${formatRupiah(s.totalTagihan)}</td>
       <td>${formatRupiah(s.totalDibayar)}</td>
