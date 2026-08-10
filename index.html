@@ -1452,9 +1452,9 @@ const DOCS=[
 ];
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
-/* Jenis dokumen yang bisa dicek otomatis pakai AI vision (KTP & Paspor punya
-   nama/tanggal lahir tercetak jelas; KK/ijazah/dll belum didukung). */
-const AUTOVERIFY_DOC_TYPES=['ktp','paspor'];
+/* Jenis dokumen yang dicek otomatis pakai AI vision (Gemini) — semua dokumen
+   WAJIB/OPSIONAL kecuali Pas Foto (foto tidak punya data teks utk dicocokkan). */
+const AUTOVERIFY_DOC_TYPES=DOCS.filter(d=>d.k!=='foto').map(d=>d.k);
 let MASTER_ROWS=[], MASTER_IDS=new Set();
 let SEKOLAH_MITRA=[];
 let FIN_CATS=[], FIN_BILLS=[], FIN_PAYMENTS=[], FIN_ACTIVE_PID=null;
