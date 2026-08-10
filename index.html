@@ -730,6 +730,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
             <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
             <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
           </select>
+          <button class="btn b-navy sm" id="btnAutoVerify" title="Cek NIK, Nama &amp; Tanggal Lahir di foto KTP/Paspor vs data profil pakai AI">🤖 Verifikasi Otomatis</button>
         </div>
 
         <div class="tbl-wrap">
@@ -1281,6 +1282,28 @@ td.nama span{color:var(--mut);font-size:.78rem}
 
 <div id="toastWrap"></div>
 
+<!-- ============ MODAL VERIFIKASI OTOMATIS (AI: cek KTP/Paspor vs data profil) ============ -->
+<div class="modal" id="autoVerifyModal">
+  <div class="box" style="max-width:560px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>🤖 Verifikasi Otomatis Dokumen</h3><p>Mencocokkan NIK, Nama &amp; Tanggal Lahir di foto KTP/Paspor dengan data profil</p></div>
+      <button class="x" id="btnCloseAutoVerify">✕</button>
+    </div>
+    <div class="box-body">
+      <div style="background:#F4F1E8;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font:700 .78rem var(--body);color:var(--navy);margin-bottom:8px">
+          <span id="avProgLabel">Menyiapkan…</span><span id="avProgCount">0 / 0</span>
+        </div>
+        <div style="height:8px;border-radius:99px;background:#E4E0D2;overflow:hidden">
+          <div id="avProgBar" style="height:100%;width:0%;background:var(--navy);transition:.25s"></div>
+        </div>
+      </div>
+      <div id="avLog" style="max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+      <button class="btn b-navy sm" id="btnAvClose" style="width:100%;justify-content:center;margin-top:14px;display:none">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL KONFIRMASI (pengganti confirm() bawaan browser) ============ -->
 <div class="modal" id="confirmModal">
   <div class="confirm-box">
@@ -1429,6 +1452,9 @@ const DOCS=[
 ];
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
+/* Jenis dokumen yang bisa dicek otomatis pakai AI vision (KTP & Paspor punya
+   nama/tanggal lahir tercetak jelas; KK/ijazah/dll belum didukung). */
+const AUTOVERIFY_DOC_TYPES=['ktp','paspor'];
 let MASTER_ROWS=[], MASTER_IDS=new Set();
 let SEKOLAH_MITRA=[];
 let FIN_CATS=[], FIN_BILLS=[], FIN_PAYMENTS=[], FIN_ACTIVE_PID=null;
@@ -2953,6 +2979,10 @@ $('#detailModal').addEventListener('click', e=>{ if(e.target.id==='detailModal')
    agensi (Paspor/MCU yang belum ada, tapi diurus kolektif). */
 function isDocAccepted(docObj){ return docObj?.status==='terverifikasi'||docObj?.status==='kolektif'; }
 
+function aiTooltip(up){
+  const d=up?.ai_detail||{}; const ex=d.extracted||{};
+  return (`Hasil baca AI — NIK: ${ex.nik||'-'} | Nama: ${ex.nama||'-'} | Tgl Lahir: ${ex.tanggal_lahir||'-'}`).replace(/"/g,'&quot;');
+}
 function renderDocList(pid){
   const docs=DOCS_BY_PID[pid]||{};
   $('#docList').innerHTML=DOCS.map(d=>{
@@ -2961,12 +2991,15 @@ function renderDocList(pid){
     const isKolektif=status==='kolektif';
     const pillClass=status==='terverifikasi'?'ok':status==='ditolak'?'bad':isKolektif?'kolektif':'wait';
     const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':isKolektif?'📋 Kolektif (Agensi)':status==='menunggu'?'Menunggu':'Belum diunggah';
+    const showAi=AUTOVERIFY_DOC_TYPES.includes(d.k)&&up?.ai_status&&status!=='ditolak';
+    const aiBadge=showAi?`<span class="pill ${up.ai_status==='cocok'?'ok':'bad'}" style="cursor:help" title="${aiTooltip(up)}">🤖 ${up.ai_status==='cocok'?'AI: Cocok':'AI: Cek Manual'}</span>`:'';
     return `<div class="doc">
       <div class="ic">${d.ic}</div>
       <div class="doc-body">
         <h5>${d.t} <span class="${d.req?'req':'opt'}">${d.req?'WAJIB':'OPSIONAL'}</span></h5>
         <div class="act">
           <span class="pill ${pillClass}">${pillText}</span>
+          ${aiBadge}
           ${up&&!isKolektif?`<button class="mini" data-view="${d.k}">Lihat</button>
             <button class="mini g" data-verify="${d.k}" ${status==='terverifikasi'?'disabled':''}>Verifikasi</button>
             <button class="mini r" data-reject="${d.k}" ${status==='ditolak'?'disabled':''}>Tolak</button>`:''}
@@ -3011,6 +3044,92 @@ async function setDocStatus(pid,jenis,status){
   toast(status==='terverifikasi'?'Dokumen diverifikasi ✓':'Dokumen ditandai perlu diperbaiki','ok');
   await maybeAdvanceStage(pid);
 }
+
+/* ============ VERIFIKASI OTOMATIS DOKUMEN (AI: Gemini Vision) ============
+   Batch dari Admin Panel: baca foto KTP/Paspor semua peserta yang masih
+   berstatus 'menunggu', lalu bandingkan NIK/Nama/Tanggal Lahir hasil OCR
+   dengan data profil (p.nik, p.nama, p.tgl_lahir). Panggil Edge Function
+   Supabase 'verify-document' (lihat file verify-document/index.ts).
+   - Kalau SEMUA field cocok -> dokumen otomatis ditandai 'terverifikasi',
+     admin tidak perlu buka satu-satu.
+   - Kalau ada yang tidak cocok/tidak terbaca -> status TETAP 'menunggu',
+     tapi hasil OCR disimpan (ai_status/ai_detail) & badge 🤖 muncul di
+     modal Kelola Dokumen supaya admin cukup cek pengecualian yang meleset. */
+function autoVerifyCandidates(){
+  const list=[];
+  PARTICIPANTS.forEach(p=>{
+    const docs=DOCS_BY_PID[p.id]||{};
+    AUTOVERIFY_DOC_TYPES.forEach(jenis=>{
+      const d=docs[jenis];
+      if(d&&d.storage_path&&d.status==='menunggu')list.push({p,jenis,doc:d});
+    });
+  });
+  return list;
+}
+function avLogRow(text,cls){
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;align-items:center;gap:10px;font:600 .78rem var(--body);color:var(--ink);padding:8px 10px;border:1.5px solid var(--line);border-radius:10px';
+  row.innerHTML=`<span class="pill ${cls}" style="min-width:0;padding:4px 9px">${cls==='ok'?'✓':cls==='bad'?'!':'…'}</span><span style="flex:1;min-width:0">${text}</span>`;
+  return row;
+}
+async function runAutoVerify(){
+  const tasks=autoVerifyCandidates();
+  if(!tasks.length)return toast('Tidak ada KTP/Paspor berstatus "Menunggu" untuk diverifikasi otomatis','ok');
+
+  const modal=$('#autoVerifyModal'), log=$('#avLog'), bar=$('#avProgBar'), label=$('#avProgLabel'), count=$('#avProgCount'), closeBtn=$('#btnAvClose');
+  log.innerHTML=''; bar.style.width='0%'; closeBtn.style.display='none';
+  label.textContent='Memproses…'; count.textContent=`0 / ${tasks.length}`;
+  modal.classList.add('show');
+
+  let done=0, cocok=0, tidakCocok=0, gagal=0;
+  for(const {p,jenis,doc} of tasks){
+    const jenisLabel=DOCS.find(x=>x.k===jenis)?.t||jenis;
+    const row=avLogRow(`${p.nama||'Peserta'} — ${jenisLabel}: memeriksa…`,'wait');
+    log.prepend(row);
+    try{
+      const {data,error}=await sb.functions.invoke('verify-document',{ body:{
+        storage_path:doc.storage_path, doc_type:jenis,
+        expected:{ nama:p.nama||'', nik:p.nik||'', tgl_lahir:p.tgl_lahir||'' }
+      }});
+      if(error||data?.error)throw new Error(data?.error||error?.message||'Gagal memproses');
+
+      const ai_status=data.match?'cocok':'tidak_cocok';
+      const upd={ ai_status, ai_detail:data, ai_checked_at:new Date().toISOString() };
+      if(data.match)upd.status='terverifikasi';
+      const {error:updErr}=await sb.from('documents_v2').update(upd).eq('id',doc.id);
+      if(updErr)throw new Error(updErr.message);
+
+      Object.assign(doc,upd);
+      if(data.match){ cocok++; row.replaceWith(avLogRow(`${p.nama} — ${jenisLabel}: cocok ✓ (otomatis terverifikasi)`,'ok')); }
+      else{
+        tidakCocok++;
+        const parts=[];
+        if(jenis==='ktp'&&!data.checks?.nik)parts.push('NIK beda');
+        if(!data.checks?.nama)parts.push(`nama beda (mirip ${data.checks?.nama_score??'?'}%)`);
+        if(!data.checks?.tanggal_lahir)parts.push('tgl lahir beda');
+        row.replaceWith(avLogRow(`${p.nama} — ${jenisLabel}: perlu dicek manual (${parts.join(', ')||'tidak cocok'})`,'bad'));
+      }
+      await maybeAdvanceStage(p.id);
+    }catch(e){
+      gagal++;
+      row.replaceWith(avLogRow(`${p.nama} — ${jenisLabel}: gagal diproses (${e.message})`,'bad'));
+    }
+    done++;
+    bar.style.width=Math.round(done/tasks.length*100)+'%';
+    count.textContent=`${done} / ${tasks.length}`;
+  }
+  label.textContent='Selesai';
+  closeBtn.style.display='block';
+  renderTable(); renderStats();
+  if(ACTIVE_PID)renderDocList(ACTIVE_PID);
+  toast(`Verifikasi otomatis selesai: ${cocok} cocok, ${tidakCocok} perlu dicek manual${gagal?`, ${gagal} gagal`:''}`, (tidakCocok||gagal)?'err':'ok');
+}
+$('#btnAutoVerify')?.addEventListener('click', runAutoVerify);
+$('#btnCloseAutoVerify')?.addEventListener('click', ()=>$('#autoVerifyModal').classList.remove('show'));
+$('#btnAvClose')?.addEventListener('click', ()=>$('#autoVerifyModal').classList.remove('show'));
+$('#autoVerifyModal')?.addEventListener('click', e=>{ if(e.target.id==='autoVerifyModal')$('#autoVerifyModal').classList.remove('show'); });
+
+
 /* Begitu SEMUA dokumen wajib berstatus 'terverifikasi', tahap "Verifikasi Dokumen"
    itu sendiri dianggap SELESAI, jadi tahap dinaikkan ke 2 ("Pelatihan & Pembekalan"
    sedang berjalan) — bukan cuma ke 1, karena tahap 1 berarti verifikasi masih
