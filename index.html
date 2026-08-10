@@ -1874,7 +1874,7 @@ function renderFinanceTable(){
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
       <td class="kode">${participantCode(p)}</td>
-      <td class="nama"><b${hasKolektifBill(p.id)?' style="color:#1B6FB3" title="Salah satu tagihan berasal dari dokumen kolektif"':''}>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
+      <td class="nama"${hasKolektifBill(p.id)?' style="background:#EAF4FD" title="Salah satu tagihan berasal dari dokumen kolektif"':''}><b>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
       <td>${escapeHtml(p.kota||'-')}</td>
       <td>${formatRupiah(s.totalTagihan)}</td>
       <td>${formatRupiah(s.totalDibayar)}</td>
