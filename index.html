@@ -2679,6 +2679,10 @@ function renderTable(){
     }else{
       aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">➜ Convert</button>`;
     }
+    const avPending=autoVerifyCandidates(p.id).length;
+    const avHtml=avPending
+      ?`<button class="btn b-navy sm" data-verify1="${p.id}" title="Verifikasi otomatis KTP/Paspor peserta ini pakai AI">🤖 Verifikasi (${avPending})</button>`
+      :'';
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
@@ -2686,13 +2690,17 @@ function renderTable(){
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
       <td><span class="pill ${accepted===totalReq?'ok':uploaded===0?'wait':'wait'}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></td>
-      <td class="aksi-cell"><div class="aksi-cell-in">${aksiHtml}</div></td>
+      <td class="aksi-cell"><div class="aksi-cell-in">${avHtml}${aksiHtml}</div></td>
     </tr>`;
   }).join('');
   body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.pid)));
   body.querySelectorAll('[data-convert]').forEach(b=>b.addEventListener('click', e=>{
     e.stopPropagation();
     convertToMaster(b.dataset.convert, b);
+  }));
+  body.querySelectorAll('[data-verify1]').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    runAutoVerify(b.dataset.verify1);
   }));
   body.querySelectorAll('[data-delpid]').forEach(el=>el.addEventListener('click', e=>{
     e.stopPropagation();
@@ -3055,9 +3063,10 @@ async function setDocStatus(pid,jenis,status){
    - Kalau ada yang tidak cocok/tidak terbaca -> status TETAP 'menunggu',
      tapi hasil OCR disimpan (ai_status/ai_detail) & badge 🤖 muncul di
      modal Kelola Dokumen supaya admin cukup cek pengecualian yang meleset. */
-function autoVerifyCandidates(){
+function autoVerifyCandidates(pid){
   const list=[];
-  PARTICIPANTS.forEach(p=>{
+  const targets=pid?PARTICIPANTS.filter(p=>p.id===pid):PARTICIPANTS;
+  targets.forEach(p=>{
     const docs=DOCS_BY_PID[p.id]||{};
     AUTOVERIFY_DOC_TYPES.forEach(jenis=>{
       const d=docs[jenis];
@@ -3072,9 +3081,12 @@ function avLogRow(text,cls){
   row.innerHTML=`<span class="pill ${cls}" style="min-width:0;padding:4px 9px">${cls==='ok'?'✓':cls==='bad'?'!':'…'}</span><span style="flex:1;min-width:0">${text}</span>`;
   return row;
 }
-async function runAutoVerify(){
-  const tasks=autoVerifyCandidates();
-  if(!tasks.length)return toast('Tidak ada KTP/Paspor berstatus "Menunggu" untuk diverifikasi otomatis','ok');
+async function runAutoVerify(pid){
+  const tasks=autoVerifyCandidates(pid);
+  if(!tasks.length){
+    const who=pid?PARTICIPANTS.find(p=>p.id===pid)?.nama||'peserta ini':null;
+    return toast(who?`Tidak ada KTP/Paspor berstatus "Menunggu" untuk ${who}`:'Tidak ada KTP/Paspor berstatus "Menunggu" untuk diverifikasi otomatis','ok');
+  }
 
   const modal=$('#autoVerifyModal'), log=$('#avLog'), bar=$('#avProgBar'), label=$('#avProgLabel'), count=$('#avProgCount'), closeBtn=$('#btnAvClose');
   log.innerHTML=''; bar.style.width='0%'; closeBtn.style.display='none';
