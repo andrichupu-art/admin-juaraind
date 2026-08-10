@@ -3302,7 +3302,9 @@ async function loadMailAccounts(){
     const {data,error}=await sb.functions.invoke('email-accounts',{body:{action:'list'}});
     if(error)throw new Error(error.message||'Gagal memuat akun email');
     if(data?.error)throw new Error(data.error);
-    MAIL_ACCOUNTS=data?.accounts||[];
+    MAIL_ACCOUNTS=(data?.accounts||[]).sort((a,b)=>
+      (a.label||a.email||'').localeCompare((b.label||b.email||''), 'id', {numeric:true, sensitivity:'base'})
+    );
   }catch(err){
     console.error(err);
     $('#mailList').innerHTML='<div class="mail-empty">Gagal memuat akun: '+escapeHtml(err.message)+'</div>';
