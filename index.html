@@ -3380,9 +3380,16 @@ async function openMailMessage(uid){
         <button class="btn b-pri sm" id="btnMailReplySend">Balas</button>
       </div>`;
     const ifr=document.createElement('iframe');
-    ifr.setAttribute('sandbox','');
+    // FIX: sandbox kosong ("") membuat iframe mencoba me-navigasi DIRINYA SENDIRI
+    // saat sebuah link di body email diklik. Karena hampir semua situs tujuan
+    // menolak ditampilkan di dalam iframe milik orang lain (X-Frame-Options /
+    // frame-ancestors), hasilnya area baca jadi blank. Solusinya: paksa semua
+    // link buka di tab baru lewat <base target="_blank">, dan izinkan popup di
+    // sandbox — tanpa mengaktifkan script, supaya tetap aman dari email nakal.
+    ifr.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox');
     $('#mailReadBody').appendChild(ifr);
-    ifr.srcdoc = msg.html || ('<pre style="white-space:pre-wrap;font-family:inherit;padding:16px;margin:0">'+escapeHtml(msg.text||'(tidak ada isi)')+'</pre>');
+    const baseTag='<base target="_blank" rel="noopener noreferrer">';
+    ifr.srcdoc = msg.html ? (baseTag+msg.html) : ('<pre style="white-space:pre-wrap;font-family:inherit;padding:16px;margin:0">'+escapeHtml(msg.text||'(tidak ada isi)')+'</pre>');
     $('#btnMailReplySend').addEventListener('click', ()=>sendMailReply(msg));
     $('#btnMailDelete').addEventListener('click', ()=>deleteMailMessage(uid));
     const m=MAIL_MSGS.find(x=>x.uid===uid); if(m)m.seen=true;
