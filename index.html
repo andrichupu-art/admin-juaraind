@@ -730,7 +730,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
             <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
             <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
           </select>
-          <button class="btn b-navy sm" id="btnAutoVerify" title="Cek NIK, Nama &amp; Tanggal Lahir di foto KTP/Paspor vs data profil pakai AI">🤖 Verifikasi Otomatis</button>
         </div>
 
         <div class="tbl-wrap">
@@ -2680,8 +2679,9 @@ function renderTable(){
       aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">➜ Convert</button>`;
     }
     const avPending=autoVerifyCandidates(p.id).length;
+    const AI_SVG=`<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="display:block"><path d="M12 2.5c.4 0 .74.27.85.65l1.2 4.3a4.6 4.6 0 0 0 3.15 3.15l4.3 1.2c.38.11.65.45.65.85s-.27.74-.65.85l-4.3 1.2a4.6 4.6 0 0 0-3.15 3.15l-1.2 4.3a.88.88 0 0 1-1.7 0l-1.2-4.3a4.6 4.6 0 0 0-3.15-3.15l-4.3-1.2a.88.88 0 0 1 0-1.7l4.3-1.2A4.6 4.6 0 0 0 9.95 7.45l1.2-4.3c.11-.38.45-.65.85-.65Z"/><path d="M19 2.5c.32 0 .6.22.68.53l.32 1.2c.14.5.53.9 1.03 1.03l1.2.32c.31.08.53.36.53.68s-.22.6-.53.68l-1.2.32c-.5.14-.9.53-1.03 1.03l-.32 1.2a.71.71 0 0 1-1.37 0l-.32-1.2a1.53 1.53 0 0 0-1.03-1.03l-1.2-.32a.71.71 0 0 1 0-1.37l1.2-.32c.5-.14.9-.53 1.03-1.03l.32-1.2c.08-.31.36-.53.68-.53Z"/></svg>`;
     const avHtml=avPending
-      ?`<button class="btn b-navy sm" data-verify1="${p.id}" title="Verifikasi otomatis KTP/Paspor peserta ini pakai AI">🤖 Verifikasi (${avPending})</button>`
+      ?`<button class="btn b-navy sm" data-verify1="${p.id}" style="position:relative;padding:6px 10px;line-height:1" title="Verifikasi otomatis dokumen peserta ini pakai AI (${avPending} menunggu)">${AI_SVG}<span style="position:absolute;top:-6px;right:-6px;background:var(--gold,#c9a227);color:#1a1a2e;font-size:.62rem;font-weight:800;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1">${avPending}</span></button>`
       :'';
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
@@ -2999,8 +2999,8 @@ function renderDocList(pid){
     const isKolektif=status==='kolektif';
     const pillClass=status==='terverifikasi'?'ok':status==='ditolak'?'bad':isKolektif?'kolektif':'wait';
     const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':isKolektif?'📋 Kolektif (Agensi)':status==='menunggu'?'Menunggu':'Belum diunggah';
-    const showAi=AUTOVERIFY_DOC_TYPES.includes(d.k)&&up?.ai_status&&status!=='ditolak';
-    const aiBadge=showAi?`<span class="pill ${up.ai_status==='cocok'?'ok':'bad'}" style="cursor:help" title="${aiTooltip(up)}">🤖 ${up.ai_status==='cocok'?'AI: Cocok':'AI: Cek Manual'}</span>`:'';
+    const showAi=AUTOVERIFY_DOC_TYPES.includes(d.k)&&up?.ai_status==='cocok'&&status!=='ditolak';
+    const aiBadge=showAi?`<span class="pill ok" style="cursor:help" title="${aiTooltip(up)}">✓ AI</span>`:'';
     return `<div class="doc">
       <div class="ic">${d.ic}</div>
       <div class="doc-body">
