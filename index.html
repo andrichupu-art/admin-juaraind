@@ -164,6 +164,11 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .nav-card .ic{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;color:var(--gold);position:relative;z-index:1}
 .nav-card .ic svg{width:28px;height:28px;stroke:currentColor;fill:none}
 .nav-card-label{font:800 .92rem var(--body);letter-spacing:.01em;position:relative;z-index:1}
+.nc-badge{position:absolute;top:12px;right:12px;z-index:2;background:var(--red);color:#fff;
+  font:800 .72rem var(--body);min-width:22px;height:22px;padding:0 6px;border-radius:999px;
+  display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.25);
+  animation:ncPulse 1.8s ease-in-out infinite}
+@keyframes ncPulse{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.55)}50%{box-shadow:0 0 0 6px rgba(211,47,47,0)}}
 /* Watermark: ikon besar transparan di balik konten kartu, posisi & rotasi
    berbeda-beda per kartu supaya tidak terasa berulang/monoton. */
 .nav-card .wm{position:absolute;opacity:.10;pointer-events:none;color:#fff;transition:.3s;--wm-rot:0deg}
@@ -692,6 +697,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
               <span class="nav-card-label">ADM Peserta</span>
             </div>
             <div class="nav-card span-1" data-target="secBukti">
+              <span class="nc-badge" id="ncBuktiBadge">0</span>
               <span class="wm wm-br"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
               <span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15.5 15.5 1.3 1.3 2.2-2.4"/></svg></span>
               <span class="nav-card-label">Bukti Pembayaran</span>
@@ -1830,10 +1836,12 @@ $('#qSearchFin')?.addEventListener('input',renderFinanceTable);
 const PP_STATUS_LABEL={ menunggu:['wait','Menunggu'], disetujui:['ok','Disetujui'], ditolak:['bad','Ditolak'] };
 function ppStatusOf(pp){ return pp.status||'menunggu'; }
 function renderBuktiBadge(){
-  const el=$('#sbBuktiBadge'); if(!el)return;
   const n=PAY_PROOFS.filter(pp=>ppStatusOf(pp)==='menunggu').length;
-  el.textContent=n>99?'99+':String(n);
-  el.style.display=n>0?'flex':'none';
+  const label=n>99?'99+':String(n);
+  const el=$('#sbBuktiBadge');
+  if(el){ el.textContent=label; el.style.display=n>0?'flex':'none'; }
+  const nc=$('#ncBuktiBadge');
+  if(nc){ nc.textContent=label; nc.style.display=n>0?'flex':'none'; }
 }
 function renderBuktiTable(){
   const body=$('#tblBuktiBody'); if(!body)return;
