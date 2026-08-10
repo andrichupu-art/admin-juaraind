@@ -485,6 +485,9 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .dnd-dot.ok{background:var(--green)} .dnd-dot.wait{background:#E3A93B} .dnd-dot.bad{background:var(--red)}
 .dnd-rm{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--mut);font-size:.72rem;display:none;align-items:center;justify-content:center;transition:.15s}
 .dnd-rm:hover{border-color:var(--red);color:var(--red)}
+.dnd-upload{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--gold,#c9a227);background:#FFF8EA;color:var(--navy);font-size:.72rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.dnd-upload:hover{background:var(--gold,#c9a227);color:#fff}
+.dnd-add-extra{margin-top:10px;width:100%;justify-content:center;border-style:dashed}
 .dnd-empty{margin:auto;text-align:center;color:var(--mut);font-size:.78rem;padding:20px 10px}
 .dnd-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .dnd-actions .btn{flex:1;justify-content:center}
@@ -1014,6 +1017,9 @@ td.nama span{color:var(--mut);font-size:.78rem}
             Dokumen Peserta
           </h4>
           <div class="dnd-list" id="dndSource"></div>
+          <button type="button" class="btn b-ghost sm dnd-add-extra" id="btnAddExtraDoc">+ Upload Dokumen Tambahan</button>
+          <input type="file" id="extraDocFileInput" style="display:none" accept="image/*,.pdf">
+          <input type="file" id="kolektifFileInput" style="display:none" accept="image/*,.pdf">
         </div>
         <div class="dnd-col dnd-target">
           <h4>
@@ -3214,12 +3220,21 @@ $('#btnSaveStage').addEventListener('click', async ()=>{
 /* ============ DATA MASTER: PANEL PILIH DOKUMEN (DRAG & DROP) ============ */
 let DND_PID=null;
 
+const EXTRA_DOC_ICON=`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 3H7.5A1.5 1.5 0 0 0 6 4.5v15A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V8l-4-5Z" stroke="var(--navy)" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 3v4.5A1.5 1.5 0 0 0 15.5 9H18" stroke="var(--navy)" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 13h6M9 16.5h6" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+
 function dndItemHtml(d,up){
   const st=up?.status;
   const dot=st==='terverifikasi'?'ok':st==='ditolak'?'bad':'wait';
+  const dotTitle=st==='terverifikasi'?'Terverifikasi':st==='ditolak'?'Ditolak':st==='kolektif'?'Kolektif — belum ada berkas asli':'Menunggu';
+  // Dokumen yg ditandai kolektif (diproses agensi) belum punya berkas fisik ->
+  // kasih tombol upload langsung di sini supaya admin bisa melengkapi begitu
+  // berkas aslinya sudah di tangan, tanpa perlu batalkan-kolektif dulu.
+  const canUploadDirect=st==='kolektif';
+  const uploadBtn=canUploadDirect?`<button type="button" class="dnd-upload" data-kolektif-upload="${d.k}" title="Lengkapi dokumen ini — unggah berkas asli sekarang">⬆</button>`:'';
   return `<div class="dnd-item" draggable="true" data-key="${d.k}">
     <span class="dnd-ic">${d.ic}</span>
-    <div class="dnd-lbl"><b>${d.t}</b><span class="dnd-dot ${dot}" title="${st==='terverifikasi'?'Terverifikasi':st==='ditolak'?'Ditolak':'Menunggu'}"></span></div>
+    <div class="dnd-lbl"><b>${d.t}</b><span class="dnd-dot ${dot}" title="${dotTitle}"></span></div>
+    ${uploadBtn}
     <button class="dnd-rm" data-rm="${d.k}" title="Kembalikan ke daftar dokumen">✕</button>
   </div>`;
 }
@@ -3235,7 +3250,12 @@ function openMasterDoc(pid){
 
   const docs=DOCS_BY_PID[pid]||{};
   const uploaded=DOCS.filter(d=>docs[d.k]);
-  $('#dndSource').innerHTML=uploaded.length?uploaded.map(d=>dndItemHtml(d,docs[d.k])).join(''):'<div class="dnd-empty">Peserta ini belum mengunggah dokumen apa pun.</div>';
+  // Dokumen tambahan = baris documents_v2 dengan jenis di luar 7 tipe standar
+  // (diinsert lewat tombol "+ Upload Dokumen Tambahan").
+  const extraKeys=Object.keys(docs).filter(k=>!DOCS.some(d=>d.k===k));
+  const extraDefs=extraKeys.map(k=>({k,ic:EXTRA_DOC_ICON,t:docs[k].file_name||'Dokumen Tambahan'}));
+  const allDefs=[...uploaded,...extraDefs];
+  $('#dndSource').innerHTML=allDefs.length?allDefs.map(d=>dndItemHtml(d,docs[d.k])).join(''):'<div class="dnd-empty">Peserta ini belum mengunggah dokumen apa pun.</div>';
   $('#dndTarget').innerHTML='<div class="dnd-empty" id="dndEmptyMsg">Seret dokumen ke sini</div>';
   updateDndCount();
   $('#masterDocModal').classList.add('show');
@@ -3293,12 +3313,84 @@ function initDndLists(){
     list.addEventListener('click', e=>{
       const rm=e.target.closest('.dnd-rm');
       if(rm){ moveDndToSource(rm.dataset.rm); return; }
+      const up=e.target.closest('.dnd-upload');
+      if(up){ e.stopPropagation(); PENDING_KOLEKTIF_KEY=up.dataset.kolektifUpload; $('#kolektifFileInput').click(); return; }
       const item=e.target.closest('.dnd-item'); if(!item)return;
       if(!isTarget) moveDndToTarget(item.dataset.key);
     });
   });
 }
 initDndLists();
+
+/* ---- Upload Dokumen Tambahan: lampirkan berkas ekstra di luar 7 tipe standar
+   (mis. Surat Keterangan Domisili, dokumen tambahan lain) langsung dari sini,
+   tanpa perlu ubah alur upload peserta. Disimpan sebagai baris documents_v2
+   biasa dengan jenis unik "tambahan_<timestamp>" supaya tidak bentrok dengan
+   tipe standar & tetap ikut ke-hitung sebagai berkas yang bisa dipilih/diunduh/
+   dikirim email. */
+$('#btnAddExtraDoc')?.addEventListener('click', ()=>{
+  if(!DND_PID)return;
+  $('#extraDocFileInput').click();
+});
+$('#extraDocFileInput')?.addEventListener('change', async e=>{
+  const file=e.target.files?.[0]; e.target.value='';
+  const pid=DND_PID;
+  if(!file||!pid)return;
+  const label=window.prompt('Nama/keterangan dokumen tambahan ini:', file.name.replace(/\.[^.]+$/,''));
+  if(label===null)return; // dibatalkan
+  const jenisKey=`tambahan_${Date.now()}`;
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+  const path=`${pid}/${jenisKey}.${ext}`;
+  toast('Mengunggah dokumen tambahan…','ok');
+  try{
+    const {error:upErr}=await sb.storage.from('juara-v2-documents').upload(path, file, {contentType:file.type||'application/octet-stream', upsert:true});
+    if(upErr)throw new Error(upErr.message);
+    const {data:inserted,error:insErr}=await sb.from('documents_v2').insert({
+      participant_id:pid, jenis:jenisKey, file_name:(label.trim()||file.name), size:file.size, storage_path:path, status:'terverifikasi'
+    }).select().single();
+    if(insErr)throw new Error(insErr.message);
+    (DOCS_BY_PID[pid]=DOCS_BY_PID[pid]||{})[jenisKey]=inserted;
+    if(DND_PID===pid)openMasterDoc(pid);
+    toast('Dokumen tambahan berhasil diunggah ✓','ok');
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunggah dokumen tambahan: '+err.message,'err');
+  }
+});
+
+/* ---- Lengkapi dokumen berstatus "Kolektif": admin bisa unggah langsung
+   berkas aslinya di sini begitu sudah di tangan (mis. paspor/MCU yang tadinya
+   diproses agensi), tanpa perlu batalkan-kolektif dulu & minta peserta unggah
+   ulang dari portal. Diunggah lewat sini otomatis ditandai terverifikasi. */
+let PENDING_KOLEKTIF_KEY=null;
+$('#kolektifFileInput')?.addEventListener('change', async e=>{
+  const file=e.target.files?.[0]; e.target.value='';
+  const key=PENDING_KOLEKTIF_KEY; PENDING_KOLEKTIF_KEY=null;
+  const pid=DND_PID;
+  if(!file||!pid||!key)return;
+  const doc=(DOCS_BY_PID[pid]||{})[key];
+  if(!doc){ toast('Data dokumen tidak ditemukan','err'); return; }
+  const jenisLabel=DOCS.find(d=>d.k===key)?.t||key;
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+  const path=`${pid}/${key}_${Date.now()}.${ext}`;
+  toast(`Mengunggah ${jenisLabel}…`,'ok');
+  try{
+    const {error:upErr}=await sb.storage.from('juara-v2-documents').upload(path, file, {contentType:file.type||'application/octet-stream', upsert:true});
+    if(upErr)throw new Error(upErr.message);
+    const upd={storage_path:path, file_name:file.name, size:file.size, status:'terverifikasi'};
+    const {error:updErr}=await sb.from('documents_v2').update(upd).eq('id',doc.id);
+    if(updErr)throw new Error(updErr.message);
+    Object.assign(doc,upd);
+    if(DND_PID===pid)openMasterDoc(pid);
+    renderTable(); renderStats();
+    if(ACTIVE_PID===pid)renderDocList(pid);
+    await maybeAdvanceStage(pid);
+    toast(`${jenisLabel} berhasil dilengkapi & terverifikasi ✓`,'ok');
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunggah dokumen: '+err.message,'err');
+  }
+});
 
 /* ============ MODAL KIRIM EMAIL ============ */
 function openEmailModal(){
@@ -3317,7 +3409,7 @@ function openEmailModal(){
   $('#emTo').value='';
   $('#emSubject').value=`Dokumen Peserta — ${nama} (${kode})`;
   $('#emMessage').value='';
-  $('#emDocCount').textContent=`📎 ${keys.length} dokumen akan dilampirkan: `+keys.map(k=>DOCS.find(d=>d.k===k)?.t||k).join(', ');
+  $('#emDocCount').textContent=`📎 ${keys.length} dokumen akan dilampirkan: `+keys.map(k=>DOCS.find(d=>d.k===k)?.t||(DOCS_BY_PID[pid]||{})[k]?.file_name||k).join(', ');
   $('#emErr').textContent='';
   $('#emailModal').classList.add('show');
 }
@@ -3341,7 +3433,8 @@ $('#btnEmailSend').addEventListener('click', async ()=>{
     const doc=docs[k]; const meta=DOCS.find(d=>d.k===k);
     if(!doc?.storage_path)return null;
     const ext=(doc.file_name||'').includes('.')?doc.file_name.split('.').pop():'';
-    return { path:doc.storage_path, filename:sanitizeName(meta?.t||k)+(ext?'.'+ext:'') };
+    const label=meta?.t||(doc.file_name||'').replace(/\.[^.]+$/,'')||k;
+    return { path:doc.storage_path, filename:sanitizeName(label)+(ext?'.'+ext:'') };
   }).filter(Boolean);
   if(!storage_paths.length){ $('#emErr').textContent='Tidak ada berkas valid untuk dikirim.'; return; }
 
@@ -3390,7 +3483,7 @@ async function downloadPickedZip(){
       if(!res.ok){ console.warn('Gagal mengunduh berkas',key); continue; }
       const blob=await res.blob();
       const ext=(doc.file_name||'').includes('.')?doc.file_name.split('.').pop():'';
-      let base=sanitizeName(meta?.t||key), fname=base+(ext?'.'+ext:'');
+      let base=sanitizeName(meta?.t||(doc.file_name||'').replace(/\.[^.]+$/,'')||key), fname=base+(ext?'.'+ext:'');
       let n=2; while(used.has(fname)){ fname=`${base}_${n}${ext?'.'+ext:''}`; n++; }
       used.add(fname);
       zip.file(fname, blob);
