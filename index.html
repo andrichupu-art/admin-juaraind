@@ -267,34 +267,56 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .devnote h3{font:800 1.15rem var(--disp);color:var(--navy)}
 .devnote p{font:600 .85rem var(--body);color:var(--mut)}
 
-/* ============ KELOLA EMAIL (IMAP/SMTP terintegrasi) ============ */
-.mail-shell{background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden}
-.mail-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-bottom:1.5px solid var(--line)}
-.mail-toolbar .csel{min-width:200px;flex:1;max-width:260px}
-.mail-toolbar .csel.folder{max-width:190px;min-width:150px}
-.mail-body{display:grid;grid-template-columns:330px 1fr;height:calc(100vh - 250px);min-height:480px}
+/* ============ KELOLA EMAIL (gaya Gmail — flat, tanpa card) ============ */
+.mail-shell{background:transparent;border:none;border-radius:0}
+.mail-topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:2px 2px 14px}
+.mail-topbar .csel{min-width:190px;max-width:280px}
+.mail-topbar-r{display:flex;align-items:center;gap:8px}
+.mail-icon-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);transition:.15s;flex-shrink:0}
+.mail-icon-btn svg{width:17px;height:17px;stroke:currentColor}
+.mail-icon-btn:hover{background:#EEF3FA;border-color:var(--navy)}
+.mail-body{display:grid;grid-template-columns:184px 320px 1fr;gap:0;height:calc(100vh - 250px);min-height:480px;background:#fff;border-top:1.5px solid var(--line)}
+@media(max-width:980px){.mail-body{grid-template-columns:150px 280px 1fr}}
 @media(max-width:860px){.mail-body{grid-template-columns:1fr;height:auto}
+  .mail-side{border-right:none;border-bottom:1.5px solid var(--line)}
+  .mail-folder-nav{display:flex;overflow-x:auto;gap:6px;padding:10px}
+  .mail-folder-nav button{white-space:nowrap}
   .mail-list{max-height:320px}.mail-read{min-height:420px}}
-.mail-list{border-right:1.5px solid var(--line);overflow-y:auto;background:#FBFAF6}
-.mail-item{display:flex;flex-direction:column;gap:4px;padding:13px 16px;border-bottom:1px solid var(--line);border-left:3px solid transparent;cursor:pointer;transition:.15s}
-.mail-item:hover{background:#F1F5FA}
-.mail-item.active{background:#EEF3FA;border-left-color:var(--navy)}
-.mail-item .mi-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.mail-item .mi-from{font:700 .82rem var(--body);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
-.mail-item.unread .mi-from{color:var(--navy);font-weight:800}
-.mail-item .mi-date{font:600 .66rem var(--body);color:var(--mut);flex-shrink:0}
+.mail-side{border-right:1.5px solid var(--line);padding:16px 10px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.mail-compose-btn{display:flex;align-items:center;gap:9px;justify-content:center;background:var(--navy);color:#fff;border:none;border-radius:24px;padding:13px 16px;font:800 .84rem var(--body);cursor:pointer;box-shadow:0 3px 10px rgba(19,49,77,.25);transition:.15s}
+.mail-compose-btn:hover{background:var(--navy3);transform:translateY(-1px)}
+.mail-compose-btn svg{width:16px;height:16px;stroke:currentColor;flex-shrink:0}
+.mail-folder-nav{display:flex;flex-direction:column;gap:2px}
+.mail-folder-nav button{display:flex;align-items:center;gap:10px;border:none;background:transparent;text-align:left;padding:9px 12px;border-radius:0 20px 20px 0;font:700 .82rem var(--body);color:var(--ink);cursor:pointer;transition:.15s}
+.mail-folder-nav button svg{width:16px;height:16px;stroke:currentColor;flex-shrink:0;opacity:.75}
+.mail-folder-nav button:hover{background:#F1F5FA}
+.mail-folder-nav button.active{background:#EEF0E4;color:var(--navy);font-weight:800}
+.mail-folder-nav button.active svg{opacity:1;stroke:var(--gold)}
+.mail-list{border-right:1.5px solid var(--line);overflow-y:auto;background:#fff}
+.mail-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
+.mail-item:hover{background:#F7F8FA;box-shadow:inset 0 0 0 9999px rgba(0,0,0,.015)}
+.mail-item.active{background:#EEF3FA}
+.mail-item .mi-avatar{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font:800 .82rem var(--disp);flex-shrink:0}
+.mail-item.unread .mi-avatar{background:var(--gold)}
+.mail-item .mi-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mail-item .mi-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.mail-item .mi-from{font:600 .82rem var(--body);color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.mail-item.unread .mi-from{color:var(--ink);font-weight:800}
+.mail-item .mi-date{font:600 .68rem var(--body);color:var(--mut);flex-shrink:0}
+.mail-item.unread .mi-date{color:var(--navy);font-weight:800}
 .mail-item .mi-subject{font:600 .78rem var(--body);color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mail-item.unread .mi-subject{color:var(--ink);font-weight:700}
 .mail-item .mi-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0}
-.mail-read{display:flex;flex-direction:column;min-width:0}
-.mail-read-hd{padding:16px 22px;border-bottom:1.5px solid var(--line)}
-.mail-read-hd h4{font:800 1.02rem var(--disp);color:var(--navy);margin-bottom:4px;word-break:break-word}
-.mail-read-meta{font:600 .78rem var(--body);color:var(--mut)}
-.mail-read-body{flex:1;overflow:hidden}
+.mail-read{display:flex;flex-direction:column;min-width:0;background:#fff}
+.mail-read-hd{padding:20px 26px 16px}
+.mail-read-hd h4{font:800 1.1rem var(--disp);color:var(--ink);margin-bottom:8px;word-break:break-word}
+.mail-read-meta{font:600 .78rem var(--body);color:var(--mut);display:flex;align-items:center;gap:8px}
+.mail-read-meta .mi-avatar{width:26px;height:26px;font-size:.68rem;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.mail-read-body{flex:1;overflow:hidden;padding:0 6px}
 .mail-read-body iframe{width:100%;height:100%;border:none;display:block;min-height:280px}
-.mail-reply{border-top:1.5px solid var(--line);padding:12px 16px;display:flex;gap:10px;align-items:flex-end}
-.mail-reply textarea{flex:1;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .85rem var(--body);resize:vertical;min-height:44px;max-height:140px}
-.mail-reply textarea:focus{outline:none;border-color:var(--navy)}
+.mail-reply{padding:14px 26px 20px;display:flex;gap:10px;align-items:flex-end}
+.mail-reply textarea{flex:1;border:1.5px solid var(--line);border-radius:22px;padding:12px 18px;font:600 .85rem var(--body);resize:vertical;min-height:44px;max-height:140px;background:#F7F8FA}
+.mail-reply textarea:focus{outline:none;border-color:var(--navy);background:#fff}
 .mail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:220px;color:var(--mut);gap:8px;padding:40px;text-align:center;font:600 .82rem var(--body)}
 .mail-shell-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:calc(100vh - 250px);color:var(--mut);font:700 .88rem var(--body)}
 .mail-shell-loading .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--navy);animation:mailSpin .8s linear infinite}
@@ -303,6 +325,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-acc-item:last-child{border-bottom:none}
 .mail-acc-item b{font:700 .85rem var(--body);color:var(--ink);display:block}
 .mail-acc-item span{font:600 .74rem var(--body);color:var(--mut)}
+
+
 
 /* ============ MODAL ============ */
 .modal{position:fixed;inset:0;background:rgba(8,21,39,.6);backdrop-filter:blur(3px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto}
@@ -731,14 +755,25 @@ td.nama span{color:var(--mut);font-size:.78rem}
           <p>Menyiapkan Kelola Email…</p>
         </div>
         <div class="mail-shell" id="mailShell" style="display:none">
-          <div class="mail-toolbar">
+          <div class="mail-topbar">
             <select id="mailAcc"></select>
-            <select id="mailFolder"><option value="INBOX">Kotak Masuk</option></select>
-            <button class="btn b-ghost sm" id="btnMailRefresh">↻ Muat Ulang</button>
-            <button class="btn b-ghost sm" id="btnMailAccounts">⚙ Kelola Akun</button>
-            <button class="btn b-pri sm" id="btnMailCompose" style="margin-left:auto">✎ Tulis Email</button>
+            <div class="mail-topbar-r">
+              <button class="mail-icon-btn" id="btnMailRefresh" title="Muat Ulang">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8 8 0 1 0 18 15.5"/><path d="M20 5v6h-6"/></svg>
+              </button>
+              <button class="mail-icon-btn" id="btnMailAccounts" title="Kelola Akun">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </button>
+            </div>
           </div>
           <div class="mail-body">
+            <div class="mail-side">
+              <button class="mail-compose-btn" id="btnMailCompose">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Tulis Email
+              </button>
+              <nav class="mail-folder-nav" id="mailFolderNav"></nav>
+            </div>
             <div class="mail-list" id="mailList"><div class="mail-empty">Memuat…</div></div>
             <div class="mail-read" id="mailRead">
               <div class="mail-empty">
@@ -3204,10 +3239,26 @@ async function downloadPickedZip(){
 $('#btnDownloadPicked').addEventListener('click', downloadPickedZip);
 
 /* ============ KELOLA EMAIL (IMAP/SMTP terintegrasi) ============ */
-let MAIL_LOADED=false, MAIL_ACCOUNTS=[], MAIL_ACTIVE=null, MAIL_MSGS=[], MAIL_OPEN=null;
+let MAIL_LOADED=false, MAIL_ACCOUNTS=[], MAIL_ACTIVE=null, MAIL_MSGS=[], MAIL_OPEN=null, MAIL_FOLDER='INBOX';
 
 function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtMailDate(d){ if(!d)return '-'; const dt=new Date(d); if(isNaN(dt))return '-'; return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
+function mailInitial(s){ const t=String(s||'').trim(); const m=t.match(/[A-Za-z0-9]/); return m?m[0].toUpperCase():'?'; }
+
+// FIX: sidebar folder gaya Gmail butuh ikon per jenis folder (bukan cuma teks di
+// dropdown). Tebak ikon dari nama folder (yang sudah dilabeli specialUseLabel di
+// server) supaya Kotak Masuk/Terkirim/Draf/Sampah/Spam/Arsip masing-masing punya
+// ikon berbeda; folder custom lain pakai ikon folder generik.
+function folderIcon(name){
+  const n=String(name||'').toLowerCase();
+  if(n.includes('kotak masuk')||n.includes('inbox')) return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></svg>';
+  if(n.includes('terkirim')||n.includes('sent')) return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+  if(n.includes('draf')) return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>';
+  if(n.includes('sampah')||n.includes('trash')) return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>';
+  if(n.includes('spam')) return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+  if(n.includes('arsip')) return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>';
+}
 
 async function loadMailAccounts(){
   $('#mailList').innerHTML='<div class="mail-empty">Memuat akun…</div>';
@@ -3306,37 +3357,60 @@ $('#btnMailAccAdd').addEventListener('click', async ()=>{
   }
 });
 
-async function loadMailFolders(){
+// FIX: cold-connect ke server IMAP (mail.juaraind.com) kadang lambat kirim
+// greeting dan kena timeout di Edge Function (lihat catatan di email-imap/index.ts),
+// tapi percobaan kedua hampir selalu berhasil dalam hitungan detik karena instance
+// function/koneksi sudah "hangat". Daripada langsung menampilkan error ke admin,
+// coba ulang sekali secara diam-diam dulu sebelum benar-benar dianggap gagal.
+async function invokeMailImap(body){
+  const call=async()=>{
+    const {data,error}=await sb.functions.invoke('email-imap',{body});
+    if(error)throw new Error(error.message||'Gagal memanggil layanan email');
+    if(data?.error)throw new Error(data.error);
+    return data;
+  };
   try{
-    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'folders',account_id:MAIL_ACTIVE}});
-    if(error||data?.error) throw new Error(error?.message||data?.error);
-    let folders=(data?.folders?.length?data.folders:[{path:'INBOX',name:'Kotak Masuk'}]);
+    return await call();
+  }catch(err){
+    console.warn('email-imap gagal, mencoba ulang sekali (kemungkinan cold-connect):',err.message);
+    return await call();
+  }
+}
+
+async function loadMailFolders(){
+  let folders=[{path:'INBOX',name:'Kotak Masuk'}];
+  try{
+    const data=await invokeMailImap({action:'folders',account_id:MAIL_ACTIVE});
+    folders=(data?.folders?.length?data.folders:folders);
     // FIX: urutan folder yang dikembalikan server IMAP tidak selalu menaruh INBOX
-    // di posisi pertama (kadang "Arsip"/folder lain lebih dulu), jadi dropdown
+    // di posisi pertama (kadang "Arsip"/folder lain lebih dulu), jadi daftar
     // secara default menampilkan folder itu, bukan Kotak Masuk. Urutkan INBOX
     // selalu di paling atas.
     folders=[...folders].sort((a,b)=>(a.path==='INBOX'?-1:0)-(b.path==='INBOX'?-1:0));
-    $('#mailFolder').innerHTML=folders.map(f=>`<option value="${escapeHtml(f.path)}">${escapeHtml(f.name)}</option>`).join('');
   }catch(err){
     console.error(err);
-    $('#mailFolder').innerHTML='<option value="INBOX">Kotak Masuk</option>';
   }
   // FIX: Kotak Masuk (INBOX) selalu jadi folder default yang terpilih saat
   // akun dibuka/diganti, bukan folder terakhir yang kebetulan ada di urutan pertama.
-  if([...$('#mailFolder').options].some(o=>o.value==='INBOX')){
-    $('#mailFolder').value='INBOX';
-  }
-  ensureCsel($('#mailFolder'));
+  MAIL_FOLDER=folders.some(f=>f.path==='INBOX')?'INBOX':(folders[0]?.path||'INBOX');
+  $('#mailFolderNav').innerHTML=folders.map(f=>`
+    <button data-folder="${escapeHtml(f.path)}" class="${f.path===MAIL_FOLDER?'active':''}">
+      ${folderIcon(f.name)}<span>${escapeHtml(f.name)}</span>
+    </button>`).join('');
+  $('#mailFolderNav').querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>{
+    if(b.dataset.folder===MAIL_FOLDER)return;
+    MAIL_FOLDER=b.dataset.folder; MAIL_OPEN=null;
+    $('#mailFolderNav').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
+    $('#mailRead').innerHTML='<div class="mail-empty"><p>Pilih email untuk membaca</p></div>';
+    loadMailList();
+  }));
 }
 
 async function loadMailList(){
   if(!MAIL_ACTIVE){ $('#mailList').innerHTML='<div class="mail-empty">Pilih akun email terlebih dahulu.</div>'; return; }
   $('#mailList').innerHTML='<div class="mail-empty">Memuat email…</div>';
-  const folder=$('#mailFolder').value||'INBOX';
   try{
-    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'list',account_id:MAIL_ACTIVE,folder,limit:50}});
-    if(error)throw new Error(error.message||'Gagal memuat email');
-    if(data?.error)throw new Error(data.error);
+    const data=await invokeMailImap({action:'list',account_id:MAIL_ACTIVE,folder:MAIL_FOLDER,limit:50});
     MAIL_MSGS=data?.messages||[];
     renderMailList();
   }catch(err){
@@ -3349,9 +3423,11 @@ function renderMailList(){
   if(!MAIL_MSGS.length){ $('#mailList').innerHTML='<div class="mail-empty">Tidak ada email di folder ini.</div>'; return; }
   $('#mailList').innerHTML=MAIL_MSGS.map(m=>`
     <div class="mail-item${m.seen?'':' unread'}${MAIL_OPEN===m.uid?' active':''}" data-uid="${m.uid}">
-      <div class="mi-top"><span class="mi-from">${escapeHtml(m.from||'(tanpa pengirim)')}</span>${m.seen?'':'<span class="mi-dot"></span>'}</div>
-      <div class="mi-subject">${escapeHtml(m.subject||'(tanpa subjek)')}</div>
-      <div class="mi-date">${fmtMailDate(m.date)}</div>
+      <div class="mi-avatar">${escapeHtml(mailInitial(m.from))}</div>
+      <div class="mi-main">
+        <div class="mi-top"><span class="mi-from">${escapeHtml(m.from||'(tanpa pengirim)')}</span>${m.seen?'':'<span class="mi-dot"></span>'}<span class="mi-date">${fmtMailDate(m.date)}</span></div>
+        <div class="mi-subject">${escapeHtml(m.subject||'(tanpa subjek)')}</div>
+      </div>
     </div>`).join('');
   $('#mailList').querySelectorAll('.mail-item').forEach(el=>el.addEventListener('click', ()=>openMailMessage(parseInt(el.dataset.uid))));
 }
@@ -3360,11 +3436,8 @@ async function openMailMessage(uid){
   MAIL_OPEN=uid;
   renderMailList();
   $('#mailRead').innerHTML='<div class="mail-empty">Memuat pesan…</div>';
-  const folder=$('#mailFolder').value||'INBOX';
   try{
-    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'read',account_id:MAIL_ACTIVE,folder,uid}});
-    if(error)throw new Error(error.message||'Gagal membaca pesan');
-    if(data?.error)throw new Error(data.error);
+    const data=await invokeMailImap({action:'read',account_id:MAIL_ACTIVE,folder:MAIL_FOLDER,uid});
     const msg=data.message;
     $('#mailRead').innerHTML=`
       <div class="mail-read-hd">
@@ -3372,7 +3445,7 @@ async function openMailMessage(uid){
           <h4>${escapeHtml(msg.subject||'(tanpa subjek)')}</h4>
           <button class="btn b-red sm" id="btnMailDelete" style="flex-shrink:0">🗑 Hapus</button>
         </div>
-        <div class="mail-read-meta">Dari: <b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</div>
+        <div class="mail-read-meta"><span class="mi-avatar">${escapeHtml(mailInitial(msg.from))}</span><span><b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</span></div>
       </div>
       <div class="mail-read-body" id="mailReadBody"></div>
       <div class="mail-reply">
@@ -3401,12 +3474,9 @@ async function openMailMessage(uid){
 
 async function deleteMailMessage(uid){
   if(!await customConfirm('Hapus email ini? Tindakan ini tidak bisa dibatalkan.'))return;
-  const folder=$('#mailFolder').value||'INBOX';
   const btn=$('#btnMailDelete'); if(btn){ btn.disabled=true; btn.textContent='Menghapus…'; }
   try{
-    const {data,error}=await sb.functions.invoke('email-imap',{body:{action:'delete',account_id:MAIL_ACTIVE,folder,uid}});
-    if(error)throw new Error(error.message||'Gagal menghapus email');
-    if(data?.error)throw new Error(data.error);
+    await invokeMailImap({action:'delete',account_id:MAIL_ACTIVE,folder:MAIL_FOLDER,uid});
     MAIL_MSGS=MAIL_MSGS.filter(m=>m.uid!==uid);
     MAIL_OPEN=null;
     renderMailList();
@@ -3449,7 +3519,6 @@ $('#mailAcc').addEventListener('change', ()=>{
   loadMailFolders();
   loadMailList();
 });
-$('#mailFolder').addEventListener('change', ()=>{ MAIL_OPEN=null; loadMailList(); });
 $('#btnMailRefresh').addEventListener('click', loadMailList);
 
 $('#btnMailAccounts').addEventListener('click', ()=>{ renderMailAccList(); $('#mailAccModal').classList.add('show'); });
