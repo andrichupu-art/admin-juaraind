@@ -149,6 +149,13 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .stat.warn b{color:var(--gold)}
 .stat.bad b{color:var(--red)}
 .stat.ok b{color:var(--green)}
+/* Kartu ringkasan di tab Kelola Keuangan dibuat lebih ringkas (padding & font lebih
+   kecil) dibanding kartu statistik lain (Ringkasan, Bukti Pembayaran) — jadi discope
+   khusus ke #secKeuangan supaya tab lain tidak ikut berubah. */
+#secKeuangan .stats{gap:12px;margin-bottom:18px}
+#secKeuangan .stat{padding:12px 16px;border-radius:13px}
+#secKeuangan .stat b{font-size:1.3rem}
+#secKeuangan .stat span{font-size:.62rem}
 
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px}
 .toolbar input[type=text]{flex:1;min-width:180px;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .9rem var(--body)}
@@ -1614,7 +1621,7 @@ function financeSummaryFor(pid){
   else status='belum-bayar';
   return {totalTagihan,totalDibayar,sisa,status};
 }
-const FIN_STATUS_LABEL={ 'belum-ada':['wait','Belum Ada Tagihan'], 'lunas':['ok','Lunas'], 'cicilan':['wait','Cicilan'], 'belum-bayar':['bad','Belum Bayar'] };
+const FIN_STATUS_LABEL={ 'belum-ada':['wait','Belum Ada Tagihan'], 'lunas':['ok','Lunas'], 'cicilan':['ok','Cicilan'], 'belum-bayar':['bad','Belum Bayar'] };
 
 function renderFinanceTable(){
   const body=$('#tblFinBody'); if(!body)return;
@@ -2034,7 +2041,7 @@ function renderFinBillList(){
     let statusCls,statusLabel;
     if(tagihan<=0){statusCls='wait';statusLabel='Nominal Rp0';}
     else if(sisa<=0){statusCls='ok';statusLabel='Lunas';}
-    else if(dibayar>0){statusCls='wait';statusLabel='Cicilan';}
+    else if(dibayar>0){statusCls='ok';statusLabel='Cicilan';}
     else{statusCls='bad';statusLabel='Belum Bayar';}
     return `<tr>
       <td><b>${escapeHtml(catNama)}</b></td>
