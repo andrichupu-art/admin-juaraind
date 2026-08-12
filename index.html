@@ -43,6 +43,7 @@ body{font-family:var(--body);color:var(--ink);line-height:1.55;min-height:100vh}
 img{max-width:100%} a{color:inherit;text-decoration:none} button,input,select{font-family:inherit}
 button{cursor:pointer}
 ::selection{background:var(--orange);color:#fff}
+.box-h ::selection,header ::selection,.sidebar ::selection{background:var(--gold);color:var(--navy)}
 .wrap{width:min(1180px,94%);margin:0 auto}
 
 /* ============ HEADER ============ */
@@ -68,10 +69,19 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .brand-logo{height:40px;width:auto;display:block}
 .brand-tag{font:700 .68rem var(--body);color:var(--gold);letter-spacing:.14em;text-transform:uppercase;padding-left:12px;margin-left:2px;border-left:2px solid rgba(255,255,255,.25)}
 .hd-r{display:flex;align-items:center;gap:12px}
-.who-block{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.2}
+.who-block{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.2}
+.who-trigger{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.2;background:none;border:none;padding:6px 8px;margin:-6px -8px;border-radius:10px;cursor:pointer;font:inherit}
+.who-trigger:hover,.who-trigger:focus-visible{background:rgba(255,255,255,.12)}
 .who-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#a3672c);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .who-avatar svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
 .who-block .who-email{font:700 .62rem var(--body);color:#cfe0f4;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who-caret{width:10px;height:10px;stroke:#cfe0f4;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-top:1px;transition:transform .15s ease}
+.who-block.open .who-caret{transform:rotate(180deg)}
+.who-dropdown{position:absolute;top:100%;right:0;margin-top:10px;min-width:160px;background:#fff;border-radius:12px;box-shadow:0 12px 28px rgba(19,49,77,.28);padding:6px;display:none;z-index:80}
+.who-block.open .who-dropdown{display:block}
+.who-dropdown-item{display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--navy);font:700 .8rem var(--body);cursor:pointer;text-align:left}
+.who-dropdown-item svg{width:16px;height:16px;flex-shrink:0}
+.who-dropdown-item:hover{background:#f1f3f6}
 
 .hamburger{display:none;background:transparent;border:2px solid rgba(255,255,255,.4);color:#fff;width:40px;height:40px;border-radius:9px;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;transition:.2s}
 .hamburger:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.7)}
@@ -143,6 +153,218 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .fld-sec:first-child{border-top:none;padding-top:0;margin-top:0}
 #loginBtn{width:100%;justify-content:center;margin-top:6px}
 .err-txt{color:var(--red);font:600 .8rem var(--body);margin-top:10px;text-align:center;min-height:1em}
+
+/* ============ PREMIUM PESERTA REDESIGN ============ */
+#secPeserta{padding-top:4px}
+#secPeserta .peserta-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 18px;padding:0 4px}
+#secPeserta .peserta-eyebrow{display:inline-flex;align-items:center;gap:8px;font:800 .64rem var(--body);letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
+#secPeserta .peserta-eyebrow::before{content:'';width:24px;height:2px;background:var(--gold);border-radius:2px}
+#secPeserta .peserta-head h2{margin-top:6px;font:800 1.65rem/1.15 var(--disp);letter-spacing:-.03em;color:var(--navy)}
+#secPeserta .peserta-head p{margin-top:5px;font:600 .78rem/1.5 var(--body);color:var(--mut)}
+#secPeserta .peserta-head-mark{text-align:right;padding-bottom:2px}
+#secPeserta .peserta-head-mark span{display:block;font:800 .58rem var(--body);letter-spacing:.14em;color:var(--mut);margin-bottom:2px}
+#secPeserta .peserta-head-mark b{font:800 .72rem var(--disp);letter-spacing:.12em;color:var(--navy);opacity:.72}
+#secPeserta .peserta-toolbar{margin-bottom:14px;background:rgba(255,255,255,.66);border:1px solid rgba(217,227,239,.95);border-radius:16px;padding:9px;gap:9px;box-shadow:0 8px 22px rgba(27,58,102,.055);backdrop-filter:blur(10px)}
+#secPeserta .peserta-search{display:flex;align-items:center;gap:9px;flex:1;min-width:260px;background:#fff;border:1.5px solid #D5DFEA;border-radius:11px;padding:0 13px;height:46px;transition:.18s}
+#secPeserta .peserta-search:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secPeserta .peserta-search svg{width:17px;height:17px;stroke:#718198;fill:none;stroke-width:2;flex-shrink:0}
+#secPeserta .peserta-search input{width:100%;height:100%;border:0;outline:0;background:transparent;padding:0;font:600 .83rem var(--body);color:var(--ink)}
+#secPeserta .peserta-search input::placeholder{color:#93A0B1}
+#secPeserta .peserta-filter{position:relative;min-width:245px}
+#secPeserta .peserta-filter>span{position:absolute;left:13px;top:5px;z-index:1;font:800 .48rem var(--body);letter-spacing:.12em;color:#8996A8}
+#secPeserta .peserta-filter select{width:100%;height:46px;border:1.5px solid #D5DFEA;border-radius:11px;background:#fff;color:var(--navy);font:800 .79rem var(--body);padding:13px 36px 3px 13px;outline:0;transition:.18s}
+#secPeserta .peserta-filter select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secPeserta .peserta-table-wrap{background:transparent;border:0;border-radius:0;overflow:visible}
+#secPeserta .table-topline{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 7px;color:#7A8798}
+#secPeserta .table-topline span:first-child{font:800 .61rem var(--body);letter-spacing:.14em;color:var(--navy)}
+#secPeserta .table-topline span:last-child{font:600 .62rem var(--body);color:#8B96A5}
+#secPeserta .peserta-table-wrap table{border-collapse:separate;border-spacing:0 6px}
+#secPeserta .peserta-table-wrap thead th{background:#102B4B;color:#D9E4F1;border:0;padding:11px 14px;font-size:.61rem;letter-spacing:.1em}
+#secPeserta .peserta-table-wrap thead th:first-child{border-radius:10px 0 0 10px}
+#secPeserta .peserta-table-wrap thead th:last-child{border-radius:0 10px 10px 0}
+#secPeserta .peserta-table-wrap tbody tr{filter:drop-shadow(0 3px 7px rgba(16,27,44,.045));transition:transform .16s ease,filter .16s ease}
+#secPeserta .peserta-table-wrap tbody tr:hover{background:transparent;transform:translateY(-1px);filter:drop-shadow(0 7px 14px rgba(16,27,44,.08))}
+#secPeserta .peserta-table-wrap tbody td{background:rgba(255,255,255,.93);border-top:1px solid #DDE5EE;border-bottom:1px solid #DDE5EE;padding:10px 14px;height:58px;font-size:.8rem}
+#secPeserta .peserta-table-wrap tbody td:first-child{border-left:1px solid #DDE5EE;border-radius:12px 0 0 12px;color:#8390A0;font:800 .72rem var(--mono)}
+#secPeserta .peserta-table-wrap tbody td:last-child{border-right:1px solid #DDE5EE;border-radius:0 12px 12px 0}
+#secPeserta .peserta-table-wrap tbody tr:hover td{background:#fff}
+#secPeserta .peserta-table-wrap td.kode{font-size:.75rem}
+#secPeserta .peserta-table-wrap .kode-del{color:#1B3A66;border-bottom:1px dashed #AAB8C8}
+#secPeserta .peserta-table-wrap td.nama b{font:800 .8rem var(--body);color:#14233A}
+#secPeserta .peserta-table-wrap td.nama span{font-size:.67rem;color:#8290A4}
+#secPeserta .peserta-table-wrap .stagebar{gap:7px}
+#secPeserta .peserta-table-wrap .stagebar .track{width:62px;height:6px;background:#E7E5DC}
+#secPeserta .peserta-table-wrap .stagebar .fill{background:#3F741A}
+#secPeserta .peserta-table-wrap .stagebar b{font-size:.69rem}
+#secPeserta .peserta-table-wrap .pill{width:235px;min-width:235px;padding:5px 9px;font-size:.61rem}
+#secPeserta .peserta-table-wrap .aksi-cell-in{gap:5px}
+#secPeserta .peserta-table-wrap .btn.sm{padding:7px 10px;font-size:.68rem;border-radius:8px}
+#secPeserta .empty-row td{background:rgba(255,255,255,.86)!important;border:1px solid #DDE5EE!important;border-radius:12px!important;padding:36px 16px}
+@media(max-width:760px){
+  #secPeserta .peserta-head{align-items:flex-start}
+  #secPeserta .peserta-head-mark{display:none}
+  #secPeserta .peserta-toolbar{padding:8px}
+  #secPeserta .peserta-search{min-width:100%}
+  #secPeserta .peserta-filter{min-width:100%}
+}
+
+
+/* ============ PREMIUM DATA MASTER REDESIGN ============ */
+#secMaster{padding-top:4px}
+#secMaster .master-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+  margin:0 0 18px;padding:0 4px;
+}
+#secMaster .master-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font:800 .64rem var(--body);letter-spacing:.16em;color:var(--gold);
+  text-transform:uppercase;
+}
+#secMaster .master-eyebrow span{
+  width:24px;height:2px;background:var(--gold);border-radius:2px;
+}
+#secMaster .master-head h2{
+  margin-top:6px;font:800 1.65rem/1.15 var(--disp);
+  letter-spacing:-.03em;color:var(--navy);
+}
+#secMaster .master-head p{
+  margin-top:5px;font:600 .78rem/1.5 var(--body);color:var(--mut);
+}
+#secMaster .master-head-mark{text-align:right;padding-bottom:2px}
+#secMaster .master-head-mark span{
+  display:block;font:800 .58rem var(--body);letter-spacing:.14em;
+  color:var(--mut);margin-bottom:2px;
+}
+#secMaster .master-head-mark b{
+  font:800 .72rem var(--disp);letter-spacing:.12em;
+  color:var(--navy);opacity:.72;
+}
+
+#secMaster .master-toolbar{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;padding:9px;
+  background:rgba(255,255,255,.66);
+  border:1px solid rgba(217,227,239,.95);
+  border-radius:16px;
+  box-shadow:0 8px 22px rgba(27,58,102,.055);
+  backdrop-filter:blur(10px);
+}
+#secMaster .master-search{
+  display:flex;align-items:center;gap:9px;flex:1;min-width:260px;
+  height:46px;padding:0 13px;background:#fff;
+  border:1.5px solid #D5DFEA;border-radius:11px;
+  transition:.18s;position:relative;
+}
+#secMaster .master-search:focus-within{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(190,129,70,.11);
+}
+#secMaster .master-search>svg{
+  width:17px;height:17px;stroke:#718198;fill:none;
+  stroke-width:2;flex-shrink:0;
+}
+#secMaster .master-search input{
+  width:100%;height:100%;border:0;outline:0;background:transparent;
+  padding:0;font:600 .83rem var(--body);color:var(--ink);
+}
+#secMaster .master-search input::placeholder{color:#93A0B1}
+#secMaster .master-search .search-clear-btn{
+  position:static;transform:none;flex-shrink:0;
+}
+#secMaster .master-search.has-value .search-clear-btn{display:flex}
+#secMaster .master-toolbar-note{
+  display:inline-flex;align-items:center;gap:7px;
+  height:46px;padding:0 14px;
+  border:1.5px solid #D5DFEA;border-radius:11px;
+  background:#fff;color:var(--mut);
+  font:700 .68rem var(--body);white-space:nowrap;
+}
+#secMaster .master-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 4px rgba(23,178,106,.10);
+}
+
+#secMaster .master-table-wrap{background:transparent;border:0}
+#secMaster .master-table-topline{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:2px 6px 7px;color:#7A8798;
+}
+#secMaster .master-table-topline span:first-child{
+  font:800 .61rem var(--body);letter-spacing:.14em;color:var(--navy);
+}
+#secMaster .master-table-topline span:last-child{
+  font:600 .62rem var(--body);color:#8B96A5;
+}
+#secMaster .master-table-card{
+  background:transparent;border:0;border-radius:0;overflow:visible;
+}
+#secMaster .master-table-card table{
+  border-collapse:separate;border-spacing:0 6px;
+}
+#secMaster .master-table-card thead th{
+  background:#102B4B;color:#D9E4F1;border:0;
+  padding:11px 14px;font-size:.61rem;letter-spacing:.1em;
+}
+#secMaster .master-table-card thead th:first-child{border-radius:10px 0 0 10px}
+#secMaster .master-table-card thead th:last-child{border-radius:0 10px 10px 0}
+#secMaster .master-table-card tbody tr{
+  filter:drop-shadow(0 3px 7px rgba(16,27,44,.045));
+  transition:transform .16s ease,filter .16s ease;
+}
+#secMaster .master-table-card tbody tr:hover{
+  background:transparent;transform:translateY(-1px);
+  filter:drop-shadow(0 7px 14px rgba(16,27,44,.08));
+}
+#secMaster .master-table-card tbody td{
+  background:rgba(255,255,255,.93);
+  border-top:1px solid #DDE5EE;border-bottom:1px solid #DDE5EE;
+  padding:10px 14px;height:58px;font-size:.8rem;
+}
+#secMaster .master-table-card tbody td:first-child{
+  border-left:1px solid #DDE5EE;border-radius:12px 0 0 12px;
+  color:#8390A0;font:800 .72rem var(--mono);
+}
+#secMaster .master-table-card tbody td:last-child{
+  border-right:1px solid #DDE5EE;border-radius:0 12px 12px 0;
+}
+#secMaster .master-table-card tbody tr:hover td{background:#fff}
+#secMaster .master-table-card td.kode{
+  font-size:.75rem;
+}
+#secMaster .master-table-card .kode-del{
+  color:var(--navy);border-bottom:1px dashed #AAB8C8;
+}
+#secMaster .master-table-card td.nama b{
+  font:800 .8rem var(--body);color:#14233A;
+}
+#secMaster .master-table-card td.nama span{
+  font-size:.67rem;color:#8290A4;
+}
+#secMaster .master-table-card td:nth-child(5){
+  font:800 .72rem var(--body);color:var(--navy);
+}
+#secMaster .master-table-card td:nth-child(6){
+  color:#65748A;font:700 .7rem var(--body);
+}
+#secMaster .master-table-card .aksi-cell-in{gap:5px}
+#secMaster .master-table-card .btn.sm{
+  padding:7px 10px;font-size:.68rem;border-radius:8px;
+}
+#secMaster .master-table-card .btn.b-navy{
+  box-shadow:0 3px 8px rgba(16,43,75,.12);
+}
+#secMaster .master-table-card .empty-row td{
+  background:rgba(255,255,255,.86)!important;
+  border:1px solid #DDE5EE!important;
+  border-radius:12px!important;padding:36px 16px;
+}
+@media(max-width:760px){
+  #secMaster .master-head{align-items:flex-start}
+  #secMaster .master-head-mark{display:none}
+  #secMaster .master-toolbar{padding:8px;flex-wrap:wrap}
+  #secMaster .master-search{min-width:100%}
+  #secMaster .master-toolbar-note{width:100%;justify-content:center}
+}
 
 /* ============ DASHBOARD ============ */
 .main-content{padding:26px 0 60px}
@@ -238,6 +460,9 @@ body{overflow-x:hidden}
 .csel-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;display:flex;align-items:baseline;gap:8px}
 .csel-label-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .csel-label-price{flex-shrink:0;margin-left:auto;color:var(--mut);font-weight:700;font-size:.76rem;font-variant-numeric:tabular-nums}
+.csel-label-badge{flex-shrink:0;margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font:800 .66rem var(--body)}
+.csel-opt-badge{flex-shrink:0;margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font:800 .64rem var(--body)}
+.csel-opt.sel .csel-opt-badge{background:#fff;color:var(--navy)}
 .csel-chev{flex-shrink:0;color:var(--mut);transition:transform .18s}
 .csel.open .csel-btn{border-color:var(--navy)}
 .csel.open .csel-chev{transform:rotate(180deg)}
@@ -358,9 +583,8 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-reply textarea{flex:1;border:1.5px solid var(--line);border-radius:22px;padding:12px 18px;font:600 .85rem var(--body);resize:vertical;min-height:44px;max-height:140px;background:#F7F8FA}
 .mail-reply textarea:focus{outline:none;border-color:var(--navy);background:#fff}
 .mail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:220px;color:var(--mut);gap:8px;padding:40px;text-align:center;font:600 .82rem var(--body)}
-.mail-shell-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:calc(100vh - 250px);color:var(--mut);font:700 .88rem var(--body)}
-.mail-shell-loading .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--navy);animation:mailSpin .8s linear infinite}
-@keyframes mailSpin{to{transform:rotate(360deg)}}
+.mail-shell-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:calc(100vh - 250px);color:var(--mut);font:700 .88rem var(--body)}
+.mail-loading-svg{width:150px;height:110px}
 .mail-acc-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .mail-acc-item:last-child{border-bottom:none}
 .mail-acc-item b{font:700 .85rem var(--body);color:var(--ink);display:block}
@@ -380,6 +604,16 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-acc-del{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:#fff;color:var(--mut);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:.15s}
 .mail-acc-del svg{width:14px;height:14px}
 .mail-acc-del:hover{border-color:var(--red);color:var(--red);background:#FDEEEE}
+.mail-acc-watch{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:#fff;color:var(--mut);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:.15s}
+.mail-acc-watch svg{width:14px;height:14px}
+.mail-acc-watch:hover{border-color:var(--gold);color:var(--gold)}
+.mail-acc-watch.on{border-color:var(--gold);color:var(--gold);background:#FFF7E3}
+.mail-acc-watch.on svg{fill:var(--gold)}
+.mail-acc-row-info{position:relative}
+.mail-acc-unread{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font:800 .66rem var(--body);margin-left:7px;vertical-align:middle}
+.sb-link{position:relative}
+.sb-link-dot{position:absolute;top:6px;left:30px;width:9px;height:9px;border-radius:50%;background:var(--red);border:1.5px solid #fff;display:none}
+.sb-link-dot.show{display:block}
 .mail-acc-empty{color:var(--mut);font-size:.82rem;text-align:center;padding:20px 4px}
 .acc-toggle-h{cursor:pointer;user-select:none;justify-content:space-between!important}
 .acc-toggle-h svg{width:15px;height:15px;color:var(--navy);transition:transform .2s;flex-shrink:0}
@@ -397,7 +631,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .box-h{background:var(--navy);color:#fff;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .box-h .ava{width:46px;height:46px;border-radius:12px;background:var(--gold);display:flex;align-items:center;justify-content:center;font:800 1.1rem var(--disp);flex-shrink:0;overflow:hidden}
 .box-h .ava img{width:100%;height:100%;object-fit:cover;display:block}
-.box-h h3{font:800 1.1rem var(--disp)}
+.box-h h3{font:800 1.1rem var(--disp);color:#fff}
 .box-h p{font:600 .78rem var(--body);color:#cfe0f4}
 .box-h .x{background:rgba(255,255,255,.14);border:none;color:#fff;width:32px;height:32px;border-radius:9px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .box-body{padding:22px 26px 26px;max-height:70vh;overflow-y:auto}
@@ -472,6 +706,16 @@ td.nama span{color:var(--mut);font-size:.78rem}
 
 /* ============ DATA MASTER — PANEL PILIH DOKUMEN (DRAG & DROP) ============ */
 .dnd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.email-log-wrap{margin-top:18px;border-top:1.5px dashed var(--line);padding-top:16px}
+.email-log-wrap h4{display:flex;align-items:center;font:800 .88rem var(--disp);color:var(--navy);margin-bottom:10px}
+.email-log-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto}
+.email-log-item{display:flex;align-items:flex-start;gap:10px;background:var(--paper,#F7F3E9);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.email-log-item .eli-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;background:var(--green,#17B26A)}
+.email-log-item.failed .eli-dot{background:var(--red)}
+.email-log-item .eli-body{min-width:0;flex:1}
+.email-log-item .eli-to{font:700 .82rem var(--body);color:var(--ink);word-break:break-all}
+.email-log-item .eli-meta{font:600 .72rem var(--body);color:var(--mut);margin-top:2px}
+.email-log-item .eli-err{font:600 .72rem var(--body);color:var(--red);margin-top:2px}
 .dnd-col{background:#F7F5EF;border:1.5px solid var(--line);border-radius:14px;padding:14px;min-height:260px;display:flex;flex-direction:column}
 .dnd-col h4{font:800 .74rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .dnd-col h4 small{font:600 .68rem var(--body);text-transform:none;letter-spacing:0;color:var(--mut)}
@@ -491,6 +735,11 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .dnd-dot.ok{background:var(--green)} .dnd-dot.wait{background:#E3A93B} .dnd-dot.bad{background:var(--red)}
 .dnd-rm{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--mut);font-size:.72rem;display:none;align-items:center;justify-content:center;transition:.15s}
 .dnd-rm:hover{border-color:var(--red);color:var(--red)}
+.dnd-del{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--red);font-size:.78rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.dnd-del:hover{background:var(--red);border-color:var(--red);color:#fff}
+.dnd-view{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--navy);font-size:.78rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.dnd-view svg{width:14px;height:14px;-webkit-user-drag:none;user-select:none;pointer-events:none}
+.dnd-view:hover{background:var(--navy);border-color:var(--navy);color:#fff}
 .dnd-upload{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--gold,#c9a227);background:#FFF8EA;color:var(--navy);font-size:.72rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
 .dnd-upload:hover{background:var(--gold,#c9a227);color:#fff}
 .dnd-add-extra{margin-top:10px;width:100%;justify-content:center;border-style:dashed}
@@ -1076,6 +1325,9 @@ td.kode{
 .modal .box h3,.modal .box h4{
   color:var(--navy);
 }
+.modal .box .box-h h3,.modal .box .box-h h4{
+  color:#fff;
+}
 .btn.b-pri{
   background:var(--navy);
   border-color:var(--navy);
@@ -1136,8 +1388,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .brand-logo{
     height:48px;
   }
-  .who-block{
+  .who-block .who-email{
     display:none;
+  }
+  .who-dropdown{
+    min-width:140px;
   }
   #loginView{
     padding:28px 14px 50px;
@@ -1258,8 +1513,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .login-form-panel{background:#fff;display:flex;align-items:center}
 .login-form-inner{width:100%;max-width:540px;padding:54px 62px 50px;margin:0 auto}
 .login-welcome{display:flex;align-items:flex-start;gap:13px;margin-bottom:32px}
-.welcome-mark{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:0 0 42px;border-radius:12px;background:rgba(245,182,43,.12);color:var(--navy);border:1px solid rgba(245,182,43,.42)}
-.welcome-mark svg{width:24px;height:24px}
+.welcome-mark{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:0 0 42px;color:var(--gold)}
+.welcome-mark svg{width:38px;height:38px}
 .login-welcome h3{font:800 1.65rem/1.2 var(--disp);color:var(--navy);letter-spacing:-.035em;margin:0 0 5px}
 .login-welcome p{font:500 .82rem var(--body);color:var(--mut);margin:0}
 .login-form .fld{margin-bottom:19px}
@@ -1327,10 +1582,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="hd-r" id="hdRight" style="display:none">
       <button class="btn b-hdr sm" id="installBtn" style="display:none">⬇ Install App</button>
       <button type="button" class="btn b-hdr sm" id="btnBackMenu" data-back-to-menu>← Kembali ke Menu</button>
-      <button class="btn b-wht sm" id="btnLogout">Keluar</button>
-      <div class="who-block">
-        <span class="who-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6"/></svg></span>
-        <span class="who-email" id="whoEmail">—</span>
+      <div class="who-block" id="whoBlock">
+        <button type="button" class="who-trigger" id="whoTrigger" aria-haspopup="true" aria-expanded="false">
+          <span class="who-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6"/></svg></span>
+          <span class="who-email" id="whoEmail">—</span>
+          <svg class="who-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="who-dropdown" id="whoDropdown">
+          <button class="who-dropdown-item" id="btnLogout" type="button">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1410,8 +1673,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a class="sb-link" data-target="secSekolah"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 8.5v6"/></svg></span> Sekolah Mitra</a>
       <span class="sb-label">Lainnya</span>
       <a class="sb-link" data-target="secKeuangan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span> ADM Peserta</a>
-      <a class="sb-link" data-target="secEmail"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span> Kelola Email</a>
       <a class="sb-link" data-target="secBukti"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15.5 15.5 1.3 1.3 2.2-2.4" stroke="var(--green,#17B26A)"/></svg></span> Bukti Pembayaran<span class="sb-badge" id="sbBuktiBadge" style="display:none">0</span></a>
+      <a class="sb-link" data-target="secEmail"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></span> Kelola Email<span class="sb-link-dot" id="mailNavDot"></span></a>
       <a id="sbRefresh"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.34 5.66"/><polyline points="20 4 20 11 13 11"/></svg></span> Muat Ulang</a>
       <span class="sb-label">Akun</span>
       <a id="sbLogout"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</a>
@@ -1488,20 +1751,35 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <div class="tab-panel" id="secPeserta">
-        <div class="toolbar">
-          <input type="text" id="qSearch" placeholder="Cari nama, NIK, kota, atau kode peserta…">
-          <select id="qStage">
-            <option value="">Semua Tahap</option>
-            <option value="0">Tahap 1 — Berkas Diterima</option>
-            <option value="1">Tahap 2 — Verifikasi Dokumen</option>
-            <option value="2">Tahap 3 — Pelatihan &amp; Pembekalan</option>
-            <option value="3">Tahap 4 — Matching Perusahaan</option>
-            <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
-            <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
-          </select>
+        <div class="peserta-head">
+          <div>
+            <h2>Data Peserta</h2>
+            <p>Kelola pendaftaran, pantau progres tahapan, dan verifikasi kelengkapan dokumen.</p>
+          </div>
+          <div class="peserta-head-mark"><span id="pesertaCountLabel">DATA AKTIF</span><b>PT. JUARA</b></div>
         </div>
 
-        <div class="tbl-wrap">
+        <div class="toolbar peserta-toolbar">
+          <div class="peserta-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input type="text" id="qSearch" placeholder="Cari nama, NIK, kota, atau kode peserta…">
+          </div>
+          <div class="peserta-filter">
+            <span>FILTER TAHAP</span>
+            <select id="qStage">
+              <option value="">Semua Tahap</option>
+              <option value="0">Tahap 1 — Berkas Diterima</option>
+              <option value="1">Tahap 2 — Verifikasi Dokumen</option>
+              <option value="2">Tahap 3 — Pelatihan &amp; Pembekalan</option>
+              <option value="3">Tahap 4 — Matching Perusahaan</option>
+              <option value="4">Tahap 5 — Proses Visa &amp; MCU</option>
+              <option value="5">Tahap 6 — Tiket &amp; Keberangkatan</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tbl-wrap peserta-table-wrap">
+          <div class="table-topline"><span>DAFTAR PESERTA</span><span>klik baris untuk melihat detail</span></div>
           <table>
             <thead><tr>
               <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dokumen</th><th>Aksi</th>
@@ -1512,19 +1790,45 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <div class="tab-panel" id="secMaster">
-        <div class="toolbar">
-          <div class="search-wrap" id="qSearchMasterWrap">
+        <div class="master-head">
+          <div>
+            <h2>Peserta Terdaftar</h2>
+            <p>Kelola peserta yang sudah dikonversi ke Data Master.</p>
+          </div>
+          <div class="master-head-mark">
+            <span>PT. JUARA</span>
+            <b>MASTER DATABASE</b>
+          </div>
+        </div>
+
+        <div class="master-toolbar">
+          <div class="master-search" id="qSearchMasterWrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-4-4"></path>
+            </svg>
             <input type="text" id="qSearchMaster" placeholder="Cari nama, kota, atau kode peserta di Data Master…">
             <button type="button" id="qSearchMasterClear" class="search-clear-btn" title="Hapus filter" aria-label="Hapus filter">✕</button>
           </div>
+          <div class="master-toolbar-note">
+            <span class="master-dot"></span>
+            Peserta aktif di Data Master
+          </div>
         </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr>
-              <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
-            </tr></thead>
-            <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr></tbody>
-          </table>
+
+        <div class="master-table-wrap">
+          <div class="master-table-topline">
+            <span>DATABASE PESERTA</span>
+            <span>Data yang sudah dikonversi</span>
+          </div>
+          <div class="tbl-wrap master-table-card">
+            <table>
+              <thead><tr>
+                <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
+              </tr></thead>
+              <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -1597,7 +1901,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
              supaya tidak terasa "patah-patah" (dropdown kosong dulu, lalu
              "Memuat email...", lalu baru terisi). -->
         <div class="mail-shell-loading" id="mailShellLoading">
-          <div class="spin"></div>
+          <svg class="mail-loading-svg" viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <rect x="90" y="120" width="120" height="60" rx="6" fill="var(--navy)"/>
+            <g>
+              <rect x="115" y="20" width="70" height="86" rx="6" fill="#ffffff" stroke="var(--line)" stroke-width="2"/>
+              <line x1="128" y1="40" x2="172" y2="40" stroke="var(--mut)" stroke-width="3" stroke-linecap="round"/>
+              <line x1="128" y1="54" x2="172" y2="54" stroke="var(--mut)" stroke-width="3" stroke-linecap="round"/>
+              <line x1="128" y1="68" x2="158" y2="68" stroke="var(--mut)" stroke-width="3" stroke-linecap="round"/>
+              <animateTransform attributeName="transform" type="translate" values="0 -15; 0 100; 0 100" keyTimes="0;0.55;1" dur="1.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0 0 0 0"/>
+              <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.6;1" dur="1.8s" repeatCount="indefinite"/>
+            </g>
+            <path d="M85 132 Q85 124 93 124 L207 124 Q215 124 215 132 L215 176 Q215 184 207 184 L93 184 Q85 184 85 176 Z" fill="var(--gold)">
+              <animateTransform attributeName="transform" type="rotate" values="0 150 130; -6 150 130; 0 150 130; 0 150 130" keyTimes="0;0.55;0.7;1" dur="1.8s" repeatCount="indefinite"/>
+            </path>
+          </svg>
           <p>Menyiapkan Kelola Email…</p>
         </div>
         <div class="mail-shell" id="mailShell" style="display:none">
@@ -1773,11 +2090,37 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           </div>
         </div>
       </div>
+      <div class="email-log-wrap" id="emailLogWrap">
+        <h4>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:-3px;margin-right:2px">
+            <circle cx="12" cy="12" r="9" stroke="var(--navy)" stroke-width="1.7"/>
+            <path d="M12 7v5l3.5 2" stroke="var(--navy)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Riwayat Pengiriman Email
+        </h4>
+        <div id="emailLogList" class="email-log-list"><div class="dnd-empty">Memuat riwayat…</div></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ============ MODAL KIRIM EMAIL ============ -->
+<!-- ============ MODAL LIHAT DOKUMEN (preview inline, tidak buka tab baru) ============ -->
+<div class="modal" id="docViewModal">
+  <div class="box" style="max-width:640px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>📄 Pratinjau Dokumen</h3><p id="dvSub">-</p></div>
+      <button class="x" id="btnCloseDocView">✕</button>
+    </div>
+    <div class="box-body" style="max-height:78vh;display:flex;flex-direction:column;align-items:center;gap:14px">
+      <div id="dvLoading" style="padding:40px 0;color:var(--mut);font:600 .85rem var(--body)">Memuat berkas…</div>
+      <img id="dvImg" style="display:none;max-width:100%;max-height:60vh;border-radius:12px;border:1.5px solid var(--line);object-fit:contain" alt="Pratinjau dokumen">
+      <iframe id="dvPdf" style="display:none;width:100%;height:60vh;border:1.5px solid var(--line);border-radius:12px" title="Pratinjau dokumen"></iframe>
+      <a id="dvOpenNew" href="#" target="_blank" rel="noopener" class="btn b-ghost sm" style="display:none">Buka di tab baru</a>
+    </div>
+  </div>
+</div>
+
+
 <div class="modal" id="emailModal">
   <div class="box" style="max-width:480px">
     <div class="box-h">
@@ -2129,9 +2472,9 @@ function buildCsel(select){
       const o=document.createElement('div');
       o.className='csel-opt'+(opt.value===select.value?' sel':'');
       const price=opt.dataset.price||'';
-      o.innerHTML=price
-        ? `<span class="csel-opt-name">${escapeHtml(opt.textContent)}</span><span class="csel-opt-price">${escapeHtml(price)}</span>`
-        : escapeHtml(opt.textContent);
+      const badge=opt.dataset.badge||'';
+      o.innerHTML=(price?`<span class="csel-opt-name">${escapeHtml(opt.textContent)}</span><span class="csel-opt-price">${escapeHtml(price)}</span>`:`<span class="csel-opt-name">${escapeHtml(opt.textContent)}</span>`)
+        + (badge?`<span class="csel-opt-badge">${escapeHtml(badge)}</span>`:'');
       o.dataset.value=opt.value; o.setAttribute('role','option');
       o.addEventListener('click',()=>{
         select.value=opt.value;
@@ -2145,8 +2488,10 @@ function buildCsel(select){
     const opt=select.options[select.selectedIndex];
     const label=btn.querySelector('.csel-label');
     const price=opt?.dataset.price||'';
+    const badge=opt?.dataset.badge||'';
     label.innerHTML=opt
-      ? (price?`<span class="csel-label-name">${escapeHtml(opt.textContent)}</span><span class="csel-label-price">${escapeHtml(price)}</span>`:escapeHtml(opt.textContent))
+      ? (price?`<span class="csel-label-name">${escapeHtml(opt.textContent)}</span><span class="csel-label-price">${escapeHtml(price)}</span>`:`<span class="csel-label-name">${escapeHtml(opt.textContent)}</span>`)
+        + (badge?`<span class="csel-label-badge">${escapeHtml(badge)}</span>`:'')
       : '';
     menu.querySelectorAll('.csel-opt').forEach(o=>o.classList.toggle('sel',o.dataset.value===select.value));
   }
@@ -2347,6 +2692,7 @@ function goToTab(targetId){
   window.scrollTo({top:0,behavior:'smooth'});
   if(window.innerWidth<=860) closeSidebar();
   if(targetId==='secEmail' && !MAIL_LOADED){ MAIL_LOADED=true; initMailPanel(); }
+  if(targetId==='secEmail'){ startMailWatch(); } else { stopMailWatch(); }
 }
 document.querySelectorAll('.sb-link').forEach(link=>{
   link.addEventListener('click', ()=>{ goToTab(link.dataset.target); });
@@ -2380,6 +2726,20 @@ $('#btnLogout').addEventListener('click', async ()=>{
   PARTICIPANTS=[]; DOCS_BY_PID={}; STAGE_BY_PID={};
   showLogin();
 });
+
+const whoBlock=$('#whoBlock'), whoTrigger=$('#whoTrigger');
+function closeWhoDropdown(){
+  whoBlock.classList.remove('open');
+  whoTrigger.setAttribute('aria-expanded','false');
+}
+function toggleWhoDropdown(){
+  const willOpen=!whoBlock.classList.contains('open');
+  whoBlock.classList.toggle('open', willOpen);
+  whoTrigger.setAttribute('aria-expanded', willOpen?'true':'false');
+}
+whoTrigger.addEventListener('click', e=>{ e.stopPropagation(); toggleWhoDropdown(); });
+document.addEventListener('click', e=>{ if(!whoBlock.contains(e.target)) closeWhoDropdown(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeWhoDropdown(); });
 
 /* ============ LOAD DATA ============ */
 async function loadAll(){
@@ -3930,14 +4290,65 @@ async function cancelKolektif(pid,jenis){
   toast('Penandaan kolektif dibatalkan ✓','ok');
 }
 
+/* Cache signed URL per storage_path supaya buka pratinjau berulang (atau setelah
+   di-hover/prefetch) terasa instan, tidak perlu nunggu round-trip ke Supabase
+   tiap kali. TTL signed URL 300 detik, kita anggap valid selama masih ada sisa
+   >15 detik biar aman dari race condition pas dipakai. */
+const SIGNED_URL_CACHE=new Map();
+async function getSignedDocUrl(storage_path){
+  const now=Date.now();
+  const cached=SIGNED_URL_CACHE.get(storage_path);
+  if(cached&&cached.exp>now+15000) return cached.url;
+  const {data,error}=await sb.storage.from('juara-v2-documents').createSignedUrl(storage_path,300);
+  if(error||!data) throw new Error(error?.message||'Gagal membuat tautan berkas');
+  SIGNED_URL_CACHE.set(storage_path,{url:data.signedUrl,exp:now+300*1000});
+  return data.signedUrl;
+}
+function prefetchDocUrl(storage_path){ if(storage_path) getSignedDocUrl(storage_path).catch(()=>{}); }
+
 async function viewDoc(pid,jenis){
   const doc=(DOCS_BY_PID[pid]||{})[jenis]; if(!doc?.storage_path)return toast('Berkas tidak ditemukan','err');
   const newTab=window.open('','_blank'); // dibuka LANGSUNG saat klik, sebelum await, biar tidak diblokir Safari
-  const {data,error}=await sb.storage.from('juara-v2-documents').createSignedUrl(doc.storage_path,300);
-  if(error||!data){ if(newTab)newTab.close(); return toast('Gagal membuka berkas: '+(error?.message||''),'err'); }
-  if(newTab) newTab.location.href=data.signedUrl;
-  else window.open(data.signedUrl,'_blank'); // fallback kalau tab kosong tadi gagal dibuka
+  try{
+    const url=await getSignedDocUrl(doc.storage_path);
+    if(newTab) newTab.location.href=url;
+    else window.open(url,'_blank'); // fallback kalau tab kosong tadi gagal dibuka
+  }catch(err){
+    if(newTab)newTab.close();
+    toast('Gagal membuka berkas: '+(err.message||''),'err');
+  }
 }
+/* Pratinjau dokumen langsung di halaman yang sama (modal), tanpa buka tab baru —
+   dipakai oleh tombol mata 👁 di panel Kelola Dokumen. */
+async function viewDocInline(pid,jenis){
+  const doc=(DOCS_BY_PID[pid]||{})[jenis]; if(!doc?.storage_path)return toast('Berkas tidak ditemukan','err');
+  const label=DOCS.find(d=>d.k===jenis)?.t||doc.file_name||'Dokumen';
+  const modal=$('#docViewModal');
+  $('#dvSub').textContent=label;
+  const imgEl=$('#dvImg'), pdfEl=$('#dvPdf'), loadEl=$('#dvLoading'), openEl=$('#dvOpenNew');
+  imgEl.style.display='none'; pdfEl.style.display='none'; openEl.style.display='none';
+  imgEl.src=''; pdfEl.src='';
+  loadEl.textContent='Memuat berkas…'; loadEl.style.display='block';
+  modal.classList.add('show');
+  try{
+    const url=await getSignedDocUrl(doc.storage_path);
+    const isPdf=/\.pdf($|\?)/i.test(doc.storage_path)||/\.pdf($|\?)/i.test(doc.file_name||'');
+    loadEl.style.display='none';
+    if(isPdf){ pdfEl.src=url; pdfEl.style.display='block'; }
+    else{ imgEl.src=url; imgEl.style.display='block'; }
+    openEl.href=url; openEl.style.display='inline-flex';
+  }catch(err){
+    loadEl.textContent='Gagal memuat berkas: '+(err.message||'terjadi kesalahan');
+    loadEl.style.display='block';
+  }
+}
+$('#btnCloseDocView')?.addEventListener('click',()=>{
+  $('#docViewModal').classList.remove('show');
+  $('#dvImg').src=''; $('#dvPdf').src='';
+});
+$('#docViewModal')?.addEventListener('click', e=>{
+  if(e.target.id==='docViewModal'){ $('#docViewModal').classList.remove('show'); $('#dvImg').src=''; $('#dvPdf').src=''; }
+});
 async function setDocStatus(pid,jenis,status){
   const doc=(DOCS_BY_PID[pid]||{})[jenis]; if(!doc)return;
   const {error}=await sb.from('documents_v2').update({status}).eq('id',doc.id);
@@ -4154,20 +4565,29 @@ function dndItemHtml(d,up){
   // berkas aslinya sudah di tangan, tanpa perlu batalkan-kolektif dulu.
   const canUploadDirect=st==='kolektif';
   const uploadBtn=canUploadDirect?`<button type="button" class="dnd-upload" data-kolektif-upload="${d.k}" title="Lengkapi dokumen ini — unggah berkas asli sekarang">⬆</button>`:'';
+  // Tombol lihat/pratinjau berkas — cuma ditampilkan kalau berkasnya sudah ada
+  // (bukan status kolektif yang belum punya file fisik), supaya admin bisa cek
+  // ulang isinya sebelum kirim email / download.
+  const viewBtn=(up?.storage_path)?`<button type="button" class="dnd-view" data-view="${d.k}" title="Lihat berkas ini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" draggable="false"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>`:'';
+  // Dokumen tambahan (di luar 7 tipe standar) boleh dihapus manual oleh admin,
+  // beda dengan dokumen wajib yang cuma bisa dipilih/dikembalikan ke daftar.
+  const delBtn=d.extra?`<button type="button" class="dnd-del" data-del="${d.k}" title="Hapus dokumen tambahan ini">🗑</button>`:'';
   return `<div class="dnd-item" draggable="true" data-key="${d.k}">
     <span class="dnd-ic">${d.ic}</span>
     <div class="dnd-lbl"><b>${d.t}</b><span class="dnd-dot ${dot}" title="${dotTitle}"></span></div>
     ${uploadBtn}
+    ${viewBtn}
+    ${delBtn}
     <button class="dnd-rm" data-rm="${d.k}" title="Kembalikan ke daftar dokumen">✕</button>
   </div>`;
 }
 
-function openMasterDoc(pid){
+async function openMasterDoc(pid){
   DND_PID=pid;
   const p=PARTICIPANTS.find(x=>x.id===pid);
   const mrow=MASTER_ROWS.find(r=>r.participant_id===pid);
-  const nama=p?.nama||mrow?.nama||'-';
-  $('#mdAva').textContent=(nama||'?')[0].toUpperCase();
+  const nama=(p?.nama||mrow?.nama||'').trim()||'Tanpa Nama';
+  $('#mdAva').innerHTML=nama[0].toUpperCase();
   $('#mdNama').textContent=nama;
   $('#mdKode').textContent=mrow?.kode_peserta||(p?participantCode(p):'-');
 
@@ -4176,16 +4596,54 @@ function openMasterDoc(pid){
   // Dokumen tambahan = baris documents_v2 dengan jenis di luar 7 tipe standar
   // (diinsert lewat tombol "+ Upload Dokumen Tambahan").
   const extraKeys=Object.keys(docs).filter(k=>!DOCS.some(d=>d.k===k));
-  const extraDefs=extraKeys.map(k=>({k,ic:EXTRA_DOC_ICON,t:docs[k].file_name||'Dokumen Tambahan'}));
+  const extraDefs=extraKeys.map(k=>({k,ic:EXTRA_DOC_ICON,t:docs[k].file_name||'Dokumen Tambahan',extra:true}));
   const allDefs=[...uploaded,...extraDefs];
   $('#dndSource').innerHTML=allDefs.length?allDefs.map(d=>dndItemHtml(d,docs[d.k])).join(''):'<div class="dnd-empty">Peserta ini belum mengunggah dokumen apa pun.</div>';
   $('#dndTarget').innerHTML='<div class="dnd-empty" id="dndEmptyMsg">Seret dokumen ke sini</div>';
   updateDndCount();
   $('#masterDocModal').classList.add('show');
+  renderEmailLog(pid);
+
+  const fotoDoc=docs.foto;
+  if(fotoDoc?.storage_path){
+    const {data,error}=await sb.storage.from('juara-v2-documents').createSignedUrl(fotoDoc.storage_path,3600);
+    if(!error&&data&&DND_PID===pid) $('#mdAva').innerHTML=`<img src="${data.signedUrl}" alt="">`;
+  }
+
+  // Siapkan lebih dulu (di latar belakang) signed URL semua dokumen yang punya
+  // berkas, supaya begitu admin klik ikon mata untuk pratinjau, gambarnya
+  // langsung tampil tanpa nunggu round-trip ke Supabase.
+  allDefs.forEach(d=>prefetchDocUrl(docs[d.k]?.storage_path));
 }
 function closeMasterDoc(){ $('#masterDocModal').classList.remove('show'); DND_PID=null; }
 $('#btnCloseMasterDoc').addEventListener('click', closeMasterDoc);
 $('#masterDocModal').addEventListener('click', e=>{ if(e.target.id==='masterDocModal')closeMasterDoc(); });
+
+/* Riwayat pengiriman email dokumen — tabel document_email_log_v2 */
+async function renderEmailLog(pid){
+  const box=$('#emailLogList'); if(!box)return;
+  box.innerHTML='<div class="dnd-empty">Memuat riwayat…</div>';
+  const {data,error}=await sb.from('document_email_log_v2')
+    .select('*').eq('participant_id',pid)
+    .order('created_at',{ascending:false}).limit(20);
+  if(DND_PID!==pid)return;
+  if(error){ box.innerHTML=`<div class="dnd-empty">Gagal memuat riwayat: ${error.message}</div>`; return; }
+  if(!data?.length){ box.innerHTML='<div class="dnd-empty">Belum ada email yang pernah dikirim untuk peserta ini.</div>'; return; }
+  const docs=DOCS_BY_PID[pid]||{};
+  box.innerHTML=data.map(row=>{
+    const dt=new Date(row.created_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'});
+    const failed=row.status==='gagal';
+    const docNames=(row.doc_keys||[]).map(k=>DOCS.find(d=>d.k===k)?.t||docs[k]?.file_name||k).join(', ');
+    return `<div class="email-log-item${failed?' failed':''}">
+      <span class="eli-dot"></span>
+      <div class="eli-body">
+        <div class="eli-to">${row.sent_to||'-'}</div>
+        <div class="eli-meta">${dt} · ${row.doc_count||0} dokumen${docNames?` (${docNames})`:''}${row.sent_from?` · dari ${row.sent_from}`:''}</div>
+        ${failed?`<div class="eli-err">Gagal: ${row.error_message||'tidak diketahui'}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
 
 function updateDndCount(){
   const n=$('#dndTarget').querySelectorAll('.dnd-item').length;
@@ -4236,6 +4694,10 @@ function initDndLists(){
     list.addEventListener('click', e=>{
       const rm=e.target.closest('.dnd-rm');
       if(rm){ moveDndToSource(rm.dataset.rm); return; }
+      const del=e.target.closest('.dnd-del');
+      if(del){ e.stopPropagation(); deleteExtraDoc(DND_PID, del.dataset.del); return; }
+      const view=e.target.closest('.dnd-view');
+      if(view){ e.stopPropagation(); viewDocInline(DND_PID, view.dataset.view); return; }
       const up=e.target.closest('.dnd-upload');
       if(up){ e.stopPropagation(); PENDING_KOLEKTIF_KEY=up.dataset.kolektifUpload; $('#kolektifFileInput').click(); return; }
       const item=e.target.closest('.dnd-item'); if(!item)return;
@@ -4280,6 +4742,33 @@ $('#extraDocFileInput')?.addEventListener('change', async e=>{
     toast('Gagal mengunggah dokumen tambahan: '+err.message,'err');
   }
 });
+
+/* ---- Hapus Dokumen Tambahan: hanya berlaku utk dokumen dgn jenis "tambahan_*"
+   (bukan 7 tipe standar). Menghapus berkas di storage + baris documents_v2,
+   lalu perbarui cache lokal & render ulang panel Kelola Dokumen. */
+async function deleteExtraDoc(pid,key){
+  if(!pid)return;
+  const docs=DOCS_BY_PID[pid]||{};
+  const doc=docs[key];
+  if(!doc)return;
+  const label=doc.file_name||'Dokumen Tambahan';
+  if(!confirm(`Hapus dokumen tambahan "${label}"? Berkas akan dihapus permanen dan tidak bisa dikembalikan.`))return;
+  toast('Menghapus dokumen tambahan…','ok');
+  try{
+    if(doc.storage_path){
+      const {error:rmErr}=await sb.storage.from('juara-v2-documents').remove([doc.storage_path]);
+      if(rmErr) console.warn('Gagal hapus berkas storage:',rmErr.message);
+    }
+    const {error:delErr}=await sb.from('documents_v2').delete().eq('id',doc.id);
+    if(delErr)throw new Error(delErr.message);
+    delete docs[key];
+    toast('Dokumen tambahan dihapus ✓','ok');
+    if(DND_PID===pid)openMasterDoc(pid);
+  }catch(err){
+    console.error(err);
+    toast('Gagal menghapus dokumen tambahan: '+err.message,'err');
+  }
+}
 
 /* ---- Lengkapi dokumen berstatus "Kolektif": admin bisa unggah langsung
    berkas aslinya di sini begitu sudah di tangan (mis. paspor/MCU yang tadinya
@@ -4368,14 +4857,36 @@ $('#btnEmailSend').addEventListener('click', async ()=>{
     if(error) throw new Error(error.message||'Gagal memanggil layanan email');
     if(data?.error) throw new Error(data.error);
     toast(`Email terkirim ✓ (${data?.sent??storage_paths.length} lampiran)`,'ok');
+    await logEmailSend(pid,{from,to,subject,message,keys,status:'terkirim'});
     closeEmailModal();
   }catch(err){
     console.error(err);
     $('#emErr').textContent='Gagal mengirim: '+(err.message||'terjadi kesalahan');
+    await logEmailSend(pid,{from,to,subject,message,keys,status:'gagal',error:err.message});
   }finally{
     btn.disabled=false; btn.textContent=orig;
   }
 });
+
+/* Simpan setiap percobaan kirim (sukses/gagal) ke document_email_log_v2,
+   lalu refresh daftar riwayat di panel Kelola Dokumen kalau modal masih terbuka. */
+async function logEmailSend(pid,{from,to,subject,message,keys,status,error}){
+  try{
+    await sb.from('document_email_log_v2').insert({
+      participant_id:pid,
+      sent_from:from||null,
+      sent_to:to,
+      subject:subject||null,
+      message:message||null,
+      doc_keys:keys||[],
+      doc_count:(keys||[]).length,
+      status,
+      error_message:error||null,
+      sent_by:(await sb.auth.getUser())?.data?.user?.email||null
+    });
+  }catch(e){ console.warn('Gagal menyimpan riwayat email:',e); }
+  if(DND_PID===pid) renderEmailLog(pid);
+}
 
 function sanitizeName(s){ return String(s||'').trim().replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'')||'file'; }
 
@@ -4431,6 +4942,13 @@ $('#btnDownloadPicked').addEventListener('click', downloadPickedZip);
 
 /* ============ KELOLA EMAIL (IMAP/SMTP terintegrasi) ============ */
 let MAIL_LOADED=false, MAIL_ACCOUNTS=[], MAIL_ACTIVE=null, MAIL_MSGS=[], MAIL_OPEN=null, MAIL_FOLDER='INBOX', MAIL_SELECTED=new Set();
+// FIX: notifikasi email masuk. MAIL_WATCH_UNSEEN menyimpan jumlah unseen terakhir
+// per akun yang dipantau (dipakai untuk badge di daftar akun); MAIL_WATCH_BASELINE
+// dipakai untuk deteksi "bertambah" supaya tidak langsung nge-toast semua unseen
+// lama begitu fitur ini pertama kali dinyalakan. Polling hanya berjalan selagi
+// tab "Kelola Email" sedang aktif (lihat startMailWatch/stopMailWatch di goToTab).
+let MAIL_WATCH_UNSEEN=new Map(), MAIL_WATCH_BASELINE=new Map(), MAIL_WATCH_TIMER=null, MAIL_WATCH_BASELINED=false;
+const MAIL_WATCH_INTERVAL_MS=45000;
 
 function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtMailDate(d){ if(!d)return '-'; const dt=new Date(d); if(isNaN(dt))return '-'; return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
@@ -4497,10 +5015,12 @@ async function initMailPanel(){
   }finally{
     $('#mailShellLoading').style.display='none';
     $('#mailShell').style.display='';
+    startMailWatch();
   }
 }
 
 const ACC_TRASH_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+const ACC_BELL_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
 
 function renderMailAccList(){
   const q=($('#maSearch')?.value||'').trim().toLowerCase();
@@ -4518,17 +5038,21 @@ function renderMailAccList(){
 
   wrap.innerHTML=filtered.map(a=>{
     const initial=escapeHtml((a.label||a.email||'?').trim().charAt(0)||'?');
+    const unread=MAIL_WATCH_UNSEEN.get(a.id)||0;
+    const watchTitle=a.watch_notif?'Berhenti pantau notifikasi':'Pantau notifikasi (beri tahu jika ada email masuk)';
     return `
     <div class="mail-acc-row">
       <div class="mail-acc-avatar">${initial}</div>
       <div class="mail-acc-row-info">
-        <b>${escapeHtml(a.label||'-')}</b>
+        <b>${escapeHtml(a.label||'-')}${unread>0?`<span class="mail-acc-unread">${unread>99?'99+':unread}</span>`:''}</b>
         <span>${escapeHtml(a.email)}</span>
       </div>
+      <button class="mail-acc-watch${a.watch_notif?' on':''}" data-watch-acc="${a.id}" title="${watchTitle}">${ACC_BELL_SVG}</button>
       <button class="mail-acc-del" data-del-acc="${a.id}" title="Hapus akun">${ACC_TRASH_SVG}</button>
     </div>`;
   }).join('');
   wrap.querySelectorAll('[data-del-acc]').forEach(b=>b.addEventListener('click', ()=>deleteMailAccount(b.dataset.delAcc)));
+  wrap.querySelectorAll('[data-watch-acc]').forEach(b=>b.addEventListener('click', ()=>toggleMailWatch(b.dataset.watchAcc)));
 }
 
 $('#maSearch')?.addEventListener('input', renderMailAccList);
@@ -4537,6 +5061,95 @@ $('#maAddToggle')?.addEventListener('click', ()=>{
   $('#maAddToggle').classList.toggle('open');
   $('#maAddBody').classList.toggle('open');
 });
+
+async function toggleMailWatch(id){
+  const acc=MAIL_ACCOUNTS.find(a=>a.id===id);
+  if(!acc)return;
+  const next=!acc.watch_notif;
+  acc.watch_notif=next; // update optimis dulu supaya tombol langsung berubah
+  renderMailAccList();
+  try{
+    const {data,error}=await sb.functions.invoke('email-accounts',{body:{action:'toggle_watch',id,watch_notif:next}});
+    if(error)throw new Error(error.message||'Gagal menyimpan');
+    if(data?.error)throw new Error(data.error);
+    toast(next?`Notifikasi diaktifkan untuk ${acc.email}`:`Notifikasi dimatikan untuk ${acc.email}`,'ok');
+    if(next){
+      // Minta izin notifikasi browser (opsional) supaya toast juga bisa muncul
+      // sebagai notifikasi desktop selagi admin sedang buka tab lain.
+      if(window.Notification && Notification.permission==='default') Notification.requestPermission();
+      MAIL_WATCH_BASELINED=false; // akun baru dipantau -> ambil baseline unseen-nya dulu
+      startMailWatch();
+    }else{
+      MAIL_WATCH_UNSEEN.delete(id);
+      MAIL_WATCH_BASELINE.delete(id);
+      renderMailAccList();
+      updateMailAccDropdownBadges();
+      updateMailNavDot();
+    }
+  }catch(err){
+    console.error(err);
+    acc.watch_notif=!next; // rollback kalau gagal disimpan
+    renderMailAccList();
+    toast('Gagal mengubah notifikasi: '+err.message,'err');
+  }
+}
+
+function updateMailAccDropdownBadges(){
+  const sel=$('#mailAcc'); if(!sel)return;
+  [...sel.options].forEach(opt=>{
+    const n=MAIL_WATCH_UNSEEN.get(opt.value)||0;
+    if(n>0) opt.dataset.badge=n>99?'99+':String(n);
+    else delete opt.dataset.badge;
+  });
+  ensureCsel(sel);
+}
+
+function updateMailNavDot(){
+  const anyUnread=[...MAIL_WATCH_UNSEEN.values()].some(n=>n>0);
+  $('#mailNavDot')?.classList.toggle('show', anyUnread);
+}
+
+// FIX: dipanggil berkala (lihat startMailWatch) untuk semua akun yang ditandai
+// watch_notif. Pakai action 'unseen' (ringan, cuma IMAP STATUS) bukan 'list',
+// supaya aman dipanggil tiap ~45 detik walau nanti akun yang dipantau lumayan
+// banyak. Baseline diambil dulu di panggilan pertama (tidak langsung nge-toast
+// unseen lama), baru panggilan berikutnya membandingkan kenaikan untuk notifikasi.
+async function checkMailNotifications(){
+  const watched=MAIL_ACCOUNTS.filter(a=>a.watch_notif);
+  if(!watched.length)return;
+  const isFirstRun=!MAIL_WATCH_BASELINED;
+  await Promise.all(watched.map(async a=>{
+    try{
+      const data=await invokeMailImap({action:'unseen',account_id:a.id,folder:'INBOX'});
+      const unseen=data?.unseen||0;
+      const prev=MAIL_WATCH_BASELINE.has(a.id)?MAIL_WATCH_BASELINE.get(a.id):unseen;
+      MAIL_WATCH_UNSEEN.set(a.id,unseen);
+      MAIL_WATCH_BASELINE.set(a.id,unseen);
+      if(!isFirstRun && unseen>prev){
+        const label=a.label||a.email;
+        toast(`📩 Email baru masuk ke ${label} (${a.email})`,'ok');
+        if(window.Notification && Notification.permission==='granted'){
+          try{ new Notification('Email baru masuk',{body:`${label} — ${a.email}`}); }catch{}
+        }
+      }
+    }catch(err){
+      console.warn('Cek unseen gagal untuk akun',a.email,err.message);
+    }
+  }));
+  MAIL_WATCH_BASELINED=true;
+  renderMailAccList();
+  updateMailAccDropdownBadges();
+  updateMailNavDot();
+}
+
+function startMailWatch(){
+  checkMailNotifications();
+  if(MAIL_WATCH_TIMER)return;
+  MAIL_WATCH_TIMER=setInterval(checkMailNotifications, MAIL_WATCH_INTERVAL_MS);
+}
+function stopMailWatch(){
+  if(MAIL_WATCH_TIMER){ clearInterval(MAIL_WATCH_TIMER); MAIL_WATCH_TIMER=null; }
+}
 
 async function deleteMailAccount(id){
   if(!await customConfirm('Hapus akun email ini? Password tersimpan juga akan terhapus.'))return;
@@ -4722,7 +5335,6 @@ async function openMailMessage(uid){
       <div class="mail-read-hd">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
           <h4>${escapeHtml(msg.subject||'(tanpa subjek)')}</h4>
-          <button class="btn b-red sm" id="btnMailDelete" style="flex-shrink:0">🗑 Hapus</button>
         </div>
         <div class="mail-read-meta"><span class="mi-avatar">${escapeHtml(mailInitial(msg.from))}</span><span><b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</span></div>
       </div>
@@ -4743,8 +5355,24 @@ async function openMailMessage(uid){
     const baseTag='<base target="_blank" rel="noopener noreferrer">';
     ifr.srcdoc = msg.html ? (baseTag+msg.html) : ('<pre style="white-space:pre-wrap;font-family:inherit;padding:16px;margin:0">'+escapeHtml(msg.text||'(tidak ada isi)')+'</pre>');
     $('#btnMailReplySend').addEventListener('click', ()=>sendMailReply(msg));
-    $('#btnMailDelete').addEventListener('click', ()=>deleteMailMessage(uid));
-    const m=MAIL_MSGS.find(x=>x.uid===uid); if(m)m.seen=true;
+    const m=MAIL_MSGS.find(x=>x.uid===uid);
+    const wasUnseen=m && !m.seen;
+    if(m)m.seen=true;
+    // FIX: badge unread di dropdown/daftar akun sebelumnya cuma ikut update pas
+    // siklus polling 45 detik jalan lagi, jadi kelihatan "nyangkut" merah walau
+    // emailnya baru saja dibuka & server sudah menandainya \Seen. Begitu sebuah
+    // pesan yang TADINYA belum dibaca berhasil dibuka (server-side sudah tandai
+    // seen), langsung kurangi counter lokal supaya badge merespons seketika, lalu
+    // re-check ke server di belakang layar (tanpa nunggu) untuk memastikan
+    // angkanya benar-benar akurat.
+    if(wasUnseen && MAIL_FOLDER==='INBOX'){
+      const cur=MAIL_WATCH_UNSEEN.get(MAIL_ACTIVE)||0;
+      if(cur>0) MAIL_WATCH_UNSEEN.set(MAIL_ACTIVE, cur-1);
+      renderMailAccList();
+      updateMailAccDropdownBadges();
+      updateMailNavDot();
+    }
+    checkMailNotifications();
   }catch(err){
     console.error(err);
     $('#mailRead').innerHTML='<div class="mail-empty">Gagal memuat pesan: '+escapeHtml(err.message)+'</div>';
