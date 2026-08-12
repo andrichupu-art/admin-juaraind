@@ -2049,6 +2049,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <h4>📎 Dokumen</h4>
         <div id="docList"></div>
       </div>
+
+      <div class="box-sec">
+        <h4>📎 Data Tambahan (dari Peserta) <span id="extraDocCnt" style="font:700 .68rem var(--body);letter-spacing:0;text-transform:none;color:var(--mut)"></span></h4>
+        <div id="extraDocList"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -4228,7 +4233,7 @@ async function openDetail(pid){
   $('#eAsalSekolah').value=p.asal_sekolah||'';
   $('#eStage').value=String(STAGE_BY_PID[pid]??0);
   ensureCsel($('#eStage'));
-  renderDocList(pid);
+  renderDocList(pid); renderExtraDocList(pid);
   $('#detailModal').classList.add('show');
   const fotoDoc=(DOCS_BY_PID[pid]||{}).foto;
   if(fotoDoc?.storage_path){
@@ -4278,6 +4283,48 @@ function renderDocList(pid){
   $('#docList').querySelectorAll('[data-verify]').forEach(b=>b.addEventListener('click',()=>setDocStatus(pid,b.dataset.verify,'terverifikasi')));
   $('#docList').querySelectorAll('[data-reject]').forEach(b=>b.addEventListener('click',()=>setDocStatus(pid,b.dataset.reject,'ditolak')));
   $('#docList').querySelectorAll('[data-unkolektif]').forEach(b=>b.addEventListener('click',()=>cancelKolektif(pid,b.dataset.unkolektif)));
+}
+/* ===== DATA TAMBAHAN DARI PESERTA — berkas yang diunggah peserta lewat tab
+   "Portal Kerja" (panel Data Tambahan) di aplikasi index.html. Disimpan di
+   documents_v2 dengan jenis berawalan "extra_<timestamp>_<random>" (lihat
+   uploadExtraDoc() di index.html) supaya tidak bentrok dengan 7 tipe standar
+   ataupun dokumen tambahan yang diunggah admin sendiri (awalan "tambahan_").
+   Ditampilkan terpisah di sini supaya admin bisa langsung lihat/verifikasi/
+   tolak/hapus tanpa harus buka modal Kelola Dokumen (email/download). */
+function renderExtraDocList(pid){
+  const box=$('#extraDocList'); if(!box)return;
+  const docs=DOCS_BY_PID[pid]||{};
+  const keys=Object.keys(docs).filter(k=>k.startsWith('extra_')).sort((a,b)=>new Date(docs[b].uploaded_at||0)-new Date(docs[a].uploaded_at||0));
+  $('#extraDocCnt').textContent=keys.length?`${keys.length} berkas`:'';
+  if(!keys.length){
+    box.innerHTML='<div class="dnd-empty" style="padding:10px 0">Peserta belum mengunggah berkas tambahan.</div>';
+    return;
+  }
+  box.innerHTML=keys.map(k=>{
+    const d=docs[k];
+    const status=d.status||'menunggu';
+    const pillClass=status==='terverifikasi'?'ok':status==='ditolak'?'bad':'wait';
+    const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':'Menunggu';
+    const uploadedDate=d.uploaded_at?new Date(d.uploaded_at).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'';
+    return `<div class="doc">
+      <div class="ic">${EXTRA_DOC_ICON}</div>
+      <div class="doc-body">
+        <h5>${escapeHtml(d.file_name||'Berkas Tambahan')} <span class="opt">PESERTA</span></h5>
+        <div style="font:600 .68rem var(--body);color:var(--mut)">${uploadedDate}</div>
+        <div class="act">
+          <span class="pill ${pillClass}">${pillText}</span>
+          <button class="mini" data-exview="${k}">Lihat</button>
+          <button class="mini g" data-exverify="${k}" ${status==='terverifikasi'?'disabled':''}>Verifikasi</button>
+          <button class="mini r" data-exreject="${k}" ${status==='ditolak'?'disabled':''}>Tolak</button>
+          <button class="mini r" data-exdel="${k}">Hapus</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('[data-exview]').forEach(b=>b.addEventListener('click',()=>viewDoc(pid,b.dataset.exview)));
+  box.querySelectorAll('[data-exverify]').forEach(b=>b.addEventListener('click',()=>setDocStatus(pid,b.dataset.exverify,'terverifikasi')));
+  box.querySelectorAll('[data-exreject]').forEach(b=>b.addEventListener('click',()=>setDocStatus(pid,b.dataset.exreject,'ditolak')));
+  box.querySelectorAll('[data-exdel]').forEach(b=>b.addEventListener('click',()=>deleteExtraDoc(pid,b.dataset.exdel).then(()=>{ if(ACTIVE_PID===pid)renderExtraDocList(pid); })));
 }
 /* Admin membatalkan penandaan kolektif (mis. peserta sudah bawa paspor/MCU
    asli lewat jalur lain) — baris dokumen dihapus, peserta jadi perlu unggah
@@ -4357,7 +4404,7 @@ async function setDocStatus(pid,jenis,status){
   const {error}=await sb.from('documents_v2').update({status}).eq('id',doc.id);
   if(error)return toast('Gagal mengubah status: '+error.message,'err');
   doc.status=status;
-  renderDocList(pid); renderTable(); renderStats();
+  renderDocList(pid); renderExtraDocList(pid); renderTable(); renderStats();
   toast(status==='terverifikasi'?'Dokumen diverifikasi ✓':'Dokumen ditandai perlu diperbaiki','ok');
   await maybeAdvanceStage(pid);
 }
