@@ -5997,6 +5997,10 @@ async function openMailMessage(uid){
         <div class="mail-read-meta"><span class="mi-avatar">${escapeHtml(mailInitial(msg.from))}</span><span><b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</span></div>
         ${msg.attachments && msg.attachments.length ? `
         <div class="mail-attach-list" id="mailReadAttachList" style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
+          ${msg.attachments.length>1 ? `
+          <div style="display:flex;justify-content:flex-end;margin-bottom:2px">
+            <button type="button" class="btn b-ghost sm" id="btnMailAttachAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg> Unduh Semua (${msg.attachments.length})</button>
+          </div>` : ''}
           ${msg.attachments.map((att,i)=>`
             <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#F7F9FB">
               <span style="flex:1;min-width:0;font:600 .8rem var(--body);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📎 ${escapeHtml(att.filename||'lampiran')}</span>
@@ -6028,6 +6032,7 @@ async function openMailMessage(uid){
         if(att) downloadMailAttachment(att);
       });
     });
+    $('#btnMailAttachAll')?.addEventListener('click', ()=>downloadAllMailAttachments(msg.attachments, msg.subject));
     const m=MAIL_MSGS.find(x=>x.uid===uid);
     const wasUnseen=m && !m.seen;
     if(m)m.seen=true;
@@ -6065,6 +6070,40 @@ function downloadMailAttachment(att){
   }catch(err){
     console.error(err);
     toast('Gagal mengunduh lampiran','err');
+  }
+}
+
+async function downloadAllMailAttachments(attachments, subject){
+  if(!attachments||!attachments.length)return;
+  const btn=$('#btnMailAttachAll');
+  const orig=btn?btn.innerHTML:'';
+  if(btn){ btn.disabled=true; btn.innerHTML='⏳ Menyiapkan ZIP…'; }
+  try{
+    const zip=new JSZip();
+    let used=new Set();
+    attachments.forEach(att=>{
+      const bin=atob(att.content);
+      const bytes=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+      let base=sanitizeName((att.filename||'lampiran').replace(/\.[^.]+$/,''));
+      const ext=(att.filename||'').includes('.')?att.filename.split('.').pop():'';
+      let fname=base+(ext?'.'+ext:'');
+      let n=2; while(used.has(fname)){ fname=`${base}_${n}${ext?'.'+ext:''}`; n++; }
+      used.add(fname);
+      zip.file(fname, bytes);
+    });
+    const content=await zip.generateAsync({type:'blob'});
+    const zipName=sanitizeName(subject||'lampiran-email')+'.zip';
+    const url=URL.createObjectURL(content);
+    const a=document.createElement('a'); a.href=url; a.download=zipName;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+    toast('ZIP berhasil diunduh ✓','ok');
+  }catch(err){
+    console.error(err);
+    toast('Gagal membuat ZIP: '+(err.message||'terjadi kesalahan'),'err');
+  }finally{
+    if(btn){ btn.disabled=false; btn.innerHTML=orig; }
   }
 }
 
