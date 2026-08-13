@@ -211,52 +211,63 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-search{min-width:100%}
   #secPeserta .peserta-filter{min-width:100%}
 
-  /* ---- kartu peserta mobile: nama+telp kiri, kode+lokasi+bar kanan ---- */
+  /* ---- kartu peserta mobile (ringkas): No, Kode, Nama, tombol Aksi ---- */
   #secPeserta .peserta-table-wrap{overflow:visible;border-radius:0}
   #secPeserta .peserta-table-wrap table{border-spacing:0;min-width:0!important}
   #secPeserta .peserta-table-wrap tbody{display:block}
   #secPeserta .peserta-table-wrap tbody tr{
-    display:grid;grid-template-columns:auto 1fr auto;column-gap:10px;row-gap:5px;align-items:center;
+    display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;row-gap:6px;align-items:center;
     position:relative;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
-    padding:14px 14px 12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
+    padding:13px 12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
   }
   #secPeserta .peserta-table-wrap tbody tr.empty-row{display:block;padding:28px 14px;text-align:center;color:var(--mut)}
   #secPeserta .peserta-table-wrap tbody td{
     width:auto;border:0!important;background:transparent!important;
     padding:0!important;height:auto!important;border-radius:0!important;font-size:.8rem;
   }
-  /* No urut -> kolom paling kiri, sejajar dengan Nama peserta */
+  /* No urut -> baris 1, kiri */
   #secPeserta .peserta-table-wrap tbody td:nth-child(1){
-    grid-column:1;grid-row:1;justify-self:start;align-self:start;
+    grid-column:1;grid-row:1;justify-self:start;align-self:center;
     position:static;font:800 .66rem var(--mono);color:#B7C1CF;
   }
-  /* Nama + telepon -> kolom tengah, tinggi menyamai lokasi+kode di kanan */
-  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:2;grid-row:1 / span 3;align-self:start;line-height:1.25}
-  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.87rem}
-  #secPeserta .peserta-table-wrap tbody td.nama span{font-size:.71rem}
-  /* Lokasi -> kolom kanan, baris 1 (paling atas, di atas kode) */
-  #secPeserta .peserta-table-wrap tbody td:nth-child(4){
-    grid-column:3;grid-row:1;justify-self:end;display:flex;align-items:center;gap:4px;
-    color:#5B6B80;font:700 .72rem var(--body);white-space:nowrap;
+  /* Kode Peserta -> baris 1, kanan */
+  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:2 / span 2;grid-row:1;justify-self:end;font-size:.72rem}
+  /* Nama Peserta -> baris 2, kiri (telepon disembunyikan, hanya nama) */
+  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:1 / span 2;grid-row:2;align-self:center;line-height:1.25}
+  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.88rem}
+  #secPeserta .peserta-table-wrap tbody td.nama span{display:none}
+  /* Kota, bar tahap, dan pill dokumen -> disembunyikan di kartu mobile (pindah ke menu Aksi) */
+  #secPeserta .peserta-table-wrap tbody td:nth-child(4),
+  #secPeserta .peserta-table-wrap tbody td:nth-child(5),
+  #secPeserta .peserta-table-wrap tbody td:nth-child(6){display:none}
+  /* Tombol Aksi -> baris 2, kanan */
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:3;grid-row:2;justify-self:end;align-self:center;overflow:visible}
+  #secPeserta .peserta-table-wrap tbody .aksi-inline{display:none}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
+    width:34px;height:34px;border-radius:10px;border:1.5px solid #D5DFEA;background:#F6F8FB;
+    color:#28405F;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;
   }
-  #secPeserta .peserta-table-wrap tbody td:nth-child(4)::before{content:'📍'}
-  /* Kode peserta -> kolom kanan, baris 2 (di bawah lokasi) */
-  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:3;grid-row:2;justify-self:end;font-size:.72rem}
-  /* Bar tahap (1/6) -> disembunyikan di mobile */
-  #secPeserta .peserta-table-wrap tbody td:nth-child(5){display:none}
-  /* Dokumen (unggahan) -> baris 4, sejajar dengan Aksi/Convert di kolom kanan */
-  #secPeserta .peserta-table-wrap tbody td:nth-child(6){
-    grid-column:1 / span 2;grid-row:4;display:flex;align-self:center;
-    padding-top:9px!important;margin-top:5px;border-top:1px dashed #E5EAF0!important;
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger:active,
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger[aria-expanded="true"]{background:#EAF0F8;border-color:var(--gold)}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu{
+    display:none;flex-direction:column;gap:4px;position:absolute;top:calc(100% + 6px);right:0;z-index:60;
+    min-width:222px;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
+    box-shadow:0 14px 30px rgba(16,27,44,.16);padding:8px;
   }
-  #secPeserta .peserta-table-wrap tbody td:nth-child(6) .pill{width:auto;max-width:100%;min-width:0;box-sizing:border-box;white-space:normal;line-height:1.35;text-align:center;padding:5px 9px;font-size:.62rem}
-  #secPeserta .peserta-table-wrap tbody td.aksi-cell{
-    grid-column:3;grid-row:4;align-self:center;
-    padding-top:9px!important;margin-top:5px;border-top:1px dashed #E5EAF0!important;
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu.show{display:flex}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status{padding:4px 6px 6px}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status .pill{width:100%;box-sizing:border-box;white-space:normal;line-height:1.35;text-align:center;padding:6px 8px;font-size:.62rem}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap{display:flex}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .btn,
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .pill{width:100%;box-sizing:border-box;justify-content:center;text-align:center}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item{
+    display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;border:0;background:transparent;
+    padding:9px 8px;border-radius:9px;font:700 .78rem var(--body);color:var(--navy);text-align:left;cursor:pointer;
   }
-  #secPeserta .peserta-table-wrap tbody .aksi-cell-in{padding-top:0;justify-content:flex-end}
-  #secPeserta .peserta-table-wrap tbody .aksi-cell-in .btn{justify-content:center}
-  #secPeserta .peserta-table-wrap tbody .aksi-cell-in .pill{justify-content:center}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item:active{background:#F1F4F8}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item b{margin-left:auto}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-profile{border-top:1px dashed #E5EAF0;margin-top:2px;padding-top:11px}
 }
 
 
@@ -3900,6 +3911,14 @@ $('#btnInvoiceEmailSend')?.addEventListener('click', async ()=>{
   }
 });
 
+/* Menu Aksi (mobile) — tombol titik-tiga di kartu peserta yang membuka
+   dropdown berisi status unggah/verifikasi, Convert, dan Profil Peserta. */
+function closeAllAksiMenus(){
+  document.querySelectorAll('.aksi-mobile-menu.show').forEach(m=>m.classList.remove('show'));
+  document.querySelectorAll('[data-aksi-toggle]').forEach(b=>b.setAttribute('aria-expanded','false'));
+}
+document.addEventListener('click', e=>{ if(!e.target.closest('.aksi-mobile'))closeAllAksiMenus(); });
+
 function renderTable(){
   const q=$('#qSearch').value.trim().toLowerCase();
   const stageFilter=$('#qStage').value;
@@ -3933,23 +3952,52 @@ function renderTable(){
     const avHtml=avPending
       ?`<button class="btn b-navy sm" data-verify1="${p.id}" style="position:relative;padding:6px 10px;line-height:1" title="Verifikasi otomatis dokumen peserta ini pakai AI (${avPending} menunggu)">${AI_SVG}<span style="position:absolute;top:-6px;right:-6px;background:var(--gold,#c9a227);color:#1a1a2e;font-size:.62rem;font-weight:800;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1">${avPending}</span></button>`
       :'';
+    const docPillClass=verified===totalReq?'ok':(accepted===totalReq?'kolektif':(uploaded===0?'wait':'wait'));
+    const avMobileHtml=avPending
+      ?`<button type="button" class="aksi-mobile-item" data-verify1="${p.id}">${AI_SVG} Verifikasi Otomatis <b>${avPending}</b></button>`
+      :'';
+    const PROFILE_SVG=`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    const DOTS_SVG=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>`;
+    const aksiMobileHtml=`<div class="aksi-mobile" data-aksi-wrap="${p.id}">
+        <button type="button" class="aksi-mobile-trigger" data-aksi-toggle="${p.id}" aria-haspopup="true" aria-expanded="false" title="Aksi">${DOTS_SVG}</button>
+        <div class="aksi-mobile-menu" data-aksi-menu="${p.id}">
+          <div class="aksi-mobile-status"><span class="pill ${docPillClass}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></div>
+          ${avMobileHtml}
+          <div class="aksi-mobile-item-wrap">${aksiHtml}</div>
+          <button type="button" class="aksi-mobile-item aksi-mobile-item-profile" data-profile="${p.id}">${PROFILE_SVG} Profil Peserta</button>
+        </div>
+      </div>`;
     return `<tr data-pid="${p.id}">
       <td>${i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
-      <td><span class="pill ${verified===totalReq?'ok':(accepted===totalReq?'kolektif':(uploaded===0?'wait':'wait'))}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></td>
-      <td class="aksi-cell"><div class="aksi-cell-in">${avHtml}${aksiHtml}</div></td>
+      <td><span class="pill ${docPillClass}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></td>
+      <td class="aksi-cell"><div class="aksi-cell-in aksi-inline">${avHtml}${aksiHtml}</div>${aksiMobileHtml}</td>
     </tr>`;
   }).join('');
   body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.pid)));
+  body.querySelectorAll('[data-aksi-toggle]').forEach(btn=>btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const menu=btn.nextElementSibling;
+    const willOpen=!menu.classList.contains('show');
+    closeAllAksiMenus();
+    if(willOpen){ menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); }
+  }));
+  body.querySelectorAll('[data-profile]').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    closeAllAksiMenus();
+    openDetail(b.dataset.profile);
+  }));
   body.querySelectorAll('[data-convert]').forEach(b=>b.addEventListener('click', e=>{
     e.stopPropagation();
+    closeAllAksiMenus();
     convertToMaster(b.dataset.convert, b);
   }));
   body.querySelectorAll('[data-verify1]').forEach(b=>b.addEventListener('click', e=>{
     e.stopPropagation();
+    closeAllAksiMenus();
     runAutoVerify(b.dataset.verify1);
   }));
   body.querySelectorAll('[data-delpid]').forEach(el=>el.addEventListener('click', e=>{
@@ -3958,6 +4006,7 @@ function renderTable(){
   }));
   body.querySelectorAll('[data-goto-master]').forEach(el=>el.addEventListener('click', e=>{
     e.stopPropagation();
+    closeAllAksiMenus();
     gotoMasterParticipant(el.dataset.gotoMaster);
   }));
 }
