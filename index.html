@@ -228,6 +228,10 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
     position:relative;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
     padding:12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
   }
+  /* FIX: rule desktop "tbody tr:hover{background:transparent}" lebih spesifik
+     dan tetap aktif di mobile (misal nyangkut saat tap tombol titik-tiga),
+     bikin kartu jadi transparan/tembus ke background halaman. Kunci solid. */
+  #secPeserta .peserta-table-wrap tbody tr:hover{background:#fff}
   #secPeserta .peserta-table-wrap tbody tr.empty-row{display:block;padding:28px 14px;text-align:center;color:var(--mut)}
   #secPeserta .peserta-table-wrap tbody td{
     width:auto;border:0!important;background:transparent!important;
@@ -260,7 +264,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody tr.row-ready .aksi-mobile-trigger{background:#E1F7EA;border-color:#8FE0B8;color:#0E8F55}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block;position:relative}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
-    width:34px;height:34px;border-radius:10px;border:1.5px solid #D5DFEA;background:#F6F8FB;
+    width:40px;height:40px;border-radius:11px;border:1.5px solid #D5DFEA;background:#F6F8FB;
     color:#28405F;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger:active,
@@ -268,9 +272,9 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   /* Menu terbuka ke SAMPING KIRI tombol (bukan turun ke bawah), sejajar
      dengan baris kartu itu sendiri, supaya tidak ketutup kartu berikutnya */
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu{
-    display:none;flex-direction:column;gap:4px;position:absolute;bottom:0;right:calc(100% + 8px);z-index:60;
-    min-width:224px;max-width:min(78vw,300px);background:#ffffff;border:1.5px solid #C7D0DC;border-radius:14px;
-    box-shadow:0 16px 34px rgba(16,27,44,.28);padding:8px;
+    display:none;flex-direction:column;gap:6px;position:absolute;bottom:0;right:calc(100% + 8px);z-index:60;
+    min-width:270px;max-width:min(88vw,340px);background:#ffffff;border:1.5px solid #C7D0DC;border-radius:16px;
+    box-shadow:0 16px 34px rgba(16,27,44,.28);padding:10px;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu.show{display:flex}
   /* Paksa pill & tombol di dalam menu Aksi selalu solid (bukan transparan)
@@ -281,18 +285,19 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.bad{background:#FBDCDC!important;border-color:#EFA2A2!important;color:#B32C2C!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .btn.b-ghost{background:#E7EAEF!important;color:#7C899C!important;border-color:#C9D1DC!important;opacity:1!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .btn.b-navy{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status{padding:4px 6px 6px}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status .pill{width:100%;box-sizing:border-box;white-space:normal;line-height:1.35;text-align:center;padding:6px 8px;font-size:.62rem}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status{padding:5px 6px 8px}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status .pill{width:100%;box-sizing:border-box;white-space:normal;line-height:1.4;text-align:center;padding:9px 10px;font-size:.72rem}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap{display:flex}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .btn,
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .pill{width:100%;box-sizing:border-box;justify-content:center;text-align:center}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .pill{width:100%;box-sizing:border-box;justify-content:center;text-align:center;padding:11px 10px!important;font-size:.78rem!important;min-height:44px}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item{
-    display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;border:0;background:transparent;
-    padding:9px 8px;border-radius:9px;font:700 .78rem var(--body);color:var(--navy);text-align:left;cursor:pointer;
+    display:flex;align-items:center;gap:9px;width:100%;box-sizing:border-box;border:0;background:transparent;
+    padding:12px 10px;min-height:44px;border-radius:10px;font:700 .84rem var(--body);color:var(--navy);text-align:left;cursor:pointer;
   }
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item svg{width:18px;height:18px;flex-shrink:0}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item:active{background:#F1F4F8}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item b{margin-left:auto}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-profile{border-top:1px dashed #E5EAF0;margin-top:2px;padding-top:11px}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-profile{border-top:1px dashed #E5EAF0;margin-top:3px;padding-top:13px}
 }
 
 
@@ -1772,7 +1777,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <nav class="sb-nav">
       <span class="sb-label">Menu</span>
       <a class="sb-link active" data-target="secRingkasan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="14"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="16" y1="20" x2="16" y2="4"/><line x1="21" y1="20" x2="3" y2="20"/></svg></span> Ringkasan</a>
-      <a class="sb-link" data-target="secPeserta"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></span> Data Peserta</a>
+      <a class="sb-link" data-target="secPeserta"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></span> Data Peserta<span class="sb-badge" id="sbPesertaBadge" style="display:none">0</span></a>
       <a class="sb-link" data-target="secMaster"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span> Data Master</a>
       <a class="sb-link" data-target="secSekolah"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 8.5v6"/></svg></span> Sekolah Mitra</a>
       <span class="sb-label">Lainnya</span>
@@ -1816,6 +1821,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <article class="jd-card jd-card-wide" data-target="secPeserta">
               <div class="jd-card-icon"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></div>
               <div class="jd-card-copy"><span class="jd-card-label">Data Peserta</span><p>Kelola pendaftaran, profil, dokumen, dan tahapan peserta.</p></div><span class="jd-arrow">→</span>
+              <span class="nc-badge jd-badge" id="ncPesertaBadge">0</span>
               <span class="jd-wm">01</span>
             </article>
             <article class="jd-card jd-card-wide" data-target="secMaster">
@@ -3945,7 +3951,30 @@ function closeAllAksiMenus(){
 }
 document.addEventListener('click', e=>{ if(!e.target.closest('.aksi-mobile'))closeAllAksiMenus(); });
 
+/* Badge jumlah peserta yang dokumennya SUDAH 100% terunggah tapi BELUM
+   100% terverifikasi/kolektif -> ini yang butuh aksi admin (verifikasi).
+   Tampil di sidebar (sbPesertaBadge) & kartu dashboard "Data Peserta"
+   (ncPesertaBadge), mengikuti pola renderBuktiBadge/renderFinKolektifBadge. */
+function renderPesertaVerifBadge(){
+  const totalReq=DOCS.filter(d=>d.req).length;
+  const n=PARTICIPANTS.filter(p=>{
+    if(MASTER_IDS.has(p.id))return false; // sudah di Data Master, bukan lagi butuh review di sini
+    const docs=DOCS_BY_PID[p.id]||{};
+    const uploaded=DOCS.filter(d=>d.req&&docs[d.k]).length;
+    const verified=DOCS.filter(d=>d.req&&docs[d.k]?.status==='terverifikasi').length;
+    const kolektif=DOCS.filter(d=>d.req&&docs[d.k]?.status==='kolektif').length;
+    const accepted=verified+kolektif;
+    return totalReq>0&&uploaded===totalReq&&accepted<totalReq;
+  }).length;
+  const label=n>99?'99+':String(n);
+  const sb=$('#sbPesertaBadge');
+  if(sb){ sb.textContent=label; sb.style.display=n>0?'flex':'none'; }
+  const nc=$('#ncPesertaBadge');
+  if(nc){ nc.textContent=label; nc.style.display=n>0?'flex':'none'; }
+}
+
 function renderTable(){
+  renderPesertaVerifBadge();
   const q=$('#qSearch').value.trim().toLowerCase();
   const stageFilter=$('#qStage').value;
   const rows=PARTICIPANTS.filter(p=>{
