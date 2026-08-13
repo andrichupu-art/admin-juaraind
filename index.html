@@ -211,6 +211,11 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-table-wrap .pill{width:235px;min-width:235px;padding:5px 9px;font-size:.61rem}
 #secPeserta .peserta-table-wrap .aksi-cell-in{gap:5px}
 #secPeserta .peserta-table-wrap .btn.sm{padding:7px 10px;font-size:.68rem;border-radius:8px}
+/* FIX: .aksi-mobile (tombol titik-tiga + popup Aksi) sebelumnya tidak
+   punya display:none default, jadi ikut tampil mentah di desktop
+   bertumpuk dengan tombol Convert versi desktop. Sembunyikan di sini;
+   baru dimunculkan lagi khusus di dalam media query mobile. */
+#secPeserta .peserta-table-wrap tbody .aksi-mobile{display:none}
 #secPeserta .empty-row td{background:rgba(255,255,255,.86)!important;border:1px solid #DDE5EE!important;border-radius:12px!important;padding:36px 16px}
 @media(max-width:760px){
   #secPeserta .peserta-head{align-items:flex-start}
@@ -262,6 +267,18 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody tr.row-ready td.nama b{color:#0E8F55}
   #secPeserta .peserta-table-wrap tbody tr.row-ready td.kode{color:#1F8F5C}
   #secPeserta .peserta-table-wrap tbody tr.row-ready .aksi-mobile-trigger{background:#E1F7EA;border-color:#8FE0B8;color:#0E8F55}
+  /* Baris "sudah 100% unggah tapi belum diverifikasi admin" -> ditandai
+     amber/kuning supaya langsung kelihatan dari daftar tanpa buka menu Aksi. */
+  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif{background:#FFF7E8;border-color:#F0CB84}
+  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td:nth-child(1){color:#B8860B}
+  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.nama b{color:#8A5F0A}
+  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.kode{color:#946A0D}
+  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif .aksi-mobile-trigger{background:#FCEACB;border-color:#EAB962;color:#8A5F0A}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{position:relative}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger .aksi-alert-dot{
+    position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;
+    background:var(--red,#D64545);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);
+  }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block;position:relative}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
     width:40px;height:40px;border-radius:11px;border:1.5px solid #D5DFEA;background:#F6F8FB;
@@ -281,12 +298,14 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      karena menu ini melayang di atas konten lain */
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill{background:#EDF0F4!important;border-color:#C4CDD9!important;color:#374357!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.ok{background:#DEF7E9!important;border-color:#8FE0B8!important;color:#0E8F55!important}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.review{background:#FCEACB!important;border-color:#EAB962!important;color:#8A5F0A!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.kolektif{background:#DDEEFC!important;border-color:#8FC3EE!important;color:#1B6FB3!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.bad{background:#FBDCDC!important;border-color:#EFA2A2!important;color:#B32C2C!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .btn.b-ghost{background:#E7EAEF!important;color:#7C899C!important;border-color:#C9D1DC!important;opacity:1!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .btn.b-navy{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-status{padding:5px 6px 8px}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-status .pill{width:100%;box-sizing:border-box;white-space:normal;line-height:1.4;text-align:center;padding:9px 10px;font-size:.72rem}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-status .pill.review{background:#FFF4E0;border-color:#F0CB84;color:#946A0D}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap{display:flex}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .btn,
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap .pill{width:100%;box-sizing:border-box;justify-content:center;text-align:center;padding:11px 10px!important;font-size:.78rem!important;min-height:44px}
@@ -3994,6 +4013,7 @@ function renderTable(){
     const uploaded=DOCS.filter(d=>d.req&&docs[d.k]).length;
     const isComplete=totalReq>0&&accepted===totalReq;
     const isMaster=MASTER_IDS.has(p.id);
+    const needsVerif=!isMaster&&totalReq>0&&uploaded===totalReq&&accepted<totalReq;
     let aksiHtml;
     if(isMaster){
       aksiHtml=`<span class="pill ok" data-goto-master="${p.id}" style="cursor:pointer" title="Klik untuk buka data peserta ini di Data Master">✓ Di Data Master</span>`;
@@ -4007,22 +4027,27 @@ function renderTable(){
     const avHtml=avPending
       ?`<button class="btn b-navy sm" data-verify1="${p.id}" style="position:relative;padding:6px 10px;line-height:1" title="Verifikasi otomatis dokumen peserta ini pakai AI (${avPending} menunggu)">${AI_SVG}<span style="position:absolute;top:-6px;right:-6px;background:var(--gold,#c9a227);color:#1a1a2e;font-size:.62rem;font-weight:800;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1">${avPending}</span></button>`
       :'';
-    const docPillClass=verified===totalReq?'ok':(accepted===totalReq?'kolektif':(uploaded===0?'wait':'wait'));
+    /* Desktop: TETAP desain lama (tabel Dokumen), tidak ada varian 'review' supaya
+       tampilan desktop tidak berubah dari sebelumnya. */
+    const docPillClass=verified===totalReq?'ok':(accepted===totalReq?'kolektif':'wait');
+    /* Mobile (popup & kartu): pakai varian 'review' (amber) supaya status
+       "sudah unggah lengkap tapi belum diverifikasi" kelihatan beda. */
+    const docPillClassMobile=verified===totalReq?'ok':(accepted===totalReq?'kolektif':(needsVerif?'review':'wait'));
     const avMobileHtml=avPending
       ?`<button type="button" class="aksi-mobile-item" data-verify1="${p.id}">${AI_SVG} Verifikasi Otomatis <b>${avPending}</b></button>`
       :'';
     const PROFILE_SVG=`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     const DOTS_SVG=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>`;
     const aksiMobileHtml=`<div class="aksi-mobile" data-aksi-wrap="${p.id}">
-        <button type="button" class="aksi-mobile-trigger" data-aksi-toggle="${p.id}" aria-haspopup="true" aria-expanded="false" title="Aksi">${DOTS_SVG}</button>
+        <button type="button" class="aksi-mobile-trigger" data-aksi-toggle="${p.id}" aria-haspopup="true" aria-expanded="false" title="${needsVerif?'Ada dokumen menunggu diverifikasi':'Aksi'}">${DOTS_SVG}${needsVerif?'<span class="aksi-alert-dot"></span>':''}</button>
         <div class="aksi-mobile-menu" data-aksi-menu="${p.id}">
-          <div class="aksi-mobile-status"><span class="pill ${docPillClass}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></div>
+          <div class="aksi-mobile-status"><span class="pill ${docPillClassMobile}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></div>
           ${avMobileHtml}
           <div class="aksi-mobile-item-wrap">${aksiHtml}</div>
           <button type="button" class="aksi-mobile-item aksi-mobile-item-profile" data-profile="${p.id}">${PROFILE_SVG} Profil Peserta</button>
         </div>
       </div>`;
-    return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':''}">
+    return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':(needsVerif?'row-needs-verif':'')}">
       <td>${i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
