@@ -192,6 +192,14 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-table-wrap tbody td:first-child{border-left:1px solid #DDE5EE;border-radius:12px 0 0 12px;color:#8390A0;font:800 .72rem var(--mono)}
 #secPeserta .peserta-table-wrap tbody td:last-child{border-right:1px solid #DDE5EE;border-radius:0 12px 12px 0}
 #secPeserta .peserta-table-wrap tbody tr:hover td{background:#fff}
+/* Baris "siap dikonversi" (7/7 dokumen sudah unggah & terverifikasi/kolektif)
+   -> ditandai warna hijau supaya admin langsung tahu tanpa buka menu Aksi */
+#secPeserta .peserta-table-wrap tbody tr.row-ready td{background:#EAFBF2}
+#secPeserta .peserta-table-wrap tbody tr.row-ready td:first-child{border-left-color:#8FE0B8}
+#secPeserta .peserta-table-wrap tbody tr.row-ready td:first-child,
+#secPeserta .peserta-table-wrap tbody tr.row-ready td:not(:first-child):not(:last-child){border-top-color:#B7EED2;border-bottom-color:#B7EED2}
+#secPeserta .peserta-table-wrap tbody tr.row-ready td:last-child{border-right-color:#8FE0B8;background:#EAFBF2}
+#secPeserta .peserta-table-wrap tbody tr.row-ready:hover td{background:#DFF8EA}
 #secPeserta .peserta-table-wrap td.kode{font-size:.75rem}
 #secPeserta .peserta-table-wrap .kode-del{color:#1B3A66;border-bottom:1px dashed #AAB8C8}
 #secPeserta .peserta-table-wrap td.nama b{font:800 .8rem var(--body);color:#14233A}
@@ -211,39 +219,45 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-search{min-width:100%}
   #secPeserta .peserta-filter{min-width:100%}
 
-  /* ---- kartu peserta mobile (ringkas): No, Kode, Nama, tombol Aksi ---- */
+  /* ---- kartu peserta mobile (ringkas): No, Nama, Kode, tombol Aksi — satu baris sejajar ---- */
   #secPeserta .peserta-table-wrap{overflow:visible;border-radius:0}
   #secPeserta .peserta-table-wrap table{border-spacing:0;min-width:0!important}
   #secPeserta .peserta-table-wrap tbody{display:block}
   #secPeserta .peserta-table-wrap tbody tr{
-    display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;row-gap:6px;align-items:center;
+    display:grid;grid-template-columns:auto 1fr auto auto;grid-template-rows:auto;column-gap:10px;row-gap:0;align-items:center;
     position:relative;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
-    padding:13px 12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
+    padding:12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
   }
   #secPeserta .peserta-table-wrap tbody tr.empty-row{display:block;padding:28px 14px;text-align:center;color:var(--mut)}
   #secPeserta .peserta-table-wrap tbody td{
     width:auto;border:0!important;background:transparent!important;
     padding:0!important;height:auto!important;border-radius:0!important;font-size:.8rem;
   }
-  /* No urut -> baris 1, kiri */
+  /* No urut -> kolom 1 */
   #secPeserta .peserta-table-wrap tbody td:nth-child(1){
     grid-column:1;grid-row:1;justify-self:start;align-self:center;
     position:static;font:800 .66rem var(--mono);color:#B7C1CF;
   }
-  /* Kode Peserta -> baris 1, kanan */
-  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:2 / span 2;grid-row:1;justify-self:end;font-size:.72rem}
-  /* Nama Peserta -> baris 2, kiri (telepon disembunyikan, hanya nama) */
-  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:1 / span 2;grid-row:2;align-self:center;line-height:1.25}
-  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.88rem}
+  /* Nama Peserta -> kolom 2 (fleksibel, dipotong dgn ellipsis kalau kepanjangan) */
+  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:2;grid-row:1;align-self:center;min-width:0;overflow:hidden}
+  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.85rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #secPeserta .peserta-table-wrap tbody td.nama span{display:none}
+  /* Kode Peserta -> kolom 3 */
+  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:3;grid-row:1;justify-self:end;font-size:.68rem;white-space:nowrap}
   /* Kota, bar tahap, dan pill dokumen -> disembunyikan di kartu mobile (pindah ke menu Aksi) */
   #secPeserta .peserta-table-wrap tbody td:nth-child(4),
   #secPeserta .peserta-table-wrap tbody td:nth-child(5),
   #secPeserta .peserta-table-wrap tbody td:nth-child(6){display:none}
-  /* Tombol Aksi -> baris 2, kanan */
-  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:3;grid-row:2;justify-self:end;align-self:center;overflow:visible;position:relative;z-index:1}
+  /* Tombol Aksi -> kolom 4 */
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:4;grid-row:1;justify-self:end;align-self:center;overflow:visible;position:relative;z-index:1}
   #secPeserta .peserta-table-wrap tbody td.aksi-cell.aksi-open{z-index:200}
   #secPeserta .peserta-table-wrap tbody .aksi-inline{display:none}
+  /* Kartu "siap dikonversi" -> warna hijau lembut, langsung kelihatan tanpa buka menu Aksi */
+  #secPeserta .peserta-table-wrap tbody tr.row-ready{background:#EAFBF2;border-color:#B7EED2}
+  #secPeserta .peserta-table-wrap tbody tr.row-ready td:nth-child(1){color:#4CAE81}
+  #secPeserta .peserta-table-wrap tbody tr.row-ready td.nama b{color:#0E8F55}
+  #secPeserta .peserta-table-wrap tbody tr.row-ready td.kode{color:#1F8F5C}
+  #secPeserta .peserta-table-wrap tbody tr.row-ready .aksi-mobile-trigger{background:#E1F7EA;border-color:#8FE0B8;color:#0E8F55}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block;position:relative}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
     width:34px;height:34px;border-radius:10px;border:1.5px solid #D5DFEA;background:#F6F8FB;
@@ -259,6 +273,14 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
     box-shadow:0 14px 30px rgba(16,27,44,.2);padding:8px;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu.show{display:flex}
+  /* Paksa pill & tombol di dalam menu Aksi selalu solid (bukan transparan)
+     karena menu ini melayang di atas konten lain */
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill{background:#F3F5F8!important;border-color:#D9E1EB!important;color:#374357!important}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.ok{background:#E9FBF2!important;border-color:#B7EED2!important;color:#0E8F55!important}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.kolektif{background:#EAF4FD!important;border-color:#BFDCF5!important;color:#1B6FB3!important}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .pill.bad{background:#FDEAEA!important;border-color:#F5C2C2!important;color:#B32C2C!important}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .btn.b-ghost{background:#F3F5F8!important;color:#94A0B2!important;border-color:#E3E8EF!important}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .btn.b-navy{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-status{padding:4px 6px 6px}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-status .pill{width:100%;box-sizing:border-box;white-space:normal;line-height:1.35;text-align:center;padding:6px 8px;font-size:.62rem}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-item-wrap{display:flex}
@@ -3971,7 +3993,7 @@ function renderTable(){
           <button type="button" class="aksi-mobile-item aksi-mobile-item-profile" data-profile="${p.id}">${PROFILE_SVG} Profil Peserta</button>
         </div>
       </div>`;
-    return `<tr data-pid="${p.id}">
+    return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':''}">
       <td>${i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
       <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
