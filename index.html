@@ -165,6 +165,14 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-eyebrow::before{content:'';width:24px;height:2px;background:var(--gold);border-radius:2px}
 #secPeserta .peserta-head h2{margin-top:6px;font:800 1.65rem/1.15 var(--disp);letter-spacing:-.03em;color:var(--navy)}
 #secPeserta .peserta-head p{margin-top:5px;font:600 .78rem/1.5 var(--body);color:var(--mut)}
+/* Legenda warna baris (pengganti subjudul lama) -> jelasin arti warna
+   row-ready/row-needs-verif/row-empty tanpa admin harus nebak sendiri. */
+#secPeserta .peserta-legend{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:7px}
+#secPeserta .peserta-legend-item{display:flex;align-items:center;gap:6px;font:700 .68rem var(--body);color:var(--mut)}
+#secPeserta .peserta-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+#secPeserta .peserta-legend-dot.ready{background:#3F9E6E;box-shadow:0 0 0 3px #DDF5E7}
+#secPeserta .peserta-legend-dot.verif{background:#D6A426;box-shadow:0 0 0 3px #FBEECB}
+#secPeserta .peserta-legend-dot.empty{background:#D65C5C;box-shadow:0 0 0 3px #FBDCDC}
 #secPeserta .peserta-head-mark{text-align:right;padding-bottom:2px}
 #secPeserta .peserta-head-mark span{display:block;font:800 .58rem var(--body);letter-spacing:.14em;color:var(--mut);margin-bottom:2px}
 #secPeserta .peserta-head-mark b{font:800 .72rem var(--disp);letter-spacing:.12em;color:var(--navy);opacity:.72}
@@ -200,6 +208,14 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-table-wrap tbody tr.row-ready td:not(:first-child):not(:last-child){border-top-color:#B7EED2;border-bottom-color:#B7EED2}
 #secPeserta .peserta-table-wrap tbody tr.row-ready td:last-child{border-right-color:#8FE0B8;background:#EAFBF2}
 #secPeserta .peserta-table-wrap tbody tr.row-ready:hover td{background:#DFF8EA}
+/* Baris "belum unggah dokumen sama sekali" -> ditandai warna merah muda
+   supaya admin langsung tahu peserta ini belum mulai unggah apa pun. */
+#secPeserta .peserta-table-wrap tbody tr.row-empty td{background:#FDECEC}
+#secPeserta .peserta-table-wrap tbody tr.row-empty td:first-child{border-left-color:#F0AFAF}
+#secPeserta .peserta-table-wrap tbody tr.row-empty td:first-child,
+#secPeserta .peserta-table-wrap tbody tr.row-empty td:not(:first-child):not(:last-child){border-top-color:#F3C2C2;border-bottom-color:#F3C2C2}
+#secPeserta .peserta-table-wrap tbody tr.row-empty td:last-child{border-right-color:#F0AFAF;background:#FDECEC}
+#secPeserta .peserta-table-wrap tbody tr.row-empty:hover td{background:#FBDCDC}
 #secPeserta .peserta-table-wrap td.kode{font-size:.75rem}
 #secPeserta .peserta-table-wrap .kode-del{color:#1B3A66;border-bottom:1px dashed #AAB8C8}
 #secPeserta .peserta-table-wrap td.nama b{font:800 .8rem var(--body);color:#14233A}
@@ -281,6 +297,12 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.nama b{color:#8A5F0A}
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.kode{color:#946A0D}
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif .aksi-mobile-trigger{background:#FCEACB;border-color:#EAB962;color:#8A5F0A}
+  /* Baris "belum unggah dokumen sama sekali" -> merah muda, versi mobile. */
+  #secPeserta .peserta-table-wrap tbody tr.row-empty{background:#FDECEC;border-color:#F0AFAF}
+  #secPeserta .peserta-table-wrap tbody tr.row-empty td:nth-child(1){color:#C24545}
+  #secPeserta .peserta-table-wrap tbody tr.row-empty td.nama b{color:#B32C2C}
+  #secPeserta .peserta-table-wrap tbody tr.row-empty td.kode{color:#B23A3A}
+  #secPeserta .peserta-table-wrap tbody tr.row-empty .aksi-mobile-trigger{background:#FBDCDC;border-color:#EFA2A2;color:#B32C2C}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{position:relative}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger .aksi-alert-dot{
     position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;
@@ -1894,7 +1916,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="peserta-head">
           <div>
             <h2>Data Peserta</h2>
-            <p>Kelola pendaftaran, pantau progres tahapan, dan verifikasi kelengkapan dokumen.</p>
+            <div class="peserta-legend">
+              <span class="peserta-legend-item"><span class="peserta-legend-dot ready"></span>Siap Convert</span>
+              <span class="peserta-legend-item"><span class="peserta-legend-dot verif"></span>Menunggu Verifikasi</span>
+              <span class="peserta-legend-item"><span class="peserta-legend-dot empty"></span>Belum Unggah Dokumen</span>
+            </div>
           </div>
           <div class="peserta-head-mark"><span id="pesertaCountLabel">DATA AKTIF</span><b>PT. JUARA</b></div>
         </div>
@@ -4092,7 +4118,7 @@ function renderTable(){
           <button type="button" class="aksi-row aksi-row-navy" data-profile="${p.id}">${PROFILE_SVG} Profil Peserta</button>
         </div>
       </div>`;
-    return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':(needsVerif?'row-needs-verif':'')}">
+    return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':(needsVerif?'row-needs-verif':(uploadedAll===0&&!isMaster?'row-empty':''))}">
       <td>${i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
       <td class="nama"><b>${p.nama||'-'}${needsVerif?'<span class="row-verif-badge" title="Sudah unggah lengkap, menunggu diverifikasi admin">!</span>':''}</b><span>${p.telepon||'-'}</span></td>
