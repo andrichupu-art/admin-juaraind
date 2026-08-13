@@ -209,6 +209,37 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-toolbar{padding:8px}
   #secPeserta .peserta-search{min-width:100%}
   #secPeserta .peserta-filter{min-width:100%}
+
+  /* ---- kartu peserta mobile: override tampilan tabel generik ---- */
+  #secPeserta .peserta-table-wrap{overflow:visible}
+  #secPeserta .peserta-table-wrap table{border-spacing:0}
+  #secPeserta .peserta-table-wrap tbody{display:block}
+  #secPeserta .peserta-table-wrap tbody tr{
+    display:block;position:relative;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
+    padding:16px 46px 14px 14px;margin-bottom:12px;box-shadow:0 3px 10px rgba(16,27,44,.05);
+  }
+  #secPeserta .peserta-table-wrap tbody tr.empty-row{padding:28px 14px;text-align:center;color:var(--mut)}
+  #secPeserta .peserta-table-wrap tbody td{
+    display:block;width:100%;border:0!important;background:transparent!important;
+    padding:0!important;height:auto!important;border-radius:0!important;font-size:.8rem;
+  }
+  #secPeserta .peserta-table-wrap tbody td:nth-child(1){
+    position:absolute;top:14px;right:14px;width:auto;font:800 .68rem var(--mono);color:#B7C1CF;
+  }
+  #secPeserta .peserta-table-wrap tbody td.kode{margin-bottom:5px}
+  #secPeserta .peserta-table-wrap tbody td.nama{margin-bottom:10px;padding-bottom:10px!important;border-bottom:1px dashed #E5EAF0!important}
+  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.9rem}
+  #secPeserta .peserta-table-wrap tbody td:nth-child(4){margin-bottom:9px;display:flex;align-items:center;gap:5px;color:#5B6B80;font:700 .74rem var(--body)}
+  #secPeserta .peserta-table-wrap tbody td:nth-child(4)::before{content:'Kota · '}
+  #secPeserta .peserta-table-wrap tbody td:nth-child(5){margin-bottom:10px}
+  #secPeserta .peserta-table-wrap tbody td:nth-child(5) .stagebar{justify-content:flex-start}
+  #secPeserta .peserta-table-wrap tbody td:nth-child(6){margin-bottom:12px}
+  #secPeserta .peserta-table-wrap tbody td:nth-child(6) .pill{width:100%;min-width:0;box-sizing:border-box}
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell{padding-top:2px!important;border-top:1px solid #EEF1F5!important}
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell{margin-top:4px}
+  #secPeserta .peserta-table-wrap tbody .aksi-cell-in{padding-top:10px}
+  #secPeserta .peserta-table-wrap tbody .aksi-cell-in .btn{flex:1;justify-content:center}
+  #secPeserta .peserta-table-wrap tbody .aksi-cell-in .pill{flex:1;justify-content:center}
 }
 
 
