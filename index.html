@@ -2445,6 +2445,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <label>Pesan</label>
         <textarea id="mcMessage" rows="8" style="width:100%;border:2px solid var(--line);border-radius:11px;padding:12px 14px;font:600 .88rem var(--body);color:var(--ink);resize:vertical"></textarea>
       </div>
+      <div class="fld">
+        <label>Lampiran <span style="text-transform:none;letter-spacing:0;color:var(--mut)">(opsional, maks 15MB total)</span></label>
+        <button type="button" class="btn b-ghost sm" id="btnMcAttach">📎 Pilih File</button>
+        <input type="file" id="mcAttachInput" style="display:none" multiple>
+        <div id="mcAttachList" style="display:flex;flex-direction:column;gap:6px;margin-top:10px"></div>
+      </div>
       <button class="btn b-pri" id="btnMailSend" style="width:100%;justify-content:center">Kirim Sekarang</button>
       <p class="err-txt" id="mcErr"></p>
     </div>
@@ -6062,8 +6068,56 @@ $('#btnMailAccounts').addEventListener('click', ()=>{
 $('#btnCloseMailAcc').addEventListener('click', ()=>$('#mailAccModal').classList.remove('show'));
 $('#mailAccModal').addEventListener('click', e=>{ if(e.target.id==='mailAccModal')$('#mailAccModal').classList.remove('show'); });
 
+let MC_ATTACHMENTS=[]; // {file, id}
+const MC_ATTACH_MAX_TOTAL=15*1024*1024; // 15MB
+
+function mcAttachTotalSize(){ return MC_ATTACHMENTS.reduce((s,a)=>s+a.file.size,0); }
+function mcFormatSize(bytes){
+  if(bytes<1024) return bytes+' B';
+  if(bytes<1024*1024) return (bytes/1024).toFixed(1)+' KB';
+  return (bytes/(1024*1024)).toFixed(1)+' MB';
+}
+function renderMcAttachments(){
+  const box=$('#mcAttachList');
+  if(!MC_ATTACHMENTS.length){ box.innerHTML=''; return; }
+  box.innerHTML=MC_ATTACHMENTS.map(a=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#F7F9FB">
+      <span style="flex:1;min-width:0;font:600 .8rem var(--body);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📄 ${escapeHtml(a.file.name)}</span>
+      <span style="font:600 .72rem var(--body);color:var(--mut);flex-shrink:0">${mcFormatSize(a.file.size)}</span>
+      <button type="button" class="icon-plain-btn" data-mc-remove="${a.id}" style="flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+$('#mcAttachList').addEventListener('click', e=>{
+  const btn=e.target.closest('[data-mc-remove]'); if(!btn)return;
+  MC_ATTACHMENTS=MC_ATTACHMENTS.filter(a=>String(a.id)!==btn.dataset.mcRemove);
+  renderMcAttachments();
+});
+$('#btnMcAttach').addEventListener('click', ()=>$('#mcAttachInput').click());
+$('#mcAttachInput').addEventListener('change', ()=>{
+  const files=[...$('#mcAttachInput').files];
+  $('#mcAttachInput').value='';
+  if(!files.length)return;
+  const incoming=files.reduce((s,f)=>s+f.size,0);
+  if(mcAttachTotalSize()+incoming>MC_ATTACH_MAX_TOTAL){
+    $('#mcErr').textContent='Total lampiran melebihi batas 15MB.';
+    return;
+  }
+  $('#mcErr').textContent='';
+  files.forEach(f=>MC_ATTACHMENTS.push({file:f, id:Date.now()+Math.random()}));
+  renderMcAttachments();
+});
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(String(r.result).split(',')[1]||'');
+    r.onerror=()=>reject(new Error('Gagal membaca file: '+file.name));
+    r.readAsDataURL(file);
+  });
+}
+
 $('#btnMailCompose').addEventListener('click', ()=>{
   $('#mcTo').value=''; $('#mcSubject').value=''; $('#mcMessage').value=''; $('#mcErr').textContent='';
+  MC_ATTACHMENTS=[]; renderMcAttachments();
   if(MAIL_ACTIVE){ $('#mcFrom').value=MAIL_ACTIVE; }
   ensureCsel($('#mcFrom'));
   $('#mailComposeModal').classList.add('show');
@@ -6079,10 +6133,23 @@ $('#btnMailSend').addEventListener('click', async ()=>{
   if(!to){ $('#mcErr').textContent='Alamat tujuan wajib diisi.'; return; }
   const btn=$('#btnMailSend'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Mengirim…';
   try{
-    const {data,error}=await sb.functions.invoke('email-send',{body:{account_id,to,subject,message}});
+    let attachments=[];
+    if(MC_ATTACHMENTS.length){
+      btn.textContent='Menyiapkan lampiran…';
+      attachments=await Promise.all(MC_ATTACHMENTS.map(async a=>({
+        filename:a.file.name,
+        content_type:a.file.type||'application/octet-stream',
+        content:await fileToBase64(a.file)
+      })));
+      btn.textContent='Mengirim…';
+    }
+    const body={account_id,to,subject,message};
+    if(attachments.length) body.attachments=attachments;
+    const {data,error}=await sb.functions.invoke('email-send',{body});
     if(error)throw new Error(error.message||'Gagal mengirim');
     if(data?.error)throw new Error(data.error);
     toast('Email terkirim ✓','ok');
+    MC_ATTACHMENTS=[]; renderMcAttachments();
     $('#mailComposeModal').classList.remove('show');
   }catch(err){
     console.error(err);
