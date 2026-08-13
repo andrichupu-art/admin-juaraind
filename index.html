@@ -80,6 +80,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .who-block .who-email{font:700 .62rem var(--body);color:#cfe0f4;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .who-caret{width:10px;height:10px;stroke:#cfe0f4;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-top:1px;transition:transform .15s ease}
 .who-block.open .who-caret{transform:rotate(180deg)}
+.who-dropdown-email{display:none}
 .who-dropdown{position:absolute;top:100%;right:0;margin-top:10px;min-width:160px;background:#fff;border-radius:12px;box-shadow:0 12px 28px rgba(19,49,77,.28);padding:6px;display:none;z-index:80}
 .who-block.open .who-dropdown{display:block}
 .who-dropdown-item{display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--navy);font:700 .8rem var(--body);cursor:pointer;text-align:left}
@@ -1441,8 +1442,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .who-block .who-email{
     display:none;
   }
+  .who-caret{
+    display:none;
+  }
   .who-dropdown{
-    min-width:140px;
+    min-width:170px;
+  }
+  .who-dropdown-email{
+    display:block;
+    padding:8px 10px 9px;
+    margin-bottom:4px;
+    border-bottom:1px solid #E5EAF0;
+    font:700 .72rem var(--body);
+    color:var(--navy);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   #loginView{
     padding:28px 14px 50px;
@@ -1641,6 +1656,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <svg class="who-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="who-dropdown" id="whoDropdown">
+          <div class="who-dropdown-email" id="whoDropdownEmail">—</div>
           <button class="who-dropdown-item" id="btnLogout" type="button">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Keluar
@@ -2714,6 +2730,7 @@ function enterDashboard(user){
   $('#loginView').style.display='none'; $('#appShell').classList.add('show'); $('#hdRight').style.display='flex'; document.querySelector('header').style.display='';
   $('#btnSidebarToggle').style.display='flex';
   $('#whoEmail').textContent=user.email||'-';
+  $('#whoDropdownEmail').textContent=user.email||'-';
   loadAll();
   document.querySelector('header').style.display='none';
   document.body.classList.add('menu-tab-active');
