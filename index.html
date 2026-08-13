@@ -210,43 +210,49 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-search{min-width:100%}
   #secPeserta .peserta-filter{min-width:100%}
 
-  /* ---- kartu peserta mobile: nama kiri, lokasi+kode tengah, unggah+convert kanan (stack) ---- */
+  /* ---- kartu peserta mobile: nama+telp kiri, kode+lokasi+bar kanan ---- */
   #secPeserta .peserta-table-wrap{overflow:visible;border-radius:0}
   #secPeserta .peserta-table-wrap table{border-spacing:0;min-width:0!important}
   #secPeserta .peserta-table-wrap tbody{display:block}
   #secPeserta .peserta-table-wrap tbody tr{
-    display:grid;grid-template-columns:1fr auto auto;column-gap:12px;row-gap:6px;align-items:center;
+    display:grid;grid-template-columns:auto 1fr auto;column-gap:10px;row-gap:5px;align-items:center;
     position:relative;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
-    padding:26px 14px 14px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
+    padding:14px 14px 12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
   }
   #secPeserta .peserta-table-wrap tbody tr.empty-row{display:block;padding:28px 14px;text-align:center;color:var(--mut)}
   #secPeserta .peserta-table-wrap tbody td{
-    width:auto;border:0!important;background:transparent!important;text-align:left;
+    width:auto;border:0!important;background:transparent!important;
     padding:0!important;height:auto!important;border-radius:0!important;font-size:.8rem;
   }
-  /* No -> badge kecil pojok kanan atas */
+  /* No urut -> kolom paling kiri, sejajar dengan Nama peserta */
   #secPeserta .peserta-table-wrap tbody td:nth-child(1){
-    position:absolute;top:12px;right:14px;font:800 .66rem var(--mono);color:#B7C1CF;
+    grid-column:1;grid-row:1;justify-self:start;align-self:start;
+    position:static;font:800 .66rem var(--mono);color:#B7C1CF;
   }
-  /* Nama + telepon -> kolom kiri, rata kiri, tinggi menyamai kolom tengah & kanan */
-  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:1;grid-row:1 / span 2;align-self:center;text-align:left;line-height:1.25}
-  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.87rem;text-align:left}
-  #secPeserta .peserta-table-wrap tbody td.nama span{font-size:.71rem;text-align:left}
-  /* Lokasi -> kolom tengah, baris 1, rata tengah */
+  /* Nama + telepon -> kolom tengah, tinggi menyamai lokasi+kode di kanan */
+  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:2;grid-row:1 / span 3;align-self:start;line-height:1.25}
+  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.87rem}
+  #secPeserta .peserta-table-wrap tbody td.nama span{font-size:.71rem}
+  /* Lokasi -> kolom kanan, baris 1 (paling atas, di atas kode) */
   #secPeserta .peserta-table-wrap tbody td:nth-child(4){
-    grid-column:2;grid-row:1;justify-self:center;display:flex;align-items:center;gap:4px;
-    color:#5B6B80;font:700 .72rem var(--body);white-space:nowrap;text-align:center;
+    grid-column:3;grid-row:1;justify-self:end;display:flex;align-items:center;gap:4px;
+    color:#5B6B80;font:700 .72rem var(--body);white-space:nowrap;
   }
   #secPeserta .peserta-table-wrap tbody td:nth-child(4)::before{content:'📍'}
-  /* Kode peserta -> kolom tengah, baris 2, rata tengah (di bawah lokasi) */
-  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:2;grid-row:2;justify-self:center;text-align:center;font-size:.72rem}
-  /* Bar tahap -> disembunyikan */
+  /* Kode peserta -> kolom kanan, baris 2 (di bawah lokasi) */
+  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:3;grid-row:2;justify-self:end;font-size:.72rem}
+  /* Bar tahap (1/6) -> disembunyikan di mobile */
   #secPeserta .peserta-table-wrap tbody td:nth-child(5){display:none}
-  /* Dokumen (unggahan) -> kolom kanan, baris 1 */
-  #secPeserta .peserta-table-wrap tbody td:nth-child(6){grid-column:3;grid-row:1;justify-self:end;display:flex}
-  #secPeserta .peserta-table-wrap tbody td:nth-child(6) .pill{width:auto;max-width:100%;min-width:0;box-sizing:border-box;white-space:normal;line-height:1.35;text-align:center;padding:5px 9px;font-size:.6rem}
-  /* Aksi/Convert -> kolom kanan, baris 2 (di bawah unggahan) */
-  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:3;grid-row:2;justify-self:end}
+  /* Dokumen (unggahan) -> baris 4, sejajar dengan Aksi/Convert di kolom kanan */
+  #secPeserta .peserta-table-wrap tbody td:nth-child(6){
+    grid-column:1 / span 2;grid-row:4;display:flex;align-self:center;
+    padding-top:9px!important;margin-top:5px;border-top:1px dashed #E5EAF0!important;
+  }
+  #secPeserta .peserta-table-wrap tbody td:nth-child(6) .pill{width:auto;max-width:100%;min-width:0;box-sizing:border-box;white-space:normal;line-height:1.35;text-align:center;padding:5px 9px;font-size:.62rem}
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell{
+    grid-column:3;grid-row:4;align-self:center;
+    padding-top:9px!important;margin-top:5px;border-top:1px dashed #E5EAF0!important;
+  }
   #secPeserta .peserta-table-wrap tbody .aksi-cell-in{padding-top:0;justify-content:flex-end}
   #secPeserta .peserta-table-wrap tbody .aksi-cell-in .btn{justify-content:center}
   #secPeserta .peserta-table-wrap tbody .aksi-cell-in .pill{justify-content:center}
