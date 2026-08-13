@@ -37,7 +37,6 @@ html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .allow-select,.allow-select *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 html{scroll-behavior:smooth;background-color:var(--paper);
-  background-image:radial-gradient(rgba(11,31,58,.16) 1.4px,transparent 1.4px);background-size:26px 26px;
   scrollbar-width:none;-ms-overflow-style:none}
 html::-webkit-scrollbar{display:none}
 body::-webkit-scrollbar{display:none}
@@ -132,9 +131,16 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .b-hdr:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.7)}
 .btn.sm{padding:8px 13px;font-size:.78rem;border-radius:8px}
 .btn.icon-only{padding:8px;width:34px;height:34px;justify-content:center;gap:0}
+.icon-plain-btn{display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;padding:0;cursor:pointer;color:var(--navy);border-radius:8px}
+.icon-plain-btn:hover:not([disabled]){background:#EDF0F4}
+.icon-plain-btn[disabled]{color:#9aa3b2;cursor:not-allowed;opacity:.6}
 .copy-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:none;background:transparent;color:var(--muted,#8a8a99);border-radius:6px;cursor:pointer;flex-shrink:0;vertical-align:middle}
 .copy-btn:hover{background:var(--line);color:var(--navy)}
 .copy-btn.copied{color:var(--green,#17B26A)}
+.input-copy-wrap{position:relative}
+.input-copy-wrap input{padding-right:34px}
+.input-copy-wrap .copy-btn{position:absolute;right:5px;top:50%;transform:translateY(-50%)}
+.input-copy-wrap input:disabled{background:#F5F6F8;color:var(--ink)}
 .kode-row,.tel-row{display:inline-flex;align-items:center;gap:5px}
 .btn .ic-outbox{flex-shrink:0;vertical-align:-3px}
 .btn[disabled]{opacity:.5;pointer-events:none}
@@ -159,7 +165,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 .err-txt{color:var(--red);font:600 .8rem var(--body);margin-top:10px;text-align:center;min-height:1em}
 
 /* ============ PREMIUM PESERTA REDESIGN ============ */
-#secPeserta{padding-top:4px}
+#secPeserta{padding-top:4px;margin-top:-18px}
 #secPeserta .peserta-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 18px;padding:0 4px}
 #secPeserta .peserta-eyebrow{display:inline-flex;align-items:center;gap:8px;font:800 .64rem var(--body);letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
 #secPeserta .peserta-eyebrow::before{content:'';width:24px;height:2px;background:var(--gold);border-radius:2px}
@@ -183,43 +189,31 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-search input{width:100%;height:100%;border:0;outline:0;background:transparent;padding:0;font:600 .83rem var(--body);color:var(--ink)}
 #secPeserta .peserta-search input::placeholder{color:#93A0B1}
 #secPeserta .peserta-filter{position:relative;min-width:245px}
-#secPeserta .peserta-filter>span{position:absolute;left:13px;top:5px;z-index:1;font:800 .48rem var(--body);letter-spacing:.12em;color:#8996A8}
-#secPeserta .peserta-filter select{width:100%;height:46px;border:1.5px solid #D5DFEA;border-radius:11px;background:#fff;color:var(--navy);font:800 .79rem var(--body);padding:13px 36px 3px 13px;outline:0;transition:.18s}
+#secPeserta .peserta-filter select{width:100%;height:46px;border:1.5px solid #D5DFEA;border-radius:11px;background:#fff;color:var(--navy);font:800 .79rem var(--body);padding:0 36px 0 13px;outline:0;transition:.18s}
 #secPeserta .peserta-filter select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
 #secPeserta .peserta-table-wrap{background:transparent;border:0;border-radius:0;overflow:visible}
 #secPeserta .table-topline{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 7px;color:#7A8798}
 #secPeserta .table-topline span:first-child{font:800 .61rem var(--body);letter-spacing:.14em;color:var(--navy)}
 #secPeserta .table-topline span:last-child{font:600 .62rem var(--body);color:#8B96A5}
-#secPeserta .peserta-table-wrap table{border-collapse:separate;border-spacing:0 6px}
-#secPeserta .peserta-table-wrap thead th{background:#102B4B;color:#D9E4F1;border:0;padding:11px 14px;font-size:.61rem;letter-spacing:.1em}
-#secPeserta .peserta-table-wrap thead th:first-child{border-radius:10px 0 0 10px}
-#secPeserta .peserta-table-wrap thead th:last-child{border-radius:0 10px 10px 0}
-#secPeserta .peserta-table-wrap tbody tr{filter:drop-shadow(0 3px 7px rgba(16,27,44,.045));transition:transform .16s ease,filter .16s ease}
-#secPeserta .peserta-table-wrap tbody tr:hover{background:transparent;transform:translateY(-1px);filter:drop-shadow(0 7px 14px rgba(16,27,44,.08))}
-#secPeserta .peserta-table-wrap tbody td{background:rgba(255,255,255,.93);border-top:1px solid #DDE5EE;border-bottom:1px solid #DDE5EE;padding:10px 14px;height:58px;font-size:.8rem}
-#secPeserta .peserta-table-wrap tbody td:first-child{border-left:1px solid #DDE5EE;border-radius:12px 0 0 12px;color:#8390A0;font:800 .72rem var(--mono)}
-#secPeserta .peserta-table-wrap tbody td:last-child{border-right:1px solid #DDE5EE;border-radius:0 12px 12px 0}
-#secPeserta .peserta-table-wrap tbody tr:hover td{background:#fff}
+#secPeserta .peserta-table-wrap table{border-collapse:collapse;border-spacing:0}
+#secPeserta .peserta-table-wrap thead th{background:var(--navy);color:#E7DCC4;border:0;padding:7px 14px;font-size:.61rem;letter-spacing:.1em}
+#secPeserta .peserta-table-wrap tbody tr{transition:background .12s ease}
+#secPeserta .peserta-table-wrap tbody tr:hover{background:#F4F6F9}
+#secPeserta .peserta-table-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2}
+#secPeserta .peserta-table-wrap tbody td:first-child{color:#8390A0;font:800 .72rem var(--mono)}
 /* Baris "siap dikonversi" (7/7 dokumen sudah unggah & terverifikasi/kolektif)
-   -> ditandai warna hijau supaya admin langsung tahu tanpa buka menu Aksi */
-#secPeserta .peserta-table-wrap tbody tr.row-ready td{background:#EAFBF2}
-#secPeserta .peserta-table-wrap tbody tr.row-ready td:first-child{border-left-color:#8FE0B8}
-#secPeserta .peserta-table-wrap tbody tr.row-ready td:first-child,
-#secPeserta .peserta-table-wrap tbody tr.row-ready td:not(:first-child):not(:last-child){border-top-color:#B7EED2;border-bottom-color:#B7EED2}
-#secPeserta .peserta-table-wrap tbody tr.row-ready td:last-child{border-right-color:#8FE0B8;background:#EAFBF2}
-#secPeserta .peserta-table-wrap tbody tr.row-ready:hover td{background:#DFF8EA}
-/* Baris "belum unggah dokumen sama sekali" -> ditandai warna merah muda
-   supaya admin langsung tahu peserta ini belum mulai unggah apa pun. */
-#secPeserta .peserta-table-wrap tbody tr.row-empty td{background:#FDECEC}
-#secPeserta .peserta-table-wrap tbody tr.row-empty td:first-child{border-left-color:#F0AFAF}
-#secPeserta .peserta-table-wrap tbody tr.row-empty td:first-child,
-#secPeserta .peserta-table-wrap tbody tr.row-empty td:not(:first-child):not(:last-child){border-top-color:#F3C2C2;border-bottom-color:#F3C2C2}
-#secPeserta .peserta-table-wrap tbody tr.row-empty td:last-child{border-right-color:#F0AFAF;background:#FDECEC}
-#secPeserta .peserta-table-wrap tbody tr.row-empty:hover td{background:#FBDCDC}
+   -> ditandai garis aksen hijau di kiri, tanpa background penuh, tetap flat */
+#secPeserta .peserta-table-wrap tbody tr.row-ready td:first-child{border-left:3px solid #3F9E6E;padding-left:11px}
+#secPeserta .peserta-table-wrap tbody tr.row-ready td.nama b{color:#0E8F55}
+/* Baris "belum unggah dokumen sama sekali" -> aksen merah muda di kiri */
+#secPeserta .peserta-table-wrap tbody tr.row-empty td:first-child{border-left:3px solid #E08585;padding-left:11px}
+#secPeserta .peserta-table-wrap tbody tr.row-empty td.nama b{color:#B32C2C}
 #secPeserta .peserta-table-wrap td.kode{font-size:.75rem}
 #secPeserta .peserta-table-wrap .kode-del{color:#1B3A66;border-bottom:1px dashed #AAB8C8}
-#secPeserta .peserta-table-wrap td.nama b{font:800 .8rem var(--body);color:#14233A}
-#secPeserta .peserta-table-wrap td.nama span{font-size:.67rem;color:#8290A4}
+#secPeserta .peserta-table-wrap td.nama b{font:800 .8rem var(--body);color:#14233A;line-height:1.25;display:inline-block;width:auto;cursor:pointer}
+#secPeserta .peserta-table-wrap tbody tr{cursor:default}
+#secPeserta .peserta-table-wrap tbody td.nama{cursor:default;padding-left:8px;padding-right:8px}
+#secPeserta .peserta-table-wrap td.nama span{font-size:.65rem;color:#8290A4;line-height:1.2}
 /* Badge kecil merah di sebelah nama -> peserta yang dokumennya sudah 100%
    diunggah tapi belum diverifikasi admin. Berlaku desktop & mobile. */
 #secPeserta .peserta-table-wrap td.nama .row-verif-badge{
@@ -231,15 +225,25 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-table-wrap .stagebar .track{width:62px;height:6px;background:#E7E5DC}
 #secPeserta .peserta-table-wrap .stagebar .fill{background:#3F741A}
 #secPeserta .peserta-table-wrap .stagebar b{font-size:.69rem}
-#secPeserta .peserta-table-wrap .pill{width:235px;min-width:235px;padding:5px 9px;font-size:.61rem}
+#secPeserta .peserta-table-wrap .pill{width:235px;min-width:235px;padding:4px 9px;font-size:.61rem}
 #secPeserta .peserta-table-wrap .aksi-cell-in{gap:5px}
-#secPeserta .peserta-table-wrap .btn.sm{padding:7px 10px;font-size:.68rem;border-radius:8px}
+#secPeserta .peserta-table-wrap .btn.sm{padding:5px 10px;font-size:.68rem;border-radius:8px}
 /* FIX: .aksi-mobile (tombol titik-tiga + popup Aksi) sebelumnya tidak
    punya display:none default, jadi ikut tampil mentah di desktop
    bertumpuk dengan tombol Convert versi desktop. Sembunyikan di sini;
    baru dimunculkan lagi khusus di dalam media query mobile. */
 #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:none}
-#secPeserta .empty-row td{background:rgba(255,255,255,.86)!important;border:1px solid #DDE5EE!important;border-radius:12px!important;padding:36px 16px}
+/* Kontrol pagination -> flat, senada tema, muncul di bawah tabel */
+#secPeserta .peserta-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:2px 4px;flex-wrap:wrap}
+#secPeserta .peserta-pagination .pg-info{font:700 .68rem var(--body);color:var(--mut)}
+#secPeserta .peserta-pagination .pg-btns{display:flex;align-items:center;gap:6px}
+#secPeserta .peserta-pagination button{border:1.5px solid rgba(19,49,77,.22);background:transparent;color:var(--navy);font:800 .7rem var(--body);padding:7px 13px;border-radius:9px;cursor:pointer;transition:.15s}
+#secPeserta .peserta-pagination button:hover:not(:disabled){background:rgba(19,49,77,.08)}
+#secPeserta .peserta-pagination button:disabled{opacity:.4;cursor:not-allowed}
+#secPeserta .peserta-pagination button.pg-active{background:var(--navy);color:#E7DCC4;border-color:var(--navy)}
+#secPeserta .peserta-pagination .pg-size select{border:1.5px solid rgba(19,49,77,.22);background:#fff;color:var(--navy);font:800 .68rem var(--body);padding:8px 30px 8px 12px;border-radius:9px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B3A66' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");background-repeat:no-repeat;background-position:right 9px center;background-size:13px;cursor:pointer;outline:0;transition:.18s}
+#secPeserta .peserta-pagination .pg-size select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secPeserta .empty-row td{background:transparent!important;border:0!important;border-bottom:1px solid rgba(19,49,77,.16)!important;border-radius:0!important;padding:36px 16px}
 @media(max-width:760px){
   #secPeserta .peserta-head{align-items:flex-start}
   #secPeserta .peserta-head-mark{display:none}
@@ -253,13 +257,13 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody{display:block}
   #secPeserta .peserta-table-wrap tbody tr{
     display:grid;grid-template-columns:auto 1fr auto auto;grid-template-rows:auto;column-gap:10px;row-gap:0;align-items:center;
-    position:relative;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
-    padding:12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(16,27,44,.05);
+    position:relative;background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);border-radius:0;
+    padding:9px 2px;margin-bottom:0;box-shadow:none;
   }
   /* FIX: rule desktop "tbody tr:hover{background:transparent}" lebih spesifik
      dan tetap aktif di mobile (misal nyangkut saat tap tombol titik-tiga),
      bikin kartu jadi transparan/tembus ke background halaman. Kunci solid. */
-  #secPeserta .peserta-table-wrap tbody tr:hover{background:#fff}
+  #secPeserta .peserta-table-wrap tbody tr:hover{background:transparent}
   #secPeserta .peserta-table-wrap tbody tr.empty-row{display:block;padding:28px 14px;text-align:center;color:var(--mut)}
   #secPeserta .peserta-table-wrap tbody td{
     width:auto;border:0!important;background:transparent!important;
@@ -284,21 +288,20 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:4;grid-row:1;justify-self:end;align-self:center;overflow:visible;position:relative;z-index:1}
   #secPeserta .peserta-table-wrap tbody td.aksi-cell.aksi-open{z-index:200}
   #secPeserta .peserta-table-wrap tbody .aksi-inline{display:none}
-  /* Kartu "siap dikonversi" -> warna hijau lembut, langsung kelihatan tanpa buka menu Aksi */
-  #secPeserta .peserta-table-wrap tbody tr.row-ready{background:#EAFBF2;border-color:#B7EED2}
+  /* Kartu "siap dikonversi" -> aksen garis hijau di kiri, tetap flat */
+  #secPeserta .peserta-table-wrap tbody tr.row-ready{border-left:3px solid #3F9E6E;padding-left:9px}
   #secPeserta .peserta-table-wrap tbody tr.row-ready td:nth-child(1){color:#4CAE81}
   #secPeserta .peserta-table-wrap tbody tr.row-ready td.nama b{color:#0E8F55}
   #secPeserta .peserta-table-wrap tbody tr.row-ready td.kode{color:#1F8F5C}
   #secPeserta .peserta-table-wrap tbody tr.row-ready .aksi-mobile-trigger{background:#E1F7EA;border-color:#8FE0B8;color:#0E8F55}
-  /* Baris "sudah 100% unggah tapi belum diverifikasi admin" -> ditandai
-     amber/kuning supaya langsung kelihatan dari daftar tanpa buka menu Aksi. */
-  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif{background:#FFF7E8;border-color:#F0CB84}
+  /* Baris "sudah 100% unggah tapi belum diverifikasi admin" -> aksen amber di kiri */
+  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif{border-left:3px solid #D6A426;padding-left:9px}
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td:nth-child(1){color:#B8860B}
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.nama b{color:#8A5F0A}
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.kode{color:#946A0D}
   #secPeserta .peserta-table-wrap tbody tr.row-needs-verif .aksi-mobile-trigger{background:#FCEACB;border-color:#EAB962;color:#8A5F0A}
-  /* Baris "belum unggah dokumen sama sekali" -> merah muda, versi mobile. */
-  #secPeserta .peserta-table-wrap tbody tr.row-empty{background:#FDECEC;border-color:#F0AFAF}
+  /* Baris "belum unggah dokumen sama sekali" -> aksen merah muda di kiri, versi mobile. */
+  #secPeserta .peserta-table-wrap tbody tr.row-empty{border-left:3px solid #E08585;padding-left:9px}
   #secPeserta .peserta-table-wrap tbody tr.row-empty td:nth-child(1){color:#C24545}
   #secPeserta .peserta-table-wrap tbody tr.row-empty td.nama b{color:#B32C2C}
   #secPeserta .peserta-table-wrap tbody tr.row-empty td.kode{color:#B23A3A}
@@ -344,7 +347,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 
 
 /* ============ PREMIUM DATA MASTER REDESIGN ============ */
-#secMaster{padding-top:4px}
+#secMaster{padding-top:4px;margin-top:-18px}
 #secMaster .master-head{
   display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
   margin:0 0 18px;padding:0 4px;
@@ -433,35 +436,27 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   background:transparent;border:0;border-radius:0;overflow:visible;
 }
 #secMaster .master-table-card table{
-  border-collapse:separate;border-spacing:0 6px;
+  border-collapse:collapse;border-spacing:0;
 }
 #secMaster .master-table-card thead th{
-  background:#102B4B;color:#D9E4F1;border:0;
-  padding:11px 14px;font-size:.61rem;letter-spacing:.1em;
+  background:var(--navy);color:#E7DCC4;border:0;
+  padding:7px 14px;font-size:.61rem;letter-spacing:.1em;
 }
-#secMaster .master-table-card thead th:first-child{border-radius:10px 0 0 10px}
-#secMaster .master-table-card thead th:last-child{border-radius:0 10px 10px 0}
 #secMaster .master-table-card tbody tr{
-  filter:drop-shadow(0 3px 7px rgba(16,27,44,.045));
-  transition:transform .16s ease,filter .16s ease;
+  transition:background .12s ease;
 }
 #secMaster .master-table-card tbody tr:hover{
-  background:transparent;transform:translateY(-1px);
-  filter:drop-shadow(0 7px 14px rgba(16,27,44,.08));
+  background:#F4F6F9;
 }
 #secMaster .master-table-card tbody td{
-  background:rgba(255,255,255,.93);
-  border-top:1px solid #DDE5EE;border-bottom:1px solid #DDE5EE;
-  padding:10px 14px;height:58px;font-size:.8rem;
+  background:transparent;
+  border:0;border-bottom:1px solid rgba(19,49,77,.16);
+  padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2;
 }
 #secMaster .master-table-card tbody td:first-child{
-  border-left:1px solid #DDE5EE;border-radius:12px 0 0 12px;
   color:#8390A0;font:800 .72rem var(--mono);
 }
-#secMaster .master-table-card tbody td:last-child{
-  border-right:1px solid #DDE5EE;border-radius:0 12px 12px 0;
-}
-#secMaster .master-table-card tbody tr:hover td{background:#fff}
+#secMaster .master-table-card tbody tr:hover td{background:#F4F6F9}
 #secMaster .master-table-card td.kode{
   font-size:.75rem;
 }
@@ -469,10 +464,10 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   color:var(--navy);border-bottom:1px dashed #AAB8C8;
 }
 #secMaster .master-table-card td.nama b{
-  font:800 .8rem var(--body);color:#14233A;
+  font:800 .8rem var(--body);color:#14233A;line-height:1.25;
 }
 #secMaster .master-table-card td.nama span{
-  font-size:.67rem;color:#8290A4;
+  font-size:.65rem;color:#8290A4;line-height:1.2;
 }
 #secMaster .master-table-card td:nth-child(5){
   font:800 .72rem var(--body);color:var(--navy);
@@ -482,15 +477,15 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 }
 #secMaster .master-table-card .aksi-cell-in{gap:5px}
 #secMaster .master-table-card .btn.sm{
-  padding:7px 10px;font-size:.68rem;border-radius:8px;
+  padding:5px 10px;font-size:.68rem;border-radius:8px;
 }
 #secMaster .master-table-card .btn.b-navy{
-  box-shadow:0 3px 8px rgba(16,43,75,.12);
+  box-shadow:none;
 }
 #secMaster .master-table-card .empty-row td{
-  background:rgba(255,255,255,.86)!important;
-  border:1px solid #DDE5EE!important;
-  border-radius:12px!important;padding:36px 16px;
+  background:transparent!important;
+  border:0!important;border-bottom:1px solid rgba(19,49,77,.16)!important;
+  border-radius:0!important;padding:36px 16px;
 }
 @media(max-width:760px){
   #secMaster .master-head{align-items:flex-start}
@@ -498,6 +493,52 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secMaster .master-toolbar{padding:8px;flex-wrap:wrap}
   #secMaster .master-search{min-width:100%}
   #secMaster .master-toolbar-note{width:100%;justify-content:center}
+}
+/* Kontrol pagination Data Master -> style sama dengan pagination Data Peserta */
+#secMaster .master-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:2px 4px;flex-wrap:wrap}
+#secMaster .master-pagination .pg-info{font:700 .68rem var(--body);color:var(--mut)}
+#secMaster .master-pagination .pg-btns{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#secMaster .master-pagination button{border:1.5px solid rgba(19,49,77,.22);background:transparent;color:var(--navy);font:800 .7rem var(--body);padding:7px 13px;border-radius:9px;cursor:pointer;transition:.15s}
+#secMaster .master-pagination button:hover:not(:disabled){background:rgba(19,49,77,.08)}
+#secMaster .master-pagination button:disabled{opacity:.4;cursor:not-allowed}
+#secMaster .master-pagination button.pg-active{background:var(--navy);color:#E7DCC4;border-color:var(--navy)}
+#secMaster .master-pagination .pg-size select{border:1.5px solid rgba(19,49,77,.22);background:#fff;color:var(--navy);font:800 .68rem var(--body);padding:8px 30px 8px 12px;border-radius:9px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B3A66' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");background-repeat:no-repeat;background-position:right 9px center;background-size:13px;cursor:pointer;outline:0;transition:.18s}
+#secMaster .master-pagination .pg-size select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+
+/* ============ ADM PESERTA (KEUANGAN) — FORMAT KOLOM SELARAS DATA PESERTA & DATA MASTER ============ */
+#secKeuangan .toolbar{
+  align-items:center;gap:10px;margin-bottom:14px;padding:9px;
+  background:rgba(255,255,255,.66);border:1px solid rgba(217,227,239,.95);
+  border-radius:16px;box-shadow:0 8px 22px rgba(27,58,102,.055);backdrop-filter:blur(10px);
+}
+#secKeuangan .toolbar input[type="text"]{
+  flex:1;min-width:220px;height:46px;padding:0 15px;background:#fff;
+  border:1.5px solid #D5DFEA;border-radius:11px;outline:0;
+  font:600 .83rem var(--body);color:var(--ink);transition:.18s;
+}
+#secKeuangan .toolbar input[type="text"]::placeholder{color:#93A0B1}
+#secKeuangan .toolbar input[type="text"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secKeuangan .tbl-wrap{background:transparent;border:0;border-radius:0;overflow:visible}
+#secKeuangan .tbl-wrap table{border-collapse:collapse;border-spacing:0}
+#secKeuangan .tbl-wrap thead th{background:var(--navy);color:#E7DCC4;border:0;padding:7px 14px;font-size:.61rem;letter-spacing:.1em}
+#secKeuangan .tbl-wrap tbody tr{transition:background .12s ease;cursor:default}
+#secKeuangan .tbl-wrap tbody tr:hover td{background:#F4F6F9}
+#secKeuangan .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2}
+#secKeuangan .tbl-wrap tbody td:first-child{color:#8390A0;font:800 .72rem var(--mono)}
+#secKeuangan .tbl-wrap td.kode{font-size:.75rem}
+#secKeuangan .tbl-wrap .kode-del{color:var(--navy);border-bottom:1px dashed #AAB8C8}
+#secKeuangan .tbl-wrap td.nama b{font:800 .8rem var(--body);color:#14233A;line-height:1.25}
+#secKeuangan .tbl-wrap td.nama span{font-size:.65rem;color:#8290A4;line-height:1.2}
+#secKeuangan .tbl-wrap td:nth-child(5),
+#secKeuangan .tbl-wrap td:nth-child(6),
+#secKeuangan .tbl-wrap td:nth-child(7){font:800 .72rem var(--body);color:var(--navy)}
+#secKeuangan .tbl-wrap .aksi-cell-in{gap:5px}
+#secKeuangan .tbl-wrap .btn.sm{padding:5px 10px;font-size:.68rem;border-radius:8px}
+#secKeuangan .tbl-wrap .btn.b-navy{box-shadow:none}
+#secKeuangan .tbl-wrap .empty-row td{background:transparent!important;border:0!important;border-bottom:1px solid rgba(19,49,77,.16)!important;border-radius:0!important;padding:36px 16px}
+@media(max-width:760px){
+  #secKeuangan .toolbar{padding:8px;flex-wrap:wrap}
+  #secKeuangan .toolbar input[type="text"]{min-width:100%}
 }
 
 /* ============ DASHBOARD ============ */
@@ -632,6 +673,13 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .pill.wait{background:rgba(255,255,255,.55);border-color:#111111;color:#111111}
 .pill.bad{background:#FDEAEA;border-color:#F5C2C2;color:#B32C2C}
 .pill.kolektif{background:#EAF4FD;border-color:#BFDCF5;color:#1B6FB3}
+.doc-status-icons{display:inline-flex;align-items:center;gap:8px;font:700 .68rem var(--body);letter-spacing:.03em;white-space:nowrap}
+.doc-status-icons .pill-ico{display:inline-flex;align-items:center;gap:4px}
+.doc-status-icons .pill-ico svg{flex-shrink:0;display:block}
+.doc-status-icons .pill-sep{opacity:.35;font-weight:400}
+.doc-status-icons.ok{color:#0E8F55}
+.doc-status-icons.wait{color:#4B5766}
+.doc-status-icons.kolektif{color:#1B6FB3}
 .sb-nav a{position:relative}
 .sb-badge{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--red);color:#fff;
   font:800 .66rem var(--body);min-width:19px;height:19px;padding:0 5px;border-radius:999px;
@@ -652,10 +700,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
 
 /* ============ KELOLA EMAIL (gaya Gmail — flat, tanpa card) ============ */
 .mail-shell{background:transparent;border:none;border-radius:0}
-.mail-topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:2px 2px 14px}
+.mail-topbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:16px 20px;background:#fff;border-top:4px solid var(--gold)}
 .mail-topbar .csel{min-width:190px;max-width:280px}
-.mail-topbar-r{display:flex;align-items:center;gap:8px}
-.mail-search{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:8px 14px;min-width:200px;transition:.15s}
+.mail-topbar-r{display:flex;align-items:center;gap:10px;flex:1;min-width:260px}
+.mail-search{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:9px 16px;min-width:200px;flex:1;transition:.15s}
 .mail-search:focus-within{border-color:var(--navy);box-shadow:0 0 0 3px rgba(19,49,77,.1)}
 .mail-search svg{width:16px;height:16px;stroke:var(--mut);flex-shrink:0}
 .mail-search input{border:none;outline:none;background:transparent;font:600 .82rem var(--body);color:var(--ink);width:100%;min-width:0}
@@ -674,7 +722,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-icon-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);transition:.15s;flex-shrink:0}
 .mail-icon-btn svg{width:17px;height:17px;stroke:currentColor}
 .mail-icon-btn:hover{background:#EEF3FA;border-color:var(--navy)}
-.mail-body{display:grid;grid-template-columns:184px 320px 1fr;gap:0;height:calc(100vh - 250px);min-height:480px;background:transparent;border-top:1.5px solid var(--line)}
+.mail-shell{display:flex;flex-direction:column}
+.mail-topbar{flex-shrink:0}
+.mail-body{display:grid;grid-template-columns:184px 320px 1fr;gap:0;flex:1;min-height:480px;background:transparent;border-top:1.5px solid var(--line)}
+.mail-pagination{flex-shrink:0}
 @media(max-width:980px){.mail-body{grid-template-columns:150px 280px 1fr}}
 @media(max-width:860px){.mail-body{grid-template-columns:1fr;height:auto}
   .mail-side{border-right:none;border-bottom:1.5px solid var(--line)}
@@ -993,8 +1044,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
 #invoiceModal .box{max-width:660px}
 .inv-box{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:26px 24px}
 .inv-head{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:3px solid var(--gold);padding-bottom:16px;margin-bottom:18px;gap:12px}
-.inv-head b{font:800 1.15rem var(--disp);color:var(--navy);display:block}
-.inv-head span{font:600 .8rem var(--body);color:var(--mut)}
+.inv-head b{font:800 1.15rem var(--disp);color:#000;display:block}
+.inv-head span{font:600 .8rem var(--body);color:#000}
+.inv-brand{display:flex;align-items:center;gap:10px}
+.inv-brand img{height:66px;width:auto;display:block;flex-shrink:0}
 .inv-no{font:700 .82rem var(--mono);color:var(--navy);text-align:right}
 .inv-no small{display:block;font:600 .68rem var(--body);color:var(--mut);margin-top:2px}
 .inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-bottom:20px}
@@ -1043,8 +1096,6 @@ td.nama span{color:var(--mut);font-size:.78rem}
 /* Base — sama dengan portal peserta */
 html{
   background-color:var(--paper);
-  background-image:radial-gradient(rgba(11,31,58,.16) 1.4px,transparent 1.4px);
-  background-size:26px 26px;
 }
 body{
   background:transparent;
@@ -1414,15 +1465,50 @@ td.kode{
   border-radius:0;
   overflow:visible;
   background:var(--paper);
+  grid-template-rows:1fr;
+  min-height:0;
 }
+@media(min-width:861px){
+  .mail-shell{height:calc(100vh - 130px);}
+}
+.mail-body>.mail-side,
+.mail-body>.mail-list,
+.mail-body>.mail-read{
+  min-height:0;
+}
+.mail-read{
+  min-height:0;
+}
+.mail-pagination{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  padding:16px 20px 4px;
+  min-height:56px;
+  box-sizing:border-box;
+}
+.mail-page-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1.5px solid var(--navy);
+  background:#fff;color:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:.15s;flex-shrink:0;
+}
+.mail-page-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mail-page-btn:hover:not(:disabled){background:var(--navy);color:#fff}
+.mail-page-btn:disabled{opacity:.35;cursor:default}
+.mail-page-info{font:700 .8rem var(--body);color:var(--navy);letter-spacing:.02em;min-width:120px;text-align:center}
 #secEmail{
   width:100%;
   padding:0;
   box-sizing:border-box;
+  margin-top:-30px;
 }
 #secEmail .mail-topbar{
   padding-left:20px;
   padding-right:20px;
+  margin-top:0;
 }
 #secEmail .mail-side{
   padding-left:20px;
@@ -1931,7 +2017,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <input type="text" id="qSearch" placeholder="Cari nama, NIK, kota, atau kode peserta…">
           </div>
           <div class="peserta-filter">
-            <span>FILTER TAHAP</span>
             <select id="qStage">
               <option value="">Semua Tahap</option>
               <option value="0">Tahap 1 — Berkas Diterima</option>
@@ -1945,7 +2030,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         </div>
 
         <div class="tbl-wrap peserta-table-wrap">
-          <div class="table-topline"><span>DAFTAR PESERTA</span><span>klik baris untuk melihat detail</span></div>
           <table>
             <thead><tr>
               <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dokumen</th><th>Aksi</th>
@@ -1953,6 +2037,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <tbody id="tblBody"><tr class="empty-row"><td colspan="7">Memuat data…</td></tr></tbody>
           </table>
         </div>
+        <div class="peserta-pagination" id="pesertaPagination"></div>
       </div>
 
       <div class="tab-panel" id="secMaster">
@@ -1983,10 +2068,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         </div>
 
         <div class="master-table-wrap">
-          <div class="master-table-topline">
-            <span>DATABASE PESERTA</span>
-            <span>Data yang sudah dikonversi</span>
-          </div>
           <div class="tbl-wrap master-table-card">
             <table>
               <thead><tr>
@@ -1995,6 +2076,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr></tbody>
             </table>
           </div>
+          <div class="master-pagination" id="masterPagination"></div>
         </div>
       </div>
 
@@ -2119,6 +2201,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               </div>
             </div>
           </div>
+          <div class="mail-pagination" id="mailPagination" style="visibility:hidden">
+            <button class="mail-page-btn" id="mailPagePrev" title="Halaman sebelumnya">
+              <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <span class="mail-page-info" id="mailPageInfo">Halaman 1 dari 1</span>
+            <button class="mail-page-btn" id="mailPageNext" title="Halaman berikutnya">
+              <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
         </div>
       </div>
   </div>
@@ -2146,7 +2237,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="info-grid">
           <div class="fld-sec">Data Pribadi</div>
           <div class="fld"><label>Nama</label><input type="text" id="eNama"></div>
-          <div class="fld"><label>NIK</label><input type="text" id="eNik" disabled></div>
+          <div class="fld"><label>NIK</label><div class="input-copy-wrap"><input type="text" id="eNik" disabled><button type="button" class="copy-btn input-copy-btn" data-copy-target="eNik" title="Salin NIK" aria-label="Salin NIK"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
           <div class="fld"><label>Jenis Kelamin</label>
             <select id="eJk">
               <option value="">—</option>
@@ -2191,7 +2282,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="fld"><label>Asal Sekolah</label><input type="text" id="eAsalSekolah" list="dlAsalSekolah" placeholder="cth: SMK Negeri 1 Cianjur"><datalist id="dlAsalSekolah"></datalist></div>
 
           <div class="fld-sec">Kontak &amp; Domisili</div>
-          <div class="fld"><label>WhatsApp</label><input type="text" id="eWa"></div>
+          <div class="fld"><label>WhatsApp</label><div class="input-copy-wrap"><input type="text" id="eWa"><button type="button" class="copy-btn input-copy-btn" data-copy-target="eWa" title="Salin No. WhatsApp" aria-label="Salin No. WhatsApp"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
           <div class="fld"><label>Email</label><input type="text" id="eEmail" disabled placeholder="—"></div>
           <div class="fld"><label>Provinsi</label><select id="eProvinsi"><option value="">—</option></select></div>
           <div class="fld"><label>Kota/Kabupaten</label><input type="text" id="eKota"></div>
@@ -2633,6 +2724,13 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 const $=s=>document.querySelector(s);
+/* Helper debounce umum -> dipakai buat search/filter yang berat (misal renderTable
+   dengan ratusan/ribuan baris) supaya tidak render ulang di SETIAP ketukan huruf,
+   tapi nunggu jeda singkat setelah user berhenti mengetik. */
+function debounce(fn,wait=250){
+  let t;
+  return function(...args){ clearTimeout(t); t=setTimeout(()=>fn.apply(this,args),wait); };
+}
 
 /* ============ CUSTOM DROPDOWN (csel) — pengganti <select> native ============ */
 function buildCsel(select){
@@ -3726,7 +3824,7 @@ function invoiceHtml(inv){
   return `
     <div class="inv-box">
       <div class="inv-head">
-        <div><b>PT. JUARA</b><span>Pejuang Devisa Negara</span></div>
+        <div class="inv-brand"><img src="loogojuara3.svg" alt="PT. Juara"></div>
         <div class="inv-no">INVOICE<br>${escapeHtml(invoiceNo)}<small>${tglStr}</small></div>
       </div>
       <div class="inv-meta">
@@ -4042,6 +4140,15 @@ function renderPesertaVerifBadge(){
   if(nc){ nc.textContent=label; nc.style.display=n>0?'flex':'none'; }
 }
 
+/* Pagination tampilan tabel peserta -> data tetap difilter dari SELURUH
+   PARTICIPANTS (biar search/filter tetap akurat), tapi yang benar-benar
+   di-render ke DOM cuma satu halaman (default 50 baris). Untuk ratusan/
+   ribuan peserta ini yang paling berpengaruh: browser tidak perlu layout
+   & paint ribuan <tr> sekaligus, cuma yang kelihatan di halaman aktif. */
+let pesertaPage=1, pesertaPageSize=50;
+const CONVERT_SVG=`<svg viewBox="0 0 512 363.55" width="40" height="28" fill="currentColor" style="display:block"><path d="M132.03 44.89c-.14 5.96.87 8.83 6.05 8.84h77.02c35.31 2.77 67.79 16.51 86.88 47.49 11.59 18.8 18.13 45.91 21.68 67.8 1.53 9.46 2.24 18.31.61 22.41-.77 1.93-1.92 3.23-3.47 3.85-8.58 3.43-17.64-8.37-22.46-14.01-24.39-28.52-59.69-38.18-95.8-40.1h-66.32c-4.08.71-5.53 3.72-5.11 8.37v32.1c-.25 10.66-5.62 14.29-16.29 10.69l-98.11-77-12.12-9.51C-3.3 98.73-.05 92.27 7.03 86.7l7.49-5.9 94.01-74.01c11.48-9.04 23.5-11.46 23.5 8.02v30.08zm247.94 273.77c.13-5.97-.87-8.84-6.05-8.84H296.9c-35.31-2.77-67.79-16.51-86.88-47.49-11.59-18.8-18.14-45.91-21.68-67.8-1.53-9.46-2.24-18.31-.61-22.41.77-1.93 1.92-3.23 3.47-3.85 8.58-3.43 17.64 8.36 22.46 14.01 24.39 28.52 59.69 38.18 95.8 40.1h66.32c4.08-.71 5.52-3.73 5.11-8.38v-32.09c.24-10.66 5.62-14.29 16.28-10.69l98.12 76.99 12.12 9.52c7.88 7.09 4.64 13.55-2.44 19.12l-7.49 5.9-94.02 74.01c-11.47 9.04-23.49 11.45-23.49-8.02v-30.08z"/></svg>`;
+/* Icon status "Di Data Master": centang + lingkaran putus (hasil trace dari file icon yang diberikan user, tanpa dibungkus lingkaran/pill tambahan). */
+const MASTER_CHECK_SVG=`<svg viewBox="270 300 1090 1035" width="30" height="26" fill="currentColor" fill-rule="evenodd" style="display:block"><path d="M763,1300C763,1299 758,1299 753,1299C748,1298 742,1298 740,1298C738,1297 733,1297 729,1296C725,1296 721,1296 721,1295C721,1295 718,1295 715,1294C713,1294 707,1293 702,1292C697,1292 692,1291 691,1290C676,1288 620,1272 618,1269C617,1268 616,1268 615,1268C613,1268 583,1255 568,1247C519,1222 481,1193 442,1153C414,1125 388,1090 370,1060C357,1035 357,1035 348,1014C331,979 316,928 311,892C311,887 310,886 310,880C309,876 308,869 307,855C306,844 306,793 307,782C308,766 309,760 310,758C310,756 310,753 311,750C311,746 311,743 312,743C312,743 312,740 312,738C313,735 314,728 316,721C317,715 318,708 319,707C319,706 320,702 321,699C321,696 322,693 322,692C323,690 324,687 325,684C326,680 328,675 328,672C330,666 331,663 339,643C350,613 370,576 389,548C429,488 485,436 548,400C562,392 593,377 608,371C620,366 649,356 650,356C651,356 654,355 657,354C660,354 663,353 664,353C664,352 665,352 666,352C668,351 670,351 671,351C672,350 676,350 680,349C684,348 688,347 689,347C690,346 693,346 694,346C695,345 698,345 699,345C700,344 703,344 704,344C706,343 710,343 720,341C722,341 725,341 726,340C754,336 821,336 849,340C850,341 853,341 856,341C865,343 869,343 871,344C872,344 875,344 876,345C877,345 880,345 881,346C882,346 885,346 886,347C887,347 891,348 895,349C899,350 903,350 904,351C905,351 908,352 910,352C913,353 924,356 924,356C925,356 951,365 954,366C955,366 960,369 966,371C987,379 1022,396 1045,411C1066,424 1095,446 1116,467C1136,484 1166,518 1166,521C1165,524 1164,525 1154,532C1149,536 1132,549 1116,561C1088,582 1084,585 1082,585C1082,585 1078,581 1073,576C1045,543 1012,515 974,493C963,487 940,475 939,475C938,475 936,474 933,473C914,464 888,456 862,450C860,450 858,450 857,450C856,449 853,449 851,448C849,448 846,448 844,448C822,444 815,444 787,444C763,444 758,444 744,446C741,446 738,446 736,446C735,447 733,447 731,447C729,448 726,448 724,449C715,450 713,450 710,451C709,452 706,452 704,452C702,453 700,453 699,454C699,454 697,454 696,454C686,456 660,465 646,470C557,507 486,575 446,663C436,685 426,713 422,731C421,738 418,753 417,756C417,759 417,761 416,762C416,762 416,765 416,769C415,773 415,776 414,777C414,783 413,802 413,818C413,842 414,856 417,874C417,876 417,879 418,880C418,884 418,886 420,891C420,892 420,894 420,896C422,901 424,912 425,916C428,924 436,950 438,954C438,955 440,960 443,966C457,999 479,1035 504,1064C516,1077 539,1100 552,1110C567,1122 587,1136 604,1145C608,1148 630,1159 636,1161C662,1173 703,1185 728,1189C730,1189 733,1189 734,1190C741,1190 753,1192 762,1193C766,1193 808,1193 813,1193C816,1192 829,1191 835,1190C840,1190 848,1189 850,1188C851,1188 855,1188 858,1187C862,1186 868,1185 873,1184C878,1183 882,1182 883,1182C893,1180 920,1170 934,1164C947,1160 969,1148 981,1141C1049,1101 1100,1044 1132,972C1143,947 1155,907 1158,880C1159,877 1159,874 1160,872C1160,867 1162,846 1162,835C1163,831 1163,827 1164,826C1165,825 1173,818 1182,811C1203,794 1220,780 1250,756C1261,747 1264,746 1264,750C1264,750 1264,751 1264,752C1265,755 1267,768 1268,782C1269,793 1269,842 1268,854C1267,866 1266,876 1266,878C1265,880 1265,883 1264,886C1264,890 1263,896 1260,910C1260,911 1260,914 1259,915C1259,916 1259,919 1258,920C1256,935 1240,985 1233,1001C1232,1004 1231,1007 1230,1009C1229,1011 1224,1021 1219,1031C1179,1114 1115,1183 1034,1232C1021,1240 993,1254 980,1260C974,1262 968,1265 966,1266C961,1268 928,1280 924,1280C922,1281 916,1282 908,1284C894,1288 869,1293 860,1294C858,1295 855,1295 854,1295C853,1296 847,1296 834,1298C831,1298 827,1298 824,1299C819,1299 764,1300 763,1300Z M774,1080C774,1079 772,1079 771,1079C766,1078 764,1077 756,1073C745,1068 735,1058 727,1044C692,982 640,913 583,848C565,829 561,821 559,805C556,777 573,749 599,739C608,736 611,736 620,736C634,736 645,739 656,746C672,757 741,840 783,901L793,915L809,898C938,764 1070,649 1198,559C1207,552 1239,532 1252,523C1271,511 1314,485 1316,485C1316,485 1318,484 1320,483C1332,475 1378,452 1400,442C1403,441 1408,439 1411,438C1421,433 1438,431 1450,434C1462,437 1477,446 1485,456C1491,465 1494,471 1497,483C1498,487 1498,503 1497,507C1492,528 1478,544 1458,553C1445,558 1409,576 1399,582C1396,583 1390,587 1386,589C1382,591 1377,593 1376,594C1375,595 1371,597 1368,599C1341,613 1281,652 1244,679C1166,736 1097,794 1015,870C959,923 881,1002 837,1052C823,1069 813,1075 799,1078C792,1080 775,1081 774,1080Z"/></svg>`;
 function renderTable(){
   renderPesertaVerifBadge();
   const q=$('#qSearch').value.trim().toLowerCase();
@@ -4052,8 +4159,13 @@ function renderTable(){
     return [p.nama,p.nik,p.kota,participantCode(p)].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
   });
   const body=$('#tblBody');
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Tidak ada data yang cocok.</td></tr>'; return; }
-  body.innerHTML=rows.map((p,i)=>{
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Tidak ada data yang cocok.</td></tr>'; renderPesertaPagination(0,0); return; }
+  const totalPages=Math.max(1,Math.ceil(rows.length/pesertaPageSize));
+  if(pesertaPage>totalPages)pesertaPage=totalPages;
+  if(pesertaPage<1)pesertaPage=1;
+  const pageStart=(pesertaPage-1)*pesertaPageSize;
+  const pageRows=rows.slice(pageStart,pageStart+pesertaPageSize);
+  body.innerHTML=pageRows.map((p,i)=>{
     const stage=STAGE_BY_PID[p.id]??0;
     const docs=DOCS_BY_PID[p.id]||{};
     const totalReq=DOCS.filter(d=>d.req).length;
@@ -4077,11 +4189,11 @@ function renderTable(){
     const acceptedAll=verifiedAll+kolektifAll;
     let aksiHtml;
     if(isMaster){
-      aksiHtml=`<span class="pill ok" data-goto-master="${p.id}" style="cursor:pointer" title="Klik untuk buka data peserta ini di Data Master">✓ Di Data Master</span>`;
+      aksiHtml=`<button type="button" class="icon-plain-btn" data-goto-master="${p.id}" title="Sudah ada di Data Master — klik untuk buka" style="color:#3F9E6E">${MASTER_CHECK_SVG}</button>`;
     }else if(isComplete){
-      aksiHtml=`<button class="btn b-navy sm" data-convert="${p.id}" title="Pindahkan ke Data Master">➜ Convert</button>`;
+      aksiHtml=`<button class="icon-plain-btn" data-convert="${p.id}" title="Pindahkan ke Data Master">${CONVERT_SVG}</button>`;
     }else{
-      aksiHtml=`<button class="btn b-ghost sm" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">➜ Convert</button>`;
+      aksiHtml=`<button class="icon-plain-btn" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">${CONVERT_SVG}</button>`;
     }
     const avPending=autoVerifyCandidates(p.id).length;
     const AI_SVG=`<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="display:block"><path d="M12 2.5c.4 0 .74.27.85.65l1.2 4.3a4.6 4.6 0 0 0 3.15 3.15l4.3 1.2c.38.11.65.45.65.85s-.27.74-.65.85l-4.3 1.2a4.6 4.6 0 0 0-3.15 3.15l-1.2 4.3a.88.88 0 0 1-1.7 0l-1.2-4.3a4.6 4.6 0 0 0-3.15-3.15l-4.3-1.2a.88.88 0 0 1 0-1.7l4.3-1.2A4.6 4.6 0 0 0 9.95 7.45l1.2-4.3c.11-.38.45-.65.85-.65Z"/><path d="M19 2.5c.32 0 .6.22.68.53l.32 1.2c.14.5.53.9 1.03 1.03l1.2.32c.31.08.53.36.53.68s-.22.6-.53.68l-1.2.32c-.5.14-.9.53-1.03 1.03l-.32 1.2a.71.71 0 0 1-1.37 0l-.32-1.2a1.53 1.53 0 0 0-1.03-1.03l-1.2-.32a.71.71 0 0 1 0-1.37l1.2-.32c.5-.14.9-.53 1.03-1.03l.32-1.2c.08-.31.36-.53.68-.53Z"/></svg>`;
@@ -4091,6 +4203,14 @@ function renderTable(){
     /* Desktop: TETAP desain lama (tabel Dokumen), tidak ada varian 'review' supaya
        tampilan desktop tidak berubah dari sebelumnya. */
     const docPillClass=verifiedAll===totalAll?'ok':(acceptedAll===totalAll?'kolektif':'wait');
+    /* Kolom Dokumen (tabel desktop): icon "unggah" / "terverifikasi" / "kolektif"
+       menggantikan teks penuh supaya lebih ringkas & enak dibaca (mengikuti
+       referensi ikon yang diberikan user). */
+    const DOC_UPLOAD_ICO=`<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M12 17.5v-6"/><path d="m9.5 13.7 2.5-2.5 2.5 2.5"/></svg>`;
+    const DOC_VERIF_ICO=`<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="m8.8 14.3 2.1 2.1 4.3-4.7"/></svg>`;
+    const DOC_KOLEKTIF_ICO=`<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4.5-8 4.5-8-4.5 8-4.5Z"/><path d="m4 12 8 4.5 8-4.5"/><path d="m4 16.5 8 4.5 8-4.5"/></svg>`;
+    const docPillTitle=`${uploadedAll}/${totalAll} unggah · ${verifiedAll}/${totalAll} terverifikasi${kolektifAll?` · ${kolektifAll} kolektif`:''}`;
+    const docPillHtml=`<span class="pill-ico">${DOC_UPLOAD_ICO}${uploadedAll}/${totalAll}</span><span class="pill-sep">|</span><span class="pill-ico">${DOC_VERIF_ICO}${verifiedAll}/${totalAll}</span><span class="pill-sep">|</span><span class="pill-ico">${DOC_KOLEKTIF_ICO}${kolektifAll}</span>`;
     /* Mobile (popup & kartu): pakai varian 'review' (amber) supaya status
        "sudah unggah lengkap tapi belum diverifikasi" kelihatan beda. */
     const docPillClassMobile=verifiedAll===totalAll?'ok':(acceptedAll===totalAll?'kolektif':(needsVerif?'review':'wait'));
@@ -4103,11 +4223,11 @@ function renderTable(){
        baris lain di popup (aksi-row), terpisah dari aksiHtml versi desktop. */
     let convertRowMobile;
     if(isMaster){
-      convertRowMobile=`<span class="aksi-row aksi-row-navy" data-goto-master="${p.id}" title="Klik untuk buka data peserta ini di Data Master">✓ Di Data Master</span>`;
+      convertRowMobile=`<button type="button" class="aksi-row aksi-row-navy" data-goto-master="${p.id}" title="Sudah ada di Data Master — klik untuk buka" style="justify-content:center">${MASTER_CHECK_SVG}</button>`;
     }else if(isComplete){
-      convertRowMobile=`<button type="button" class="aksi-row aksi-row-navy" data-convert="${p.id}" title="Pindahkan ke Data Master">➜ Convert</button>`;
+      convertRowMobile=`<button type="button" class="aksi-row aksi-row-navy" data-convert="${p.id}" title="Pindahkan ke Data Master">${CONVERT_SVG}</button>`;
     }else{
-      convertRowMobile=`<button type="button" class="aksi-row aksi-row-gray" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">➜ Convert</button>`;
+      convertRowMobile=`<button type="button" class="aksi-row aksi-row-gray" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">${CONVERT_SVG}</button>`;
     }
     const aksiMobileHtml=`<div class="aksi-mobile" data-aksi-wrap="${p.id}">
         <button type="button" class="aksi-mobile-trigger" data-aksi-toggle="${p.id}" aria-haspopup="true" aria-expanded="false" title="${needsVerif?'Ada dokumen menunggu diverifikasi':'Aksi'}">${DOTS_SVG}${needsVerif?'<span class="aksi-alert-dot"></span>':''}</button>
@@ -4119,54 +4239,115 @@ function renderTable(){
         </div>
       </div>`;
     return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':(needsVerif?'row-needs-verif':(uploadedAll===0&&!isMaster?'row-empty':''))}">
-      <td>${i+1}</td>
+      <td>${pageStart+i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
-      <td class="nama"><b>${p.nama||'-'}${needsVerif?'<span class="row-verif-badge" title="Sudah unggah lengkap, menunggu diverifikasi admin">!</span>':''}</b><span>${p.telepon||'-'}</span></td>
+      <td class="nama"><b>${p.nama||'-'}${needsVerif?'<span class="row-verif-badge" title="Sudah unggah lengkap, menunggu diverifikasi admin">!</span>':''}</b></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
-      <td><span class="pill ${docPillClass}">${uploadedAll}/${totalAll} unggah · ${verifiedAll}/${totalAll} terverifikasi${kolektifAll?` · ${kolektifAll} kolektif`:''}</span></td>
+      <td><span class="doc-status-icons ${docPillClass}" title="${docPillTitle}">${docPillHtml}</span></td>
       <td class="aksi-cell"><div class="aksi-cell-in aksi-inline">${avHtml}${aksiHtml}</div>${aksiMobileHtml}</td>
     </tr>`;
   }).join('');
-  body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.pid)));
-  body.querySelectorAll('[data-aksi-toggle]').forEach(btn=>btn.addEventListener('click', e=>{
-    e.stopPropagation();
-    const menu=btn.nextElementSibling;
-    const cell=btn.closest('td.aksi-cell');
-    const willOpen=!menu.classList.contains('show');
-    closeAllAksiMenus();
-    if(willOpen){ menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); cell?.classList.add('aksi-open'); }
-  }));
-  body.querySelectorAll('[data-profile]').forEach(b=>b.addEventListener('click', e=>{
-    e.stopPropagation();
-    closeAllAksiMenus();
-    openDetail(b.dataset.profile, b.dataset.focus);
-  }));
-  body.querySelectorAll('[data-convert]').forEach(b=>b.addEventListener('click', e=>{
-    e.stopPropagation();
-    /* Sengaja TIDAK closeAllAksiMenus() di sini — biar popup Aksi tetap
-       terbuka selama proses convert supaya loading bar-nya kelihatan,
-       sama seperti tombol Convert versi desktop. Popup otomatis hilang
-       sendiri begitu renderTable() jalan lagi setelah convert selesai. */
-    convertToMaster(b.dataset.convert, b);
-  }));
-  body.querySelectorAll('[data-verify1]').forEach(b=>b.addEventListener('click', e=>{
-    e.stopPropagation();
-    closeAllAksiMenus();
-    runAutoVerify(b.dataset.verify1);
-  }));
-  body.querySelectorAll('[data-delpid]').forEach(el=>el.addEventListener('click', e=>{
-    e.stopPropagation();
-    deleteParticipant(el.dataset.delpid);
-  }));
-  body.querySelectorAll('[data-goto-master]').forEach(el=>el.addEventListener('click', e=>{
-    e.stopPropagation();
-    closeAllAksiMenus();
-    gotoMasterParticipant(el.dataset.gotoMaster);
-  }));
+  renderPesertaPagination(rows.length,totalPages);
+  /* Event listener baris TIDAK dipasang di sini lagi (sebelumnya querySelectorAll+
+     addEventListener per baris tiap kali renderTable() jalan -> untuk ribuan baris
+     ini bikin ribuan listener baru dibuat ulang tiap render/tiap ketik di search).
+     Sekarang dipasang SEKALI lewat delegasi di initPesertaTableEvents() di bawah. */
 }
-$('#qSearch').addEventListener('input', renderTable);
-$('#qStage').addEventListener('change', renderTable);
+/* Render kontrol pagination (info + tombol halaman + ukuran halaman).
+   Dipanggil tiap akhir renderTable() supaya selalu sinkron dgn hasil filter. */
+function renderPesertaPagination(totalRows,totalPages){
+  const host=$('#pesertaPagination');
+  if(!host)return;
+  if(totalRows===0){ host.innerHTML=''; return; }
+  const from=(pesertaPage-1)*pesertaPageSize+1;
+  const to=Math.min(pesertaPage*pesertaPageSize,totalRows);
+  let pageBtns='';
+  const windowSize=5;
+  let startP=Math.max(1,pesertaPage-Math.floor(windowSize/2));
+  let endP=Math.min(totalPages,startP+windowSize-1);
+  startP=Math.max(1,endP-windowSize+1);
+  for(let n=startP;n<=endP;n++){
+    pageBtns+=`<button type="button" data-pg="${n}" class="${n===pesertaPage?'pg-active':''}">${n}</button>`;
+  }
+  host.innerHTML=`
+    <div class="pg-info">Menampilkan ${from}–${to} dari ${totalRows} peserta</div>
+    <div class="pg-btns">
+      <button type="button" data-pg="prev" ${pesertaPage<=1?'disabled':''}>‹ Sebelumnya</button>
+      ${pageBtns}
+      <button type="button" data-pg="next" ${pesertaPage>=totalPages?'disabled':''}>Berikutnya ›</button>
+      <span class="pg-size"><select id="pesertaPageSizeSel">
+        <option value="25" ${pesertaPageSize===25?'selected':''}>25/halaman</option>
+        <option value="50" ${pesertaPageSize===50?'selected':''}>50/halaman</option>
+        <option value="100" ${pesertaPageSize===100?'selected':''}>100/halaman</option>
+        <option value="200" ${pesertaPageSize===200?'selected':''}>200/halaman</option>
+      </select></span>
+    </div>`;
+  host.querySelectorAll('[data-pg]').forEach(btn=>btn.addEventListener('click',()=>{
+    const v=btn.dataset.pg;
+    if(v==='prev')pesertaPage--;
+    else if(v==='next')pesertaPage++;
+    else pesertaPage=parseInt(v,10);
+    renderTable();
+    $('.peserta-table-wrap')?.scrollIntoView({block:'start',behavior:'smooth'});
+  }));
+  $('#pesertaPageSizeSel')?.addEventListener('change',e=>{
+    pesertaPageSize=parseInt(e.target.value,10);
+    pesertaPage=1;
+    renderTable();
+  });
+}
+/* Delegasi event untuk tabel peserta -> dipasang SEKALI saat load, bukan tiap
+   renderTable(). Klik di mana pun dalam #tblBody dicek lewat e.target.closest(),
+   jauh lebih ringan untuk data ratusan/ribuan baris dibanding bind per elemen. */
+function initPesertaTableEvents(){
+  const body=$('#tblBody');
+  if(!body||body._delegated)return;
+  body._delegated=true;
+  body.addEventListener('click', e=>{
+    const delBtn=e.target.closest('[data-delpid]');
+    if(delBtn){ e.stopPropagation(); deleteParticipant(delBtn.dataset.delpid); return; }
+    const gotoBtn=e.target.closest('[data-goto-master]');
+    if(gotoBtn){ e.stopPropagation(); closeAllAksiMenus(); gotoMasterParticipant(gotoBtn.dataset.gotoMaster); return; }
+    const convertBtn=e.target.closest('[data-convert]');
+    if(convertBtn){
+      e.stopPropagation();
+      /* Sengaja TIDAK closeAllAksiMenus() di sini — biar popup Aksi tetap
+         terbuka selama proses convert supaya loading bar-nya kelihatan,
+         sama seperti tombol Convert versi desktop. Popup otomatis hilang
+         sendiri begitu renderTable() jalan lagi setelah convert selesai. */
+      convertToMaster(convertBtn.dataset.convert, convertBtn); return;
+    }
+    const verifyBtn=e.target.closest('[data-verify1]');
+    if(verifyBtn){ e.stopPropagation(); closeAllAksiMenus(); runAutoVerify(verifyBtn.dataset.verify1); return; }
+    const toggleBtn=e.target.closest('[data-aksi-toggle]');
+    if(toggleBtn){
+      e.stopPropagation();
+      const menu=toggleBtn.nextElementSibling;
+      const cell=toggleBtn.closest('td.aksi-cell');
+      const willOpen=!menu.classList.contains('show');
+      closeAllAksiMenus();
+      if(willOpen){ menu.classList.add('show'); toggleBtn.setAttribute('aria-expanded','true'); cell?.classList.add('aksi-open'); }
+      return;
+    }
+    const profileBtn=e.target.closest('[data-profile]');
+    if(profileBtn){ e.stopPropagation(); closeAllAksiMenus(); openDetail(profileBtn.dataset.profile, profileBtn.dataset.focus); return; }
+    /* Hanya klik tepat di teks nama (td.nama > b) yang membuka detail
+       peserta -- bukan seluruh sel/kolom nama (biar area klik pas
+       sebatas tulisan nama, bukan ikut area kosong kiri-kanannya). */
+    const namaEl=e.target.closest('td.nama b');
+    if(namaEl){
+      const tr=namaEl.closest('tr[data-pid]');
+      if(tr)openDetail(tr.dataset.pid);
+    }
+  });
+}
+/* Debounce ~250ms -> renderTable (yang menghitung status dokumen semua baris
+   dan replace innerHTML) cuma jalan setelah user berhenti mengetik sejenak,
+   bukan di SETIAP huruf. Penting kalau peserta sampai ratusan/ribuan baris. */
+$('#qSearch').addEventListener('input', debounce(()=>{ pesertaPage=1; renderTable(); },250));
+$('#qStage').addEventListener('change', ()=>{ pesertaPage=1; renderTable(); });
+initPesertaTableEvents();
 
 /* ============ HAPUS PESERTA TOTAL (data + berkas storage) ============
    Dipicu dengan klik kode peserta di tabel Data Peserta. Menghapus baris terkait
@@ -4421,6 +4602,7 @@ async function copyToClipboard(text,btn){
   }
 }
 
+let masterPage=1, masterPageSize=50;
 function renderMasterTable(){
   const q=($('#qSearchMaster')?.value||'').trim().toLowerCase();
   const rows=MASTER_ROWS.filter(r=>{
@@ -4428,13 +4610,18 @@ function renderMasterTable(){
     return [r.nama,r.kota,r.kode_peserta].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
   });
   const body=$('#tblMasterBody'); if(!body)return;
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr>'; return; }
-  body.innerHTML=rows.map((r,i)=>{
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr>'; renderMasterPagination(0,0); return; }
+  const totalPages=Math.max(1,Math.ceil(rows.length/masterPageSize));
+  if(masterPage>totalPages)masterPage=totalPages;
+  if(masterPage<1)masterPage=1;
+  const pageStart=(masterPage-1)*masterPageSize;
+  const pageRows=rows.slice(pageStart,pageStart+masterPageSize);
+  body.innerHTML=pageRows.map((r,i)=>{
     const tgl=r.converted_at?new Date(r.converted_at).toLocaleString('id-ID',{dateStyle:'medium'}):'-';
     return `<tr data-pid="${r.participant_id}">
-      <td>${i+1}</td>
+      <td>${pageStart+i+1}</td>
       <td class="kode"><span class="kode-row">${r.kode_peserta||'-'}<button type="button" class="copy-btn" data-copy="${r.kode_peserta||''}" title="Salin kode peserta" aria-label="Salin kode peserta">${IC_COPY}</button></span></td>
-      <td class="nama"><b>${r.nama||'-'}</b><span class="tel-row">${r.telepon||'-'}${r.telepon?`<button type="button" class="copy-btn" data-copy="${r.telepon}" title="Salin nomor telepon" aria-label="Salin nomor telepon">${IC_COPY}</button>`:''}</span></td>
+      <td class="nama"><b>${r.nama||'-'}</b></td>
       <td>${r.kota||'-'}</td>
       <td>${(Number(r.tahap??0)+1)}/6</td>
       <td>${tgl}</td>
@@ -4444,12 +4631,69 @@ function renderMasterTable(){
       </div></td>
     </tr>`;
   }).join('');
-  body.querySelectorAll('tr[data-pid]').forEach(tr=>tr.addEventListener('click',()=>openMasterDoc(tr.dataset.pid)));
-  body.querySelectorAll('[data-manage]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); openMasterDoc(b.dataset.manage); }));
-  body.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); removeFromMaster(b.dataset.remove,b.dataset.pid); }));
-  body.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); copyToClipboard(b.dataset.copy,b); }));
+  renderMasterPagination(rows.length,totalPages);
+  /* Listener per-baris TIDAK dipasang di sini lagi -> dipasang sekali lewat
+     delegasi di initMasterTableEvents() di bawah, sama seperti tabel Peserta. */
 }
-$('#qSearchMaster')?.addEventListener('input', renderMasterTable);
+/* Delegasi klik untuk tabel Data Master -> dipasang sekali saat load. */
+function initMasterTableEvents(){
+  const body=$('#tblMasterBody');
+  if(!body||body._delegated)return;
+  body._delegated=true;
+  body.addEventListener('click', e=>{
+    const manageBtn=e.target.closest('[data-manage]');
+    if(manageBtn){ e.stopPropagation(); openMasterDoc(manageBtn.dataset.manage); return; }
+    const removeBtn=e.target.closest('[data-remove]');
+    if(removeBtn){ e.stopPropagation(); removeFromMaster(removeBtn.dataset.remove,removeBtn.dataset.pid); return; }
+    const copyBtn=e.target.closest('[data-copy]');
+    if(copyBtn){ e.stopPropagation(); copyToClipboard(copyBtn.dataset.copy,copyBtn); return; }
+    /* Klik di sembarang area baris TIDAK lagi membuka modal Dokumen ->
+       modal Dokumen hanya dibuka lewat tombol "Kelola Dokumen". */
+  });
+}
+/* Render kontrol pagination Data Master -> sama persis pola dgn Data Peserta. */
+function renderMasterPagination(totalRows,totalPages){
+  const host=$('#masterPagination');
+  if(!host)return;
+  if(totalRows===0){ host.innerHTML=''; return; }
+  const from=(masterPage-1)*masterPageSize+1;
+  const to=Math.min(masterPage*masterPageSize,totalRows);
+  let pageBtns='';
+  const windowSize=5;
+  let startP=Math.max(1,masterPage-Math.floor(windowSize/2));
+  let endP=Math.min(totalPages,startP+windowSize-1);
+  startP=Math.max(1,endP-windowSize+1);
+  for(let n=startP;n<=endP;n++){
+    pageBtns+=`<button type="button" data-pg="${n}" class="${n===masterPage?'pg-active':''}">${n}</button>`;
+  }
+  host.innerHTML=`
+    <div class="pg-info">Menampilkan ${from}–${to} dari ${totalRows} peserta</div>
+    <div class="pg-btns">
+      <button type="button" data-pg="prev" ${masterPage<=1?'disabled':''}>‹ Sebelumnya</button>
+      ${pageBtns}
+      <button type="button" data-pg="next" ${masterPage>=totalPages?'disabled':''}>Berikutnya ›</button>
+      <span class="pg-size"><select id="masterPageSizeSel">
+        <option value="25" ${masterPageSize===25?'selected':''}>25/halaman</option>
+        <option value="50" ${masterPageSize===50?'selected':''}>50/halaman</option>
+        <option value="100" ${masterPageSize===100?'selected':''}>100/halaman</option>
+        <option value="200" ${masterPageSize===200?'selected':''}>200/halaman</option>
+      </select></span>
+    </div>`;
+  host.querySelectorAll('[data-pg]').forEach(btn=>btn.addEventListener('click',()=>{
+    const v=btn.dataset.pg;
+    if(v==='prev')masterPage--;
+    else if(v==='next')masterPage++;
+    else masterPage=parseInt(v,10);
+    renderMasterTable();
+    $('.master-table-wrap')?.scrollIntoView({block:'start',behavior:'smooth'});
+  }));
+  $('#masterPageSizeSel')?.addEventListener('change',e=>{
+    masterPageSize=parseInt(e.target.value,10);
+    masterPage=1;
+    renderMasterTable();
+  });
+}
+$('#qSearchMaster')?.addEventListener('input', debounce(()=>{ masterPage=1; renderMasterTable(); },250));
 $('#qSearchMaster')?.addEventListener('input', e=>{
   $('#qSearchMasterWrap')?.classList.toggle('has-value', e.target.value.trim().length>0);
 });
@@ -4457,9 +4701,11 @@ $('#qSearchMasterClear')?.addEventListener('click', ()=>{
   const el=$('#qSearchMaster'); if(!el)return;
   el.value='';
   $('#qSearchMasterWrap')?.classList.remove('has-value');
+  masterPage=1;
   renderMasterTable();
   el.focus();
 });
+initMasterTableEvents();
 
 /* Klik pill "✓ Di Data Master" di tabel Data Peserta -> lompat ke tab Data Master,
    filter otomatis ke peserta tsb, sorot barisnya, lalu buka detail dokumennya. */
@@ -4532,6 +4778,13 @@ async function openDetail(pid, focus){
 function closeDetail(){ $('#detailModal').classList.remove('show'); ACTIVE_PID=null; }
 $('#btnCloseModal').addEventListener('click', closeDetail);
 $('#detailModal').addEventListener('click', e=>{ if(e.target.id==='detailModal')closeDetail(); });
+$('#detailModal').addEventListener('click', e=>{
+  const cbtn=e.target.closest('[data-copy-target]');
+  if(!cbtn)return;
+  e.preventDefault(); e.stopPropagation();
+  const tgt=$('#'+cbtn.dataset.copyTarget);
+  copyToClipboard(tgt?tgt.value:'', cbtn);
+});
 
 /* Dokumen dianggap "diterima" untuk kebutuhan progres/convert kalau sudah
    terverifikasi ASLI, ATAU ditandai peserta sebagai diproses kolektif oleh
@@ -4875,6 +5128,20 @@ $('#btnSaveInfo').addEventListener('click', async ()=>{
   if(error)return toast('Gagal menyimpan data: '+error.message,'err');
   const p=PARTICIPANTS.find(x=>x.id===ACTIVE_PID); Object.assign(p,payload);
   $('#mNama').textContent=p.nama;
+  /* Kalau peserta ini sudah ada di Data Master, ikut sinkronkan nama/telepon/kota
+     yang baru diedit -> supaya Data Master tidak menampilkan data lama (snapshot). */
+  if(MASTER_IDS.has(ACTIVE_PID)){
+    const {data:mUpd,error:mErr}=await sb.from('master_data_v2')
+      .update({nama:payload.nama,telepon:payload.telepon,kota:payload.kota})
+      .eq('participant_id',ACTIVE_PID).select().single();
+    if(mErr){
+      console.warn('Gagal sinkronkan Data Master:',mErr.message);
+    }else if(mUpd){
+      const idx=MASTER_ROWS.findIndex(r=>r.participant_id===ACTIVE_PID);
+      if(idx>-1)MASTER_ROWS[idx]=mUpd;
+      renderMasterTable();
+    }
+  }
   renderTable();
   toast('Data peserta tersimpan ✓','ok');
 });
@@ -5280,6 +5547,7 @@ $('#btnDownloadPicked').addEventListener('click', downloadPickedZip);
 
 /* ============ KELOLA EMAIL (IMAP/SMTP terintegrasi) ============ */
 let MAIL_LOADED=false, MAIL_ACCOUNTS=[], MAIL_ACTIVE=null, MAIL_MSGS=[], MAIL_OPEN=null, MAIL_FOLDER='INBOX', MAIL_SELECTED=new Set();
+let MAIL_PAGE=1; const MAIL_PAGE_SIZE=10;
 // FIX: notifikasi email masuk. MAIL_WATCH_UNSEEN menyimpan jumlah unseen terakhir
 // per akun yang dipantau (dipakai untuk badge di daftar akun); MAIL_WATCH_BASELINE
 // dipakai untuk deteksi "bertambah" supaya tidak langsung nge-toast semua unseen
@@ -5570,7 +5838,7 @@ async function loadMailFolders(){
     </button>`).join('');
   $('#mailFolderNav').querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>{
     if(b.dataset.folder===MAIL_FOLDER)return;
-    MAIL_FOLDER=b.dataset.folder; MAIL_OPEN=null;
+    MAIL_FOLDER=b.dataset.folder; MAIL_OPEN=null; MAIL_PAGE=1;
     $('#mailFolderNav').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
     $('#mailRead').innerHTML='<div class="mail-empty"><p>Pilih email untuk membaca</p></div>';
     loadMailList();
@@ -5579,6 +5847,7 @@ async function loadMailFolders(){
 
 async function loadMailList(){
   MAIL_SELECTED.clear();
+  MAIL_PAGE=1;
   updateBulkDeleteBtn();
   if(!MAIL_ACTIVE){ $('#mailList').innerHTML='<div class="mail-empty">Pilih akun email terlebih dahulu.</div>'; return; }
   $('#mailList').innerHTML='<div class="mail-empty">Memuat email…</div>';
@@ -5593,14 +5862,20 @@ async function loadMailList(){
 }
 
 function renderMailList(){
-  if(!MAIL_MSGS.length){ $('#mailList').innerHTML='<div class="mail-empty">Tidak ada email di folder ini.</div>'; MAIL_SELECTED.clear(); updateBulkDeleteBtn(); return; }
+  const pagEl=$('#mailPagination');
+  if(!MAIL_MSGS.length){ $('#mailList').innerHTML='<div class="mail-empty">Tidak ada email di folder ini.</div>'; MAIL_SELECTED.clear(); updateBulkDeleteBtn(); if(pagEl)pagEl.style.visibility='hidden'; return; }
   const q=($('#mailSearch')?.value||'').trim().toLowerCase();
   const filtered=q ? MAIL_MSGS.filter(m=>
     (m.from||'').toLowerCase().includes(q) ||
     (m.subject||'').toLowerCase().includes(q)
   ) : MAIL_MSGS;
-  if(!filtered.length){ $('#mailList').innerHTML='<div class="mail-empty">Tidak ada email yang cocok dengan pencarian.</div>'; return; }
-  $('#mailList').innerHTML=filtered.map(m=>`
+  if(!filtered.length){ $('#mailList').innerHTML='<div class="mail-empty">Tidak ada email yang cocok dengan pencarian.</div>'; if(pagEl)pagEl.style.visibility='hidden'; return; }
+  const totalPages=Math.max(1,Math.ceil(filtered.length/MAIL_PAGE_SIZE));
+  if(MAIL_PAGE>totalPages)MAIL_PAGE=totalPages;
+  if(MAIL_PAGE<1)MAIL_PAGE=1;
+  const pageItems=filtered.slice((MAIL_PAGE-1)*MAIL_PAGE_SIZE, MAIL_PAGE*MAIL_PAGE_SIZE);
+  renderMailPagination(totalPages);
+  $('#mailList').innerHTML=pageItems.map(m=>`
     <div class="mail-item${m.seen?'':' unread'}${MAIL_OPEN===m.uid?' active':''}" data-uid="${m.uid}">
       <input type="checkbox" class="mi-check" data-uid="${m.uid}"${MAIL_SELECTED.has(m.uid)?' checked':''}>
       <div class="mi-avatar">${escapeHtml(mailInitial(m.from))}</div>
@@ -5627,7 +5902,17 @@ function renderMailList(){
   }));
   updateBulkDeleteBtn();
 }
-$('#mailSearch')?.addEventListener('input', renderMailList);
+
+function renderMailPagination(totalPages){
+  const pagEl=$('#mailPagination'); if(!pagEl)return;
+  pagEl.style.visibility='visible';
+  $('#mailPageInfo').textContent=`Halaman ${MAIL_PAGE} dari ${totalPages}`;
+  $('#mailPagePrev').disabled=(MAIL_PAGE<=1);
+  $('#mailPageNext').disabled=(MAIL_PAGE>=totalPages);
+}
+$('#mailPagePrev')?.addEventListener('click', ()=>{ if(MAIL_PAGE>1){ MAIL_PAGE--; renderMailList(); } });
+$('#mailPageNext')?.addEventListener('click', ()=>{ MAIL_PAGE++; renderMailList(); });
+$('#mailSearch')?.addEventListener('input', ()=>{ MAIL_PAGE=1; renderMailList(); });
 
 function updateBulkDeleteBtn(){
   const btn=$('#btnMailBulkDelete'); if(!btn)return;
