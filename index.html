@@ -204,6 +204,13 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-table-wrap .kode-del{color:#1B3A66;border-bottom:1px dashed #AAB8C8}
 #secPeserta .peserta-table-wrap td.nama b{font:800 .8rem var(--body);color:#14233A}
 #secPeserta .peserta-table-wrap td.nama span{font-size:.67rem;color:#8290A4}
+/* Badge kecil merah di sebelah nama -> peserta yang dokumennya sudah 100%
+   diunggah tapi belum diverifikasi admin. Berlaku desktop & mobile. */
+#secPeserta .peserta-table-wrap td.nama .row-verif-badge{
+  display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;
+  margin-left:6px;border-radius:50%;background:var(--red,#D64545);color:#fff;
+  font:800 .64rem var(--body);vertical-align:middle;box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
 #secPeserta .peserta-table-wrap .stagebar{gap:7px}
 #secPeserta .peserta-table-wrap .stagebar .track{width:62px;height:6px;background:#E7E5DC}
 #secPeserta .peserta-table-wrap .stagebar .fill{background:#3F741A}
@@ -4050,7 +4057,7 @@ function renderTable(){
     return `<tr data-pid="${p.id}" class="${isComplete&&!isMaster?'row-ready':(needsVerif?'row-needs-verif':'')}">
       <td>${i+1}</td>
       <td class="kode"><span class="kode-del" data-delpid="${p.id}" title="Klik untuk hapus peserta ini secara permanen">${participantCode(p)}</span></td>
-      <td class="nama"><b>${p.nama||'-'}</b><span>${p.telepon||'-'}</span></td>
+      <td class="nama"><b>${p.nama||'-'}${needsVerif?'<span class="row-verif-badge" title="Sudah unggah lengkap, menunggu diverifikasi admin">!</span>':''}</b><span>${p.telepon||'-'}</span></td>
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
       <td><span class="pill ${docPillClass}">${uploaded}/${totalReq} unggah · ${verified}/${totalReq} terverifikasi${kolektif?` · ${kolektif} kolektif`:''}</span></td>
