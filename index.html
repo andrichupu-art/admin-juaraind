@@ -241,19 +241,22 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody td:nth-child(5),
   #secPeserta .peserta-table-wrap tbody td:nth-child(6){display:none}
   /* Tombol Aksi -> baris 2, kanan */
-  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:3;grid-row:2;justify-self:end;align-self:center;overflow:visible}
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:3;grid-row:2;justify-self:end;align-self:center;overflow:visible;position:relative;z-index:1}
+  #secPeserta .peserta-table-wrap tbody td.aksi-cell.aksi-open{z-index:200}
   #secPeserta .peserta-table-wrap tbody .aksi-inline{display:none}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block;position:relative}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
     width:34px;height:34px;border-radius:10px;border:1.5px solid #D5DFEA;background:#F6F8FB;
     color:#28405F;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger:active,
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger[aria-expanded="true"]{background:#EAF0F8;border-color:var(--gold)}
+  /* Menu terbuka ke SAMPING KIRI tombol (bukan turun ke bawah), sejajar
+     dengan baris kartu itu sendiri, supaya tidak ketutup kartu berikutnya */
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu{
-    display:none;flex-direction:column;gap:4px;position:absolute;top:calc(100% + 6px);right:0;z-index:60;
-    min-width:222px;background:#fff;border:1px solid #DDE5EE;border-radius:14px;
-    box-shadow:0 14px 30px rgba(16,27,44,.16);padding:8px;
+    display:none;flex-direction:column;gap:4px;position:absolute;bottom:0;right:calc(100% + 8px);z-index:60;
+    min-width:224px;max-width:min(78vw,300px);background:#fff;border:1px solid #DDE5EE;border-radius:14px;
+    box-shadow:0 14px 30px rgba(16,27,44,.2);padding:8px;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu.show{display:flex}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-status{padding:4px 6px 6px}
@@ -3916,6 +3919,7 @@ $('#btnInvoiceEmailSend')?.addEventListener('click', async ()=>{
 function closeAllAksiMenus(){
   document.querySelectorAll('.aksi-mobile-menu.show').forEach(m=>m.classList.remove('show'));
   document.querySelectorAll('[data-aksi-toggle]').forEach(b=>b.setAttribute('aria-expanded','false'));
+  document.querySelectorAll('td.aksi-cell.aksi-open').forEach(td=>td.classList.remove('aksi-open'));
 }
 document.addEventListener('click', e=>{ if(!e.target.closest('.aksi-mobile'))closeAllAksiMenus(); });
 
@@ -3981,9 +3985,10 @@ function renderTable(){
   body.querySelectorAll('[data-aksi-toggle]').forEach(btn=>btn.addEventListener('click', e=>{
     e.stopPropagation();
     const menu=btn.nextElementSibling;
+    const cell=btn.closest('td.aksi-cell');
     const willOpen=!menu.classList.contains('show');
     closeAllAksiMenus();
-    if(willOpen){ menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); }
+    if(willOpen){ menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); cell?.classList.add('aksi-open'); }
   }));
   body.querySelectorAll('[data-profile]').forEach(b=>b.addEventListener('click', e=>{
     e.stopPropagation();
