@@ -2447,12 +2447,41 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
       <div class="fld">
         <label>Lampiran <span style="text-transform:none;letter-spacing:0;color:var(--mut)">(opsional, maks 15MB total)</span></label>
-        <button type="button" class="btn b-ghost sm" id="btnMcAttach">📎 Pilih File</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn b-ghost sm" id="btnMcAttach">📎 Pilih File</button>
+          <button type="button" class="btn b-ghost sm" id="btnMcAttachPeserta">🗂️ Dari Dokumen Peserta</button>
+        </div>
         <input type="file" id="mcAttachInput" style="display:none" multiple>
         <div id="mcAttachList" style="display:flex;flex-direction:column;gap:6px;margin-top:10px"></div>
       </div>
       <button class="btn b-pri" id="btnMailSend" style="width:100%;justify-content:center">Kirim Sekarang</button>
       <p class="err-txt" id="mcErr"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL LAMPIRKAN DOKUMEN PESERTA (dipakai dari Kelola Email) ============ -->
+<div class="modal" id="mpdModal">
+  <div class="box" style="max-width:480px">
+    <div class="box-h">
+      <div style="min-width:0"><h3>🗂️ Lampirkan Dokumen Peserta</h3><p id="mpdSub">Cari peserta untuk memilih dokumennya</p></div>
+      <button class="x" id="btnCloseMpd">✕</button>
+    </div>
+    <div class="box-body">
+      <div id="mpdStepSearch">
+        <div class="fld">
+          <label>Cari Peserta</label>
+          <input type="text" id="mpdSearch" placeholder="Nama, kode, atau kota peserta…" autocomplete="off">
+        </div>
+        <div id="mpdResults" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
+      </div>
+      <div id="mpdStepDocs" style="display:none">
+        <button type="button" class="btn b-ghost sm" id="btnMpdBack" style="margin-bottom:12px">← Ganti Peserta</button>
+        <p id="mpdDocsFor" style="font:700 .85rem var(--body);color:var(--ink);margin-bottom:10px"></p>
+        <div id="mpdDocList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"></div>
+        <button class="btn b-pri" id="btnMpdAdd" style="width:100%;justify-content:center">Tambahkan ke Lampiran</button>
+        <p class="err-txt" id="mpdErr"></p>
+      </div>
     </div>
   </div>
 </div>
@@ -5966,6 +5995,15 @@ async function openMailMessage(uid){
           <h4>${escapeHtml(msg.subject||'(tanpa subjek)')}</h4>
         </div>
         <div class="mail-read-meta"><span class="mi-avatar">${escapeHtml(mailInitial(msg.from))}</span><span><b>${escapeHtml(msg.from||'-')}</b> · ${fmtMailDate(msg.date)}</span></div>
+        ${msg.attachments && msg.attachments.length ? `
+        <div class="mail-attach-list" id="mailReadAttachList" style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
+          ${msg.attachments.map((att,i)=>`
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#F7F9FB">
+              <span style="flex:1;min-width:0;font:600 .8rem var(--body);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📎 ${escapeHtml(att.filename||'lampiran')}</span>
+              <span style="font:600 .72rem var(--body);color:var(--mut);flex-shrink:0">${mcFormatSize(att.size||0)}</span>
+              <button type="button" class="icon-plain-btn" data-mail-att-download="${i}" title="Unduh lampiran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+            </div>`).join('')}
+        </div>` : ''}
       </div>
       <div class="mail-read-body" id="mailReadBody"></div>
       <div class="mail-reply">
@@ -5984,6 +6022,12 @@ async function openMailMessage(uid){
     const baseTag='<base target="_blank" rel="noopener noreferrer">';
     ifr.srcdoc = msg.html ? (baseTag+msg.html) : ('<pre style="white-space:pre-wrap;font-family:inherit;padding:16px;margin:0">'+escapeHtml(msg.text||'(tidak ada isi)')+'</pre>');
     $('#btnMailReplySend').addEventListener('click', ()=>sendMailReply(msg));
+    $('#mailReadAttachList')?.querySelectorAll('[data-mail-att-download]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const att=msg.attachments?.[Number(btn.dataset.mailAttDownload)];
+        if(att) downloadMailAttachment(att);
+      });
+    });
     const m=MAIL_MSGS.find(x=>x.uid===uid);
     const wasUnseen=m && !m.seen;
     if(m)m.seen=true;
@@ -6005,6 +6049,22 @@ async function openMailMessage(uid){
   }catch(err){
     console.error(err);
     $('#mailRead').innerHTML='<div class="mail-empty">Gagal memuat pesan: '+escapeHtml(err.message)+'</div>';
+  }
+}
+
+function downloadMailAttachment(att){
+  try{
+    const bin=atob(att.content);
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    const blob=new Blob([bytes], {type: att.content_type||'application/octet-stream'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=att.filename||'lampiran';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunduh lampiran','err');
   }
 }
 
@@ -6114,6 +6174,113 @@ function fileToBase64(file){
     r.readAsDataURL(file);
   });
 }
+
+/* ============ LAMPIRKAN DOKUMEN PESERTA (dari Kelola Email) ============ */
+let MPD_PID=null;
+function mpdOpen(){
+  MPD_PID=null;
+  $('#mpdSearch').value='';
+  $('#mpdErr').textContent='';
+  $('#mpdStepDocs').style.display='none';
+  $('#mpdStepSearch').style.display='block';
+  mpdRenderResults('');
+  $('#mpdModal').classList.add('show');
+  setTimeout(()=>$('#mpdSearch').focus(),50);
+}
+function mpdClose(){ $('#mpdModal').classList.remove('show'); }
+function mpdRenderResults(q){
+  const box=$('#mpdResults');
+  const term=q.trim().toLowerCase();
+  let list=PARTICIPANTS;
+  if(term){
+    list=list.filter(p=>
+      (p.nama||'').toLowerCase().includes(term) ||
+      participantCode(p).toLowerCase().includes(term) ||
+      (p.kota||'').toLowerCase().includes(term)
+    );
+  }
+  list=list.slice(0,30);
+  if(!list.length){ box.innerHTML='<p style="font:600 .8rem var(--body);color:var(--mut);padding:10px 2px">Tidak ada peserta ditemukan.</p>'; return; }
+  box.innerHTML=list.map(p=>{
+    const docs=DOCS_BY_PID[p.id]||{};
+    const uploadedCount=DOCS.filter(d=>docs[d.k]?.storage_path).length;
+    return `<button type="button" class="who-dropdown-item" data-mpd-pick="${p.id}" style="border:1px solid var(--line);border-radius:9px;justify-content:space-between">
+      <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(p.nama||'-')} <span style="color:var(--mut);font-weight:600">· ${escapeHtml(p.kota||'-')}</span></span>
+      <span style="flex-shrink:0;font:700 .7rem var(--body);color:var(--mut)">${uploadedCount}/${DOCS.length} dok.</span>
+    </button>`;
+  }).join('');
+  box.querySelectorAll('[data-mpd-pick]').forEach(b=>b.addEventListener('click', ()=>mpdSelectPeserta(b.dataset.mpdPick)));
+}
+$('#mpdSearch').addEventListener('input', ()=>mpdRenderResults($('#mpdSearch').value));
+function mpdSelectPeserta(pid){
+  MPD_PID=pid;
+  const p=PARTICIPANTS.find(x=>x.id===pid);
+  $('#mpdDocsFor').textContent=`Dokumen milik: ${p?.nama||'-'}`;
+  const docs=DOCS_BY_PID[pid]||{};
+  const available=DOCS.filter(d=>docs[d.k]?.storage_path);
+  const list=$('#mpdDocList');
+  if(!available.length){
+    list.innerHTML='<p style="font:600 .8rem var(--body);color:var(--mut)">Peserta ini belum punya dokumen yang diunggah.</p>';
+  }else{
+    list.innerHTML=available.map(d=>{
+      const doc=docs[d.k];
+      return `<label style="display:flex;align-items:center;gap:9px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;cursor:pointer">
+        <input type="checkbox" data-mpd-doc="${d.k}">
+        <span style="flex:1;min-width:0;font:600 .82rem var(--body);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.t}</span>
+        <span style="font:600 .7rem var(--body);color:var(--mut);flex-shrink:0">${escapeHtml(doc.file_name||'')}</span>
+      </label>`;
+    }).join('');
+  }
+  $('#mpdErr').textContent='';
+  $('#mpdStepSearch').style.display='none';
+  $('#mpdStepDocs').style.display='block';
+}
+$('#btnMpdBack').addEventListener('click', ()=>{
+  $('#mpdStepDocs').style.display='none';
+  $('#mpdStepSearch').style.display='block';
+});
+$('#btnCloseMpd').addEventListener('click', mpdClose);
+$('#mpdModal').addEventListener('click', e=>{ if(e.target.id==='mpdModal')mpdClose(); });
+$('#btnMcAttachPeserta').addEventListener('click', mpdOpen);
+$('#btnMpdAdd').addEventListener('click', async ()=>{
+  const checks=[...$('#mpdDocList').querySelectorAll('[data-mpd-doc]:checked')];
+  $('#mpdErr').textContent='';
+  if(!checks.length){ $('#mpdErr').textContent='Pilih minimal satu dokumen.'; return; }
+  const docs=DOCS_BY_PID[MPD_PID]||{};
+  const btn=$('#btnMpdAdd'); const orig=btn.textContent;
+  btn.disabled=true;
+  try{
+    let incoming=0;
+    const downloaded=[];
+    for(const chk of checks){
+      const jenis=chk.dataset.mpdDoc;
+      const doc=docs[jenis];
+      if(!doc?.storage_path)continue;
+      btn.textContent=`Mengunduh ${DOCS.find(d=>d.k===jenis)?.t||jenis}…`;
+      const {data,error}=await sb.storage.from('juara-v2-documents').download(doc.storage_path);
+      if(error)throw new Error(`Gagal mengunduh ${jenis}: `+error.message);
+      incoming+=data.size;
+      const ext=(doc.storage_path.split('.').pop()||'').toLowerCase();
+      const fname=doc.file_name||`${jenis}${ext?'.'+ext:''}`;
+      downloaded.push({blob:data, name:fname, type:data.type||'application/octet-stream'});
+    }
+    if(mcAttachTotalSize()+incoming>MC_ATTACH_MAX_TOTAL){
+      $('#mpdErr').textContent='Total lampiran melebihi batas 15MB.';
+      return;
+    }
+    downloaded.forEach(d=>{
+      const file=new File([d.blob], d.name, {type:d.type});
+      MC_ATTACHMENTS.push({file, id:Date.now()+Math.random()});
+    });
+    renderMcAttachments();
+    mpdClose();
+  }catch(err){
+    console.error(err);
+    $('#mpdErr').textContent=err.message||'Gagal mengambil dokumen peserta';
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
+  }
+});
 
 $('#btnMailCompose').addEventListener('click', ()=>{
   $('#mcTo').value=''; $('#mcSubject').value=''; $('#mcMessage').value=''; $('#mcErr').textContent='';
