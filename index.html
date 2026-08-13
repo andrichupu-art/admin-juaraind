@@ -286,19 +286,22 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
     position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;
     background:var(--red,#D64545);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);
   }
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block;position:relative}
+  #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block}
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
     width:40px;height:40px;border-radius:11px;border:1.5px solid #D5DFEA;background:#F6F8FB;
     color:#28405F;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger:active,
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger[aria-expanded="true"]{background:#EAF0F8;border-color:var(--gold)}
-  /* Menu terbuka ke SAMPING KIRI tombol (bukan turun ke bawah), sejajar
-     dengan baris kartu itu sendiri, supaya tidak ketutup kartu berikutnya */
+  /* Menu terbuka di TENGAH kartu, mengambang di ATAS baris (bukan lagi
+     nempel di samping tombol titik-tiga), supaya tidak sempit dan tidak
+     menutupi kartu di sampingnya. Posisinya relatif ke <tr> (kartu),
+     bukan ke tombol, makanya .aksi-mobile sengaja tidak position:relative
+     lagi -> jatuh ke <tr> yang sudah position:relative. */
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu{
-    display:none;flex-direction:column;gap:6px;position:absolute;bottom:0;right:calc(100% + 8px);z-index:60;
-    min-width:270px;max-width:min(88vw,340px);background:#ffffff;border:1.5px solid #C7D0DC;border-radius:16px;
-    box-shadow:0 16px 34px rgba(16,27,44,.28);padding:10px;
+    display:none;flex-direction:column;gap:6px;position:fixed;z-index:500;
+    width:min(94vw,400px);background:#ffffff;border:1.5px solid #C7D0DC;border-radius:16px;
+    box-shadow:0 16px 34px rgba(16,27,44,.28);padding:12px;
   }
   #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu.show{display:flex}
   /* Paksa pill & tombol di dalam menu Aksi selalu solid (bukan transparan)
@@ -3976,6 +3979,7 @@ function closeAllAksiMenus(){
   document.querySelectorAll('td.aksi-cell.aksi-open').forEach(td=>td.classList.remove('aksi-open'));
 }
 document.addEventListener('click', e=>{ if(!e.target.closest('.aksi-mobile'))closeAllAksiMenus(); });
+document.addEventListener('scroll', ()=>closeAllAksiMenus(), true);
 
 /* Badge jumlah peserta yang dokumennya SUDAH 100% terunggah tapi BELUM
    100% terverifikasi/kolektif -> ini yang butuh aksi admin (verifikasi).
@@ -4069,9 +4073,26 @@ function renderTable(){
     e.stopPropagation();
     const menu=btn.nextElementSibling;
     const cell=btn.closest('td.aksi-cell');
+    const tr=btn.closest('tr');
     const willOpen=!menu.classList.contains('show');
     closeAllAksiMenus();
-    if(willOpen){ menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); cell?.classList.add('aksi-open'); }
+    if(willOpen){
+      menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); cell?.classList.add('aksi-open');
+      // Posisikan popup (position:fixed) di TENGAH kartu baris ini, mengambang
+      // di atasnya. Kalau barisnya terlalu dekat ke tepi atas layar, popup
+      // otomatis muncul di bawah baris supaya tidak terpotong.
+      if(tr){
+        const trRect=tr.getBoundingClientRect();
+        const menuRect=menu.getBoundingClientRect();
+        const margin=10, edge=8;
+        let left=trRect.left+trRect.width/2-menuRect.width/2;
+        left=Math.max(edge,Math.min(left,window.innerWidth-menuRect.width-edge));
+        let top=trRect.top-menuRect.height-margin;
+        if(top<edge) top=Math.min(trRect.bottom+margin, window.innerHeight-menuRect.height-edge);
+        menu.style.left=left+'px';
+        menu.style.top=top+'px';
+      }
+    }
   }));
   body.querySelectorAll('[data-profile]').forEach(b=>b.addEventListener('click', e=>{
     e.stopPropagation();
