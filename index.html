@@ -1087,6 +1087,17 @@ td.nama span{color:var(--mut);font-size:.78rem}
   margin-top:8px;padding:10px 14px;border-radius:12px;background:var(--navy);border:1.5px solid var(--navy)}
 .fp-cat-total b{font:800 .78rem var(--body);letter-spacing:.03em;text-transform:uppercase;color:#fff}
 .fp-cat-total span{font:800 .95rem var(--body);color:#fff;font-variant-numeric:tabular-nums}
+/* Riwayat Pembayaran -> list kartu (bukan tabel) supaya rapi & konsisten
+   di mobile maupun desktop, tidak ada lagi kolom yang berantakan turun
+   satu-satu tanpa label saat layar sempit. */
+.fp-hist-list{display:flex;flex-direction:column;gap:8px}
+.fp-hist-empty{font:600 .82rem var(--body);color:var(--mut);padding:14px 2px}
+.fp-hist-item{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;background:#fff;flex-wrap:wrap}
+.fp-hist-l{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fp-hist-l b{font:800 .88rem var(--body);color:var(--ink)}
+.fp-hist-l span{font:600 .74rem var(--body);color:var(--mut)}
+.fp-hist-actions{display:flex;gap:8px;flex-shrink:0}
 .fp-catatan-row{display:flex;gap:10px}
 .fp-catatan-row input{width:100%}
 .fp-catatan-row #btnSavePayment{flex-shrink:0;width:46px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:11px}
@@ -1095,7 +1106,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .fin-cat-actions{display:flex;gap:8px;flex-wrap:wrap}
 .fin-bill-input{width:120px;border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;font:600 .82rem var(--body);color:var(--ink)}
 .fin-bill-input:focus{outline:none;border-color:var(--navy)}
-#finBillList .tbl-wrap,#finPaymentBody{font-size:.86rem}
+#finBillList .tbl-wrap{font-size:.86rem}
 #finBillList .tbl-wrap{overflow-x:auto}
 #finBillList table{min-width:620px}
 #finBillList thead th{padding:9px 8px;font-size:.6rem;white-space:nowrap}
@@ -2711,12 +2722,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="box-sec">
         <h4>🧾 Riwayat Pembayaran</h4>
         <div id="fpSisaPembayaran" class="fp-cat-total" style="margin-bottom:10px"><b>Sisa Pembayaran</b><span>Rp 0</span></div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Tanggal</th><th>Metode</th><th>Jumlah</th><th>Aksi</th></tr></thead>
-            <tbody id="finPaymentBody"><tr class="empty-row"><td colspan="4">Belum ada pembayaran.</td></tr></tbody>
-          </table>
-        </div>
+        <div id="finPaymentBody" class="fp-hist-list"><p class="fp-hist-empty">Belum ada pembayaran.</p></div>
       </div>
     </div>
   </div>
@@ -3867,11 +3873,12 @@ async function deleteBillCategory(catId){
 }
 $('#btnAddBillCat')?.addEventListener('click', addBillCategory);
 
+const FP_ICO_KWITANSI='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>';
 function renderFinPaymentList(){
   const body=$('#finPaymentBody'); if(!body)return;
   const pid=FIN_ACTIVE_PID;
   const rows=FIN_PAYMENTS.filter(pm=>pm.participant_id===pid);
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="4">Belum ada pembayaran.</td></tr>'; return; }
+  if(!rows.length){ body.innerHTML='<p class="fp-hist-empty">Belum ada pembayaran.</p>'; return; }
   body.innerHTML=rows.map(pm=>{
     const tgl=pm.tanggal?new Date(pm.tanggal).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'-';
     let metodeInfo='Tunai';
@@ -3879,15 +3886,16 @@ function renderFinPaymentList(){
       const m=/Cicilan\s+(\d+)/i.exec(pm.catatan||'');
       metodeInfo=m?`Cicilan ke-${m[1]}`:'Cicilan';
     }
-    return `<tr>
-      <td>${tgl}</td>
-      <td>${escapeHtml(metodeInfo)}</td>
-      <td>${formatRupiah(pm.jumlah)}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="mini" data-print="${pm.id}">🧾 Kwitansi</button>
-        <button class="mini r" data-del-pay="${pm.id}">Hapus</button>
-      </td>
-    </tr>`;
+    return `<div class="fp-hist-item">
+      <div class="fp-hist-l">
+        <b>${formatRupiah(pm.jumlah)}</b>
+        <span>${tgl} &middot; ${escapeHtml(metodeInfo)}</span>
+      </div>
+      <div class="fp-hist-actions">
+        <button class="mini mini-ico" data-print="${pm.id}" title="Kwitansi" aria-label="Kwitansi">${FP_ICO_KWITANSI}</button>
+        <button class="mini mini-ico r" data-del-pay="${pm.id}" title="Hapus" aria-label="Hapus">${CAT_ICO_DEL}</button>
+      </div>
+    </div>`;
   }).join('');
   body.querySelectorAll('[data-print]').forEach(b=>b.addEventListener('click',()=>printKwitansi(b.dataset.print)));
   body.querySelectorAll('[data-del-pay]').forEach(b=>b.addEventListener('click',()=>deletePayment(b.dataset.delPay)));
