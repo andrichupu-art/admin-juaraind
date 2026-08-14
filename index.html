@@ -498,7 +498,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secKeuangan .tbl-wrap thead th{background:var(--navy);color:#E7DCC4;border:0;padding:7px 14px;font-size:.61rem;letter-spacing:.1em}
 #secKeuangan .tbl-wrap tbody tr{transition:background .12s ease;cursor:default}
 #secKeuangan .tbl-wrap tbody tr:hover td{background:#F4F6F9}
-#secKeuangan .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2}
+#secKeuangan .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2;vertical-align:middle}
 #secKeuangan .tbl-wrap tbody td:first-child{color:#8390A0;font:800 .72rem var(--mono)}
 #secKeuangan .tbl-wrap td.kode{font-size:.75rem}
 #secKeuangan .tbl-wrap .kode-del{color:var(--navy);border-bottom:1px dashed #AAB8C8}
@@ -513,9 +513,19 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secKeuangan .pill-ico svg{display:block}
 #secKeuangan .tbl-wrap .btn.b-navy{box-shadow:none}
 #secKeuangan .tbl-wrap .empty-row td{background:transparent!important;border:0!important;border-bottom:1px solid rgba(19,49,77,.16)!important;border-radius:0!important;padding:36px 16px}
+/* Tombol Kelola versi ringkas yang nempel di kolom Status -> disembunyikan
+   di desktop (desktop tetap pakai tombol "Kelola" penuh di kolom Aksi). */
+#secKeuangan .btn-fin-inline{display:none}
+/* Kode di bawah nama peserta -> hanya tampil di mobile (lihat media query
+   di bawah); desktop tetap pakai kolom Kode terpisah seperti biasa. */
+#secKeuangan td.nama span.nama-kode{display:none}
 @media(max-width:760px){
-  #secKeuangan .toolbar{padding:8px;flex-wrap:wrap}
-  #secKeuangan .toolbar input[type="text"]{min-width:100%}
+  #secKeuangan .toolbar{padding:8px;flex-wrap:nowrap;gap:8px}
+  #secKeuangan .toolbar input[type="text"]{min-width:0;flex:1}
+  /* Tombol "Kelola Kategori Biaya" jadi icon-only di mobile, sejajar
+     langsung di samping kolom pencarian (bukan turun ke baris baru). */
+  #secKeuangan .kk-label{display:none}
+  #secKeuangan #btnKelolaKategori{flex-shrink:0;padding:0;width:40px;height:40px;justify-content:center;gap:0;border-radius:11px;margin-left:0}
   /* Sama seperti Data Peserta & Data Master: timpa balik aturan generik
      "thead{display:none} table,tbody,tr,td{display:block}" (dipakai tabel
      lain di app ini) supaya ADM Peserta tetap tampil sebagai tabel asli
@@ -523,7 +533,14 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      Kolomnya ada 9 (lebih banyak dari Data Peserta/Master), jadi dibuat
      scroll horizontal supaya tetap rapi & semua kolom kebaca di layar sempit. */
   #secKeuangan .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
-  #secKeuangan table{display:table;width:100%;min-width:700px}
+  /* SAMA seperti bug yg sudah diperbaiki di Data Peserta & Data Master
+     (lihat komentar "PENTING" di #secPeserta): tabel ini sempat dipaksa
+     min-width 700px lalu ditimpa lagi jadi 560px di bawah (lihat versi
+     lama) -- itu penyebab kolom kelihatan renggang/melar walau kontennya
+     pendek (mis. kolom No, Total Tagihan, Status yg cuma icon). table-
+     layout:auto + min-width:0 bikin kolom merapat mengikuti isi konten
+     asli, scroll horizontal cuma aktif kalau memang kepepet (9 kolom). */
+  #secKeuangan table{display:table;width:100%;min-width:0;table-layout:auto}
   #secKeuangan thead{display:table-header-group}
   #secKeuangan thead tr{display:table-row}
   #secKeuangan tbody{display:table-row-group}
@@ -531,27 +548,56 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secKeuangan tbody td{display:table-cell;width:auto;padding:8px 10px}
   #secKeuangan td.kode{order:initial;white-space:nowrap}
   #secKeuangan td.nama{order:initial;margin-bottom:0}
-  #secKeuangan td.nama b{white-space:nowrap}
+  #secKeuangan td.nama b{white-space:nowrap;display:block}
   #secKeuangan .pill{white-space:nowrap}
   #secKeuangan .aksi-cell-in{flex-wrap:nowrap}
-  /* Ringkas tampilan mobile: nomor telepon di kolom Peserta disembunyikan,
-     dan kolom Kota (kolom ke-4) dihilangkan sepenuhnya (header + isi). */
-  #secKeuangan td.nama span{display:none}
+  /* Ringkas tampilan mobile: kolom Kode terpisah (ke-2) disembunyikan --
+     kodenya dipindah tampil sebagai sub-teks di bawah nama peserta.
+     Nomor telepon di kolom Peserta tetap disembunyikan, dan kolom Kota
+     (ke-4) dihilangkan sepenuhnya (header + isi). */
+  #secKeuangan td.nama span.tel{display:none}
+  #secKeuangan td.nama span.nama-kode{display:block;font:800 .68rem var(--mono);color:#8390A0;margin-top:2px;white-space:nowrap}
+  #secKeuangan thead th:nth-child(2),
+  #secKeuangan tbody td:nth-child(2){display:none}
   #secKeuangan thead th:nth-child(4),
   #secKeuangan tbody td:nth-child(4){display:none}
-  /* Kolom Status & Aksi jadi icon-only di mobile: hapus background pill
-     dan tombol, teks disembunyikan, tersisa icon polos saja. */
+  /* Angka rupiah (Tagihan, Terbayar, Sisa) dibuat 1 baris supaya tidak
+     bertumpuk/patah ke bawah di kolom sempit. Font-size diperkecil khusus
+     di mobile (dari .72rem baseline jadi .64rem) supaya nominal sampai
+     puluhan juta (mis. "Rp 99.999.999", 13 karakter) masih muat 1 baris
+     tanpa bikin tabel melebar/scroll berlebihan di layar sempit. */
+  #secKeuangan tbody td:nth-child(5),
+  #secKeuangan tbody td:nth-child(6),
+  #secKeuangan tbody td:nth-child(7){white-space:nowrap;font-size:.64rem;letter-spacing:-.01em}
+  /* Kolom Status jadi icon-only (pill tanpa background/teks), dan tombol
+     "Kelola" dari kolom Aksi dipindah masuk ke sini juga sebagai icon --
+     supaya kolom Aksi bisa disembunyikan total dan tabel tidak makan
+     tempat banyak. */
   #secKeuangan .pill-txt{display:none}
-  #secKeuangan .pill{width:auto;height:auto;padding:0;border-radius:0;border:0;background:transparent!important;box-shadow:none}
-  #secKeuangan .pill-ico svg{width:18px;height:18px}
-  #secKeuangan .btn-fin-label{display:none}
-  #secKeuangan .tbl-wrap .btn.sm[data-fin]{padding:0;width:auto;height:auto;justify-content:center;gap:0;background:transparent!important;border:0!important;color:var(--navy)}
-  #secKeuangan .tbl-wrap .btn.sm[data-fin] .btn-fin-ico{width:19px;height:19px}
+  #secKeuangan .pill{width:auto;height:auto;min-width:0;padding:0;border-radius:0;border:0;background:transparent!important;box-shadow:none}
+  #secKeuangan .pill-ico svg{width:17px;height:17px}
+  /* AKAR MASALAH garis "patah": display:flex sempat dipasang LANGSUNG di
+     <td class="status-cell">. Itu bikin <td> tsb lepas dari model layout
+     table-cell normal (browser mem-blockify-nya jadi flex container),
+     sehingga saat border-collapse menghitung border-bottom per baris, sel
+     ini dibulatkan ke sub-pixel yang beda sendiri dari td tetangga yang
+     masih table-cell murni -> border-bottom-nya jadi tidak sejajar/"patah".
+     Fix: <td class="status-cell"> DIBIARKAN table-cell biasa (tidak diberi
+     display apa pun di sini), dan flex-nya dipindah ke wrapper
+     <span class="status-cell-inner"> di DALAM td (lihat markup JS pembuat
+     baris tabel, var FIN_STATUS_ICON / render row ADM Peserta). Dengan
+     begini td tetap ikut grid table asli & border-nya balik lurus,
+     sementara tampilan icon-icon di dalamnya tetap center pakai flex. */
+  #secKeuangan .status-cell{min-height:20px}
+  #secKeuangan .status-cell-inner{display:flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap}
+  #secKeuangan .btn-fin-inline{display:inline-flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;color:var(--navy);cursor:pointer}
+  #secKeuangan .btn-fin-inline .btn-fin-ico{width:18px;height:18px}
   #secKeuangan thead th:nth-child(8),
-  #secKeuangan tbody td:nth-child(8),
+  #secKeuangan tbody td:nth-child(8){text-align:center}
+  /* Kolom Aksi (ke-9) disembunyikan total di mobile -- icon Kelola-nya
+     sudah dipindah ke kolom Status di atas. */
   #secKeuangan thead th:nth-child(9),
-  #secKeuangan tbody td:nth-child(9){text-align:center}
-  #secKeuangan table{min-width:600px}
+  #secKeuangan tbody td:nth-child(9){display:none}
 }
 
 /* ============ DASHBOARD ============ */
@@ -1023,7 +1069,15 @@ td.nama span{color:var(--mut);font-size:.78rem}
 #finBillList tbody td:last-child{white-space:nowrap;text-align:left}
 #finBillList .mini{padding:5px 7px;font-size:.6rem}
 #secKeuangan .tbl-wrap{overflow-x:auto}
-#secKeuangan table{min-width:760px}
+/* Ini sumber utama kolom ADM Peserta kelihatan renggang di SEMUA ukuran
+   layar (aturan ini tidak dibungkus media query, jadi kena ke desktop
+   juga): tabel dipaksa min-width 760px meski konten aslinya (angka, icon
+   status) jauh lebih ringkas dari itu. table-layout:auto lalu menyebar
+   sisa ruang kosong itu jadi jarak antar-kolom yang lebar. Data Peserta
+   & Data Master tidak punya aturan setara ini sama sekali -- makanya
+   kolomnya rapat. Dihapus min-width-nya supaya tabel mengikuti lebar
+   konten aslinya, sama seperti 2 tab referensi itu. */
+#secKeuangan table{min-width:0}
 #secKeuangan thead th{padding:11px 10px;font-size:.62rem}
 #secKeuangan tbody td{padding:11px 10px;font-size:.8rem}
 #secKeuangan td.kode{white-space:nowrap;font-size:.74rem}
@@ -2118,12 +2172,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         </div>
         <div class="toolbar">
           <input type="text" id="qSearchFin" placeholder="Cari nama, kota, atau kode peserta…">
-          <button class="btn b-ghost sm" id="btnKelolaKategori" style="margin-left:auto">⚙ Kelola Kategori Biaya</button>
+          <button class="btn b-ghost sm" id="btnKelolaKategori" style="margin-left:auto" title="Kelola Kategori Biaya" aria-label="Kelola Kategori Biaya"><svg class="kk-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="kk-label"> Kelola Kategori Biaya</span></button>
         </div>
         <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Total Tagihan</th><th>Terbayar</th><th>Sisa</th><th>Status</th><th>Aksi</th>
+              <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tagihan</th><th>Terbayar</th><th>Sisa</th><th>Status</th><th>Aksi</th>
             </tr></thead>
             <tbody id="tblFinBody"><tr class="empty-row"><td colspan="9">Memuat data…</td></tr></tbody>
           </table>
@@ -3319,12 +3373,12 @@ function renderFinanceTable(){
     return `<tr data-pid="${p.id}"${hasKolektifBill(p.id)?' style="background:#EAF4FD" title="Salah satu tagihan berasal dari dokumen kolektif"':''}>
       <td>${i+1}</td>
       <td class="kode">${participantCode(p)}</td>
-      <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span>${escapeHtml(p.telepon||'-')}</span></td>
+      <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span class="tel">${escapeHtml(p.telepon||'-')}</span><span class="nama-kode">${participantCode(p)}</span></td>
       <td>${escapeHtml(p.kota||'-')}</td>
       <td>${formatRupiah(s.totalTagihan)}</td>
       <td>${formatRupiah(s.totalDibayar)}</td>
       <td>${formatRupiah(Math.max(s.sisa,0))}</td>
-      <td><span class="pill ${cls}"><span class="pill-ico">${FIN_STATUS_ICON[s.status]||''}</span><span class="pill-txt">${label}</span></span></td>
+      <td class="status-cell"><span class="status-cell-inner"><span class="pill ${cls}"><span class="pill-ico">${FIN_STATUS_ICON[s.status]||''}</span><span class="pill-txt">${label}</span></span><button class="btn-fin-inline" data-fin="${p.id}" title="Kelola" aria-label="Kelola">${FIN_MANAGE_ICON}</button></span></td>
       <td class="aksi-cell"><div class="aksi-cell-in"><button class="btn b-navy sm" data-fin="${p.id}" title="Kelola" aria-label="Kelola">${FIN_MANAGE_ICON}<span class="btn-fin-label"> Kelola</span></button></div></td>
     </tr>`;
   }).join('');
