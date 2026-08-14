@@ -254,7 +254,11 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      KALAU memang perlu — tapi tabel tidak lagi dipaksa lebar minimal 760px,
      supaya kolom merapat mengikuti isi kontennya saja (tidak melar/renggang). */
   #secPeserta .peserta-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0}
-  #secPeserta .peserta-table-wrap table{display:table;width:auto}
+  /* PENTING: ada aturan generik ".tbl-wrap table{min-width:760px}" (dipakai
+     tabel lain di app ini) yang ikut kena ke sini karena wrapper ini juga
+     punya class "tbl-wrap" — itu penyebab kolom selalu terlihat renggang
+     walau padding sudah dikecilkan. Timpa balik ke 0 di sini. */
+  #secPeserta .peserta-table-wrap table{display:table;width:auto;min-width:0}
   #secPeserta .peserta-table-wrap thead{display:table-header-group}
   #secPeserta .peserta-table-wrap thead tr{display:table-row}
   #secPeserta .peserta-table-wrap tbody{display:table-row-group}
@@ -448,7 +452,9 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      display tabel normal di sini supaya Data Master tidak ikut kena,
      dan kasih scroll horizontal supaya tetap bisa diakses di layar sempit. */
   #secMaster .master-table-card{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
-  #secMaster .master-table-card table{display:table;width:auto}
+  /* Sama seperti Data Peserta: timpa balik aturan generik ".tbl-wrap table{min-width:760px}"
+     yang ikut kena ke wrapper ini (juga punya class "tbl-wrap"). */
+  #secMaster .master-table-card table{display:table;width:auto;min-width:0}
   #secMaster .master-table-card thead{display:table-header-group}
   #secMaster .master-table-card thead tr{display:table-row}
   #secMaster .master-table-card tbody{display:table-row-group}
