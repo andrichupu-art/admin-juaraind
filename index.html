@@ -251,98 +251,12 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-search{min-width:100%}
   #secPeserta .peserta-filter{min-width:100%}
 
-  /* ---- kartu peserta mobile (ringkas): No, Nama, Kode, tombol Aksi — satu baris sejajar ---- */
-  #secPeserta .peserta-table-wrap{overflow:visible;border-radius:0}
-  #secPeserta .peserta-table-wrap table{border-spacing:0;min-width:0!important}
-  #secPeserta .peserta-table-wrap tbody{display:block}
-  #secPeserta .peserta-table-wrap tbody tr{
-    display:grid;grid-template-columns:auto 1fr auto auto;grid-template-rows:auto;column-gap:10px;row-gap:0;align-items:center;
-    position:relative;background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);border-radius:0;
-    padding:9px 2px;margin-bottom:0;box-shadow:none;
-  }
-  /* FIX: rule desktop "tbody tr:hover{background:transparent}" lebih spesifik
-     dan tetap aktif di mobile (misal nyangkut saat tap tombol titik-tiga),
-     bikin kartu jadi transparan/tembus ke background halaman. Kunci solid. */
-  #secPeserta .peserta-table-wrap tbody tr:hover{background:transparent}
-  #secPeserta .peserta-table-wrap tbody tr.empty-row{display:block;padding:28px 14px;text-align:center;color:var(--mut)}
-  #secPeserta .peserta-table-wrap tbody td{
-    width:auto;border:0!important;background:transparent!important;
-    padding:0!important;height:auto!important;border-radius:0!important;font-size:.8rem;
-  }
-  /* No urut -> kolom 1 */
-  #secPeserta .peserta-table-wrap tbody td:nth-child(1){
-    grid-column:1;grid-row:1;justify-self:start;align-self:center;
-    position:static;font:800 .66rem var(--mono);color:#B7C1CF;
-  }
-  /* Nama Peserta -> kolom 2 (fleksibel, dipotong dgn ellipsis kalau kepanjangan) */
-  #secPeserta .peserta-table-wrap tbody td.nama{grid-column:2;grid-row:1;align-self:center;min-width:0;overflow:hidden}
-  #secPeserta .peserta-table-wrap tbody td.nama b{font-size:.85rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #secPeserta .peserta-table-wrap tbody td.nama span{display:none}
-  /* Kode Peserta -> kolom 3 */
-  #secPeserta .peserta-table-wrap tbody td.kode{grid-column:3;grid-row:1;justify-self:end;font-size:.68rem;white-space:nowrap}
-  /* Kota, bar tahap, dan pill dokumen -> disembunyikan di kartu mobile (pindah ke menu Aksi) */
-  #secPeserta .peserta-table-wrap tbody td:nth-child(4),
-  #secPeserta .peserta-table-wrap tbody td:nth-child(5),
-  #secPeserta .peserta-table-wrap tbody td:nth-child(6){display:none}
-  /* Tombol Aksi -> kolom 4 */
-  #secPeserta .peserta-table-wrap tbody td.aksi-cell{grid-column:4;grid-row:1;justify-self:end;align-self:center;overflow:visible;position:relative;z-index:1}
-  #secPeserta .peserta-table-wrap tbody td.aksi-cell.aksi-open{z-index:200}
-  #secPeserta .peserta-table-wrap tbody .aksi-inline{display:none}
-  /* Kartu "siap dikonversi" -> aksen garis hijau di kiri, tetap flat */
-  #secPeserta .peserta-table-wrap tbody tr.row-ready{border-left:3px solid #3F9E6E;padding-left:9px}
-  #secPeserta .peserta-table-wrap tbody tr.row-ready td:nth-child(1){color:#4CAE81}
-  #secPeserta .peserta-table-wrap tbody tr.row-ready td.nama b{color:#0E8F55}
-  #secPeserta .peserta-table-wrap tbody tr.row-ready td.kode{color:#1F8F5C}
-  #secPeserta .peserta-table-wrap tbody tr.row-ready .aksi-mobile-trigger{background:#E1F7EA;border-color:#8FE0B8;color:#0E8F55}
-  /* Baris "sudah 100% unggah tapi belum diverifikasi admin" -> aksen amber di kiri */
-  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif{border-left:3px solid #D6A426;padding-left:9px}
-  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td:nth-child(1){color:#B8860B}
-  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.nama b{color:#8A5F0A}
-  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif td.kode{color:#946A0D}
-  #secPeserta .peserta-table-wrap tbody tr.row-needs-verif .aksi-mobile-trigger{background:#FCEACB;border-color:#EAB962;color:#8A5F0A}
-  /* Baris "belum unggah dokumen sama sekali" -> aksen merah muda di kiri, versi mobile. */
-  #secPeserta .peserta-table-wrap tbody tr.row-empty{border-left:3px solid #E08585;padding-left:9px}
-  #secPeserta .peserta-table-wrap tbody tr.row-empty td:nth-child(1){color:#C24545}
-  #secPeserta .peserta-table-wrap tbody tr.row-empty td.nama b{color:#B32C2C}
-  #secPeserta .peserta-table-wrap tbody tr.row-empty td.kode{color:#B23A3A}
-  #secPeserta .peserta-table-wrap tbody tr.row-empty .aksi-mobile-trigger{background:#FBDCDC;border-color:#EFA2A2;color:#B32C2C}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{position:relative}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger .aksi-alert-dot{
-    position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;
-    background:var(--red,#D64545);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);
-  }
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile{display:block;position:relative}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger{
-    width:40px;height:40px;border-radius:11px;border:1.5px solid #D5DFEA;background:#F6F8FB;
-    color:#28405F;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;
-  }
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger:active,
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-trigger[aria-expanded="true"]{background:#EAF0F8;border-color:var(--gold)}
-  /* Menu terbuka ke SAMPING KIRI tombol (bukan turun ke bawah), sejajar
-     dengan baris kartu itu sendiri, supaya tidak ketutup kartu berikutnya */
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu{
-    display:none;flex-direction:column;gap:6px;position:absolute;bottom:0;right:calc(100% + 8px);z-index:60;
-    min-width:340px;max-width:min(92vw,420px);background:#ffffff;border:1.5px solid #C7D0DC;border-radius:16px;
-    box-shadow:0 16px 34px rgba(16,27,44,.28);padding:10px;
-  }
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu.show{display:flex}
-  /* Paksa pill & tombol di dalam menu Aksi selalu solid (bukan transparan)
-     karena menu ini melayang di atas konten lain */
-  /* Semua baris di dalam popup Aksi (status, Verifikasi Otomatis, Convert,
-     Profil Peserta) memakai bentuk & ukuran yang sama persis, hanya beda
-     warna: abu-abu = non-aktif/info, biru navy + teks putih = aktif. */
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row{
-    display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;border:0;
-    padding:13px 14px;min-height:46px;border-radius:12px;font:700 .82rem var(--body);
-    text-align:left;cursor:pointer;transition:.15s;
-  }
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row svg{width:17px;height:17px;flex-shrink:0}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row b{margin-left:auto;font-weight:800}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row-gray{background:#EDF0F4;color:#425065}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row-gray[disabled]{cursor:not-allowed;opacity:.75}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row-navy{background:var(--navy);color:#fff}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row-navy:active{filter:brightness(1.12)}
-  #secPeserta .peserta-table-wrap tbody .aksi-mobile-menu .aksi-row-gray:active:not([disabled]){background:#E1E6EC}
+  /* Reset: tabel Data Peserta di mobile sekarang tampil sama persis seperti
+     desktop (semua kolom & tombol aksi inline apa adanya) — tidak lagi
+     diubah jadi kartu ringkas dengan kolom tersembunyi + menu "..." popup.
+     Supaya tetap bisa dilihat di layar sempit, tabel dibuat scroll horizontal. */
+  #secPeserta .peserta-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0}
+  #secPeserta .peserta-table-wrap table{min-width:760px}
 }
 
 
