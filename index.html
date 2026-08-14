@@ -519,6 +519,11 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 /* Kode di bawah nama peserta -> hanya tampil di mobile (lihat media query
    di bawah); desktop tetap pakai kolom Kode terpisah seperti biasa. */
 #secKeuangan td.nama span.nama-kode{display:none}
+/* Sisa disisipkan sebagai sub-teks di dalam kolom Terbayar (sama seperti
+   Kode disisipkan di bawah nama peserta) -> hanya tampil di mobile lewat
+   media query di bawah; desktop tetap pakai kolom Sisa terpisah seperti
+   biasa. */
+#secKeuangan td.bayar span.bayar-sisa{display:none}
 @media(max-width:760px){
   #secKeuangan .toolbar{padding:8px;flex-wrap:nowrap;gap:8px}
   #secKeuangan .toolbar input[type="text"]{min-width:0;flex:1}
@@ -567,8 +572,15 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      puluhan juta (mis. "Rp 99.999.999", 13 karakter) masih muat 1 baris
      tanpa bikin tabel melebar/scroll berlebihan di layar sempit. */
   #secKeuangan tbody td:nth-child(5),
-  #secKeuangan tbody td:nth-child(6),
-  #secKeuangan tbody td:nth-child(7){white-space:nowrap;font-size:.64rem;letter-spacing:-.01em}
+  #secKeuangan tbody td:nth-child(6){white-space:nowrap;font-size:.64rem;letter-spacing:-.01em}
+  /* Kolom Terbayar & Sisa digabung jadi 1 kolom (atas-bawah) sama seperti
+     Kode yang disisipkan di bawah nama pada kolom Peserta: kolom Sisa
+     terpisah (ke-7) disembunyikan total, nilainya dipindah tampil sebagai
+     sub-teks di bawah nilai Terbayar (di dalam td.bayar, kolom ke-6). */
+  #secKeuangan thead th:nth-child(7),
+  #secKeuangan tbody td.sisa-col{display:none}
+  #secKeuangan td.bayar{white-space:normal;line-height:1.3}
+  #secKeuangan td.bayar span.bayar-sisa{display:block;font:800 .6rem var(--body);color:#8390A0;margin-top:1px;white-space:nowrap}
   /* Kolom Status jadi icon-only (pill tanpa background/teks), dan tombol
      "Kelola" dari kolom Aksi dipindah masuk ke sini juga sebagai icon --
      supaya kolom Aksi bisa disembunyikan total dan tabel tidak makan
@@ -3376,8 +3388,8 @@ function renderFinanceTable(){
       <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span class="tel">${escapeHtml(p.telepon||'-')}</span><span class="nama-kode">${participantCode(p)}</span></td>
       <td>${escapeHtml(p.kota||'-')}</td>
       <td>${formatRupiah(s.totalTagihan)}</td>
-      <td>${formatRupiah(s.totalDibayar)}</td>
-      <td>${formatRupiah(Math.max(s.sisa,0))}</td>
+      <td class="bayar">${formatRupiah(s.totalDibayar)}<span class="bayar-sisa">@ ${formatRupiah(Math.max(s.sisa,0))}</span></td>
+      <td class="sisa-col">${formatRupiah(Math.max(s.sisa,0))}</td>
       <td class="status-cell"><span class="status-cell-inner"><span class="pill ${cls}"><span class="pill-ico">${FIN_STATUS_ICON[s.status]||''}</span><span class="pill-txt">${label}</span></span><button class="btn-fin-inline" data-fin="${p.id}" title="Kelola" aria-label="Kelola">${FIN_MANAGE_ICON}</button></span></td>
       <td class="aksi-cell"><div class="aksi-cell-in"><button class="btn b-navy sm" data-fin="${p.id}" title="Kelola" aria-label="Kelola">${FIN_MANAGE_ICON}<span class="btn-fin-label"> Kelola</span></button></div></td>
     </tr>`;
