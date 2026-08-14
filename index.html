@@ -927,6 +927,10 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mini.g{border-color:var(--green);color:var(--green)} .mini.g:hover{background:var(--green);color:#fff}
 .mini.r{border-color:var(--red);color:var(--red)} .mini.r:hover{background:var(--red);color:#fff}
 .mini[disabled]{opacity:.4;pointer-events:none}
+/* Tombol icon-only (dipakai kartu Kelola Kategori Biaya: Edit, Simpan,
+   Aktifkan/Nonaktifkan, Hapus) -> sama tampilannya di mobile & desktop. */
+.mini-ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;flex-shrink:0}
+.mini-ico svg{display:block;width:15px;height:15px}
 
 /* Detail peserta sebagai panel samping kiri, tinggi penuh */
 #detailModal{justify-content:flex-start;align-items:stretch;padding:0}
@@ -1049,10 +1053,12 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .fin-cat-top b{font:800 .95rem var(--disp);color:var(--ink)}
 .fin-cat-row{margin-bottom:14px}
 .fin-cat-row label{display:block;font:800 .66rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:7px}
-.fin-cat-row-in{display:flex;gap:8px}
+.fin-cat-row-in{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .fin-cat-row-in .fin-bill-input{flex:1;min-width:0}
+.fin-cat-row-in .fin-bill-input.fin-cat-input-sm{flex:0 1 110px;min-width:70px}
 .fin-cat-row-in .fin-bill-input[readonly]{background:#f4f5f7;color:var(--mut);cursor:default}
 .fin-cat-row-in .fin-bill-input.editing{background:#fff;color:var(--ink);border-color:var(--navy)}
+.fin-cat-sep{width:1.5px;align-self:stretch;min-height:30px;background:var(--line);flex-shrink:0}
 .fp-cat-list{display:flex;flex-direction:column;gap:8px}
 .fp-cat-item{display:flex;align-items:center;justify-content:space-between;gap:12px;
   border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:#fff}
@@ -3332,6 +3338,14 @@ const FIN_STATUS_ICON={
    supaya tombol jadi icon-only, sama pola dengan tombol "Kelola Dokumen"
    di Data Master. */
 const FIN_MANAGE_ICON='<svg class="btn-fin-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+/* Ikon untuk kartu Kelola Kategori Biaya (Edit/Simpan/Aktifkan-Nonaktifkan/Hapus)
+   -> tombol jadi icon-only, berlaku sama di mobile & desktop. */
+const CAT_ICO_EDIT='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+const CAT_ICO_SAVE='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>';
+const CAT_ICO_ON='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><path d="M12 2v10"/></svg>';
+const CAT_ICO_OFF='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M4.9 4.9l14.2 14.2"/></svg>';
+const CAT_ICO_DEL='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+const CAT_ICO_CHECK='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 
 /* Cek apakah peserta punya tagihan yang berasal dari dokumen kolektif
    (Pembuatan Paspor / Medical Check-Up Kolektif — lihat KOLEKTIF_BILL_LABEL
@@ -3561,14 +3575,13 @@ function renderFinCatTable(){
       <div class="fin-cat-row">
         <label>Nominal Standar (Rp)</label>
         <div class="fin-cat-row-in">
-          <input type="text" inputmode="numeric" class="fin-bill-input" data-cat-nominal="${c.id}" value="${c.nominal_default?formatRupiahInput(c.nominal_default):''}" placeholder="0" readonly>
-          <button class="mini" data-edit-cat-nominal="${c.id}">✎ Edit</button>
-          <button class="mini" data-save-cat-nominal="${c.id}" disabled>Simpan</button>
+          <input type="text" inputmode="numeric" class="fin-bill-input fin-cat-input-sm" data-cat-nominal="${c.id}" value="${c.nominal_default?formatRupiahInput(c.nominal_default):''}" placeholder="0" readonly>
+          <button class="mini mini-ico" data-edit-cat-nominal="${c.id}" title="Edit" aria-label="Edit">${CAT_ICO_EDIT}</button>
+          <button class="mini mini-ico" data-save-cat-nominal="${c.id}" disabled title="Simpan" aria-label="Simpan">${CAT_ICO_SAVE}</button>
+          <span class="fin-cat-sep"></span>
+          <button class="mini mini-ico" data-toggle-cat="${c.id}" title="${c.aktif?'Nonaktifkan':'Aktifkan'}" aria-label="${c.aktif?'Nonaktifkan':'Aktifkan'}">${c.aktif?CAT_ICO_OFF:CAT_ICO_ON}</button>
+          <button class="mini mini-ico r" data-del-cat="${c.id}" title="Hapus" aria-label="Hapus">${CAT_ICO_DEL}</button>
         </div>
-      </div>
-      <div class="fin-cat-actions">
-        <button class="mini" data-toggle-cat="${c.id}">${c.aktif?'Nonaktifkan':'Aktifkan'}</button>
-        <button class="mini r" data-del-cat="${c.id}">Hapus</button>
       </div>
     </div>`).join('');
   host.querySelectorAll('[data-toggle-cat]').forEach(b=>b.addEventListener('click',()=>toggleFinCat(b.dataset.toggleCat)));
@@ -3663,17 +3676,17 @@ async function saveFinCatNominal(cid){
   const input=document.querySelector(`[data-cat-nominal="${cid}"]`);
   const saveBtn=document.querySelector(`[data-save-cat-nominal="${cid}"]`);
   const nominal_default=parseRupiahInput(input?.value);
-  if(saveBtn){ saveBtn.disabled=true; saveBtn.textContent='Menyimpan…'; }
+  if(saveBtn){ saveBtn.disabled=true; }
   const {error}=await sb.from('finance_categories_v2').update({nominal_default}).eq('id',cid);
   if(error){
-    if(saveBtn){ saveBtn.disabled=false; saveBtn.textContent='Simpan'; }
+    if(saveBtn){ saveBtn.disabled=false; }
     return toast('Gagal menyimpan nominal: '+error.message,'err');
   }
   c.nominal_default=nominal_default;
   if(input){ input.readOnly=true; input.classList.remove('editing'); }
   if(saveBtn){
-    saveBtn.textContent='✓ Tersimpan'; saveBtn.classList.add('g'); saveBtn.disabled=true;
-    setTimeout(()=>{ saveBtn.textContent='Simpan'; saveBtn.classList.remove('g'); },1500);
+    saveBtn.innerHTML=CAT_ICO_CHECK; saveBtn.classList.add('g'); saveBtn.disabled=true;
+    setTimeout(()=>{ saveBtn.innerHTML=CAT_ICO_SAVE; saveBtn.classList.remove('g'); },1500);
   }
   // PENTING: nominal_default kategori dipakai bareng-bareng oleh tabel utama Kelola
   // Keuangan (kolom Total Tagihan/Sisa) dan modal detail peserta yang sedang terbuka
