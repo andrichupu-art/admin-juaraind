@@ -2255,6 +2255,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a class="sb-link" data-target="secPeserta"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></span> Data Peserta<span class="sb-badge" id="sbPesertaBadge" style="display:none">0</span></a>
       <a class="sb-link" data-target="secMaster"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span> Data Master</a>
       <a class="sb-link" data-target="secSekolah"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 8.5v6"/></svg></span> Sekolah Mitra</a>
+      <span class="sb-label">Proses Penempatan</span>
+      <a class="sb-link" data-target="secPelatihan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.3 2.7 3 6 3s6-1.7 6-3v-5"/><path d="M22 10v6"/></svg></span> Pelatihan &amp; Pembekalan<span class="sb-badge" id="sbPelatihanBadge" style="display:none">0</span></a>
+      <a class="sb-link" data-target="secPenempatan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v15"/><path d="M14 10h5a1 1 0 0 1 1 1v10"/><path d="M8 8h2M8 12h2M8 16h2"/><path d="M2 21h20"/></svg></span> Penempatan &amp; Perusahaan<span class="sb-badge" id="sbPenempatanBadge" style="display:none">0</span></a>
+      <a class="sb-link" data-target="secVisaMcu"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2"/><circle cx="12" cy="9.2" r="2.6"/><path d="M8.8 15.5c.7-1.6 2-2.4 3.2-2.4s2.5.8 3.2 2.4"/></svg></span> Visa &amp; MCU<span class="sb-badge" id="sbVisaMcuBadge" style="display:none">0</span></a>
+      <a class="sb-link" data-target="secKeberangkatan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.8 19 21l1-1-1.2-3.2"/><path d="M11 15l-6.5 1.5L2 15l4-4L2 6l2.5-1.5L11 6"/><path d="M11 15l6-9c1-1.5 3.5-1.5 4 0 .5 1.5-.5 3-2 4l-8 5Z"/></svg></span> Tiket &amp; Keberangkatan<span class="sb-badge" id="sbKeberangkatanBadge" style="display:none">0</span></a>
       <span class="sb-label">Lainnya</span>
       <a class="sb-link" data-target="secKeuangan"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M17 6.5H9.8a2.8 2.8 0 0 0 0 5.6h4.4a2.8 2.8 0 0 1 0 5.6H7"/></svg></span> ADM Peserta</a>
       <a class="sb-link" data-target="secBukti"><span class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="m15.5 15.5 1.3 1.3 2.2-2.4" stroke="var(--green,#17B26A)"/></svg></span> Bukti Pembayaran<span class="sb-badge" id="sbBuktiBadge" style="display:none">0</span></a>
@@ -2436,6 +2441,98 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <th>Nama Sekolah</th><th>Status</th><th>Ditambahkan</th><th>Aksi</th>
             </tr></thead>
             <tbody id="tblSekolahBody"><tr class="empty-row"><td colspan="4">Memuat data…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="secPelatihan">
+        <div class="sekolah-head">
+          <div>
+            <h2>Pelatihan &amp; Pembekalan</h2>
+            <p>Peserta yang sedang menjalani pelatihan kerja (Tahap 3). Upload sertifikat pelatihan dan centang "Selesai" — begitu dua-duanya terpenuhi, tahap naik otomatis ke Penempatan &amp; Perusahaan.</p>
+          </div>
+          <div class="sekolah-head-mark"><span>TAHAP</span><b>3 / 6</b></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="stPelatihanCount">0</b><span>Peserta di Tahap Ini</span></div>
+        </div>
+        <div class="toolbar">
+          <input type="text" id="qSearchPelatihan" placeholder="Cari nama, kota, atau kode peserta…">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Sertifikat</th><th>Selesai</th><th>Aksi</th></tr></thead>
+            <tbody id="tblPelatihanBody"><tr class="empty-row"><td colspan="7">Memuat data…</td></tr></tbody>
+          </table>
+        </div>
+        <input type="file" id="sertifikatFileInput" style="display:none" accept="image/*,.pdf">
+      </div>
+
+      <div class="tab-panel" id="secPenempatan">
+        <div class="sekolah-head">
+          <div>
+            <h2>Penempatan &amp; Perusahaan</h2>
+            <p>Peserta yang sedang dicocokkan (matching) dengan perusahaan/user pengguna di luar negeri (Tahap 4). Upload dokumen PK (Perjanjian Kerja) — begitu terunggah, tahap naik otomatis ke Visa &amp; MCU.</p>
+          </div>
+          <div class="sekolah-head-mark"><span>TAHAP</span><b>4 / 6</b></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="stPenempatanCount">0</b><span>Peserta di Tahap Ini</span></div>
+        </div>
+        <div class="toolbar">
+          <input type="text" id="qSearchPenempatan" placeholder="Cari nama, kota, atau kode peserta…">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Dokumen PK</th><th>Aksi</th></tr></thead>
+            <tbody id="tblPenempatanBody"><tr class="empty-row"><td colspan="6">Memuat data…</td></tr></tbody>
+          </table>
+        </div>
+        <input type="file" id="pkFileInput" style="display:none" accept="image/*,.pdf">
+      </div>
+
+      <div class="tab-panel" id="secVisaMcu">
+        <div class="sekolah-head">
+          <div>
+            <h2>Visa &amp; MCU</h2>
+            <p>Peserta dalam proses Medical Check-Up dan pengurusan visa kerja (Tahap 5). Upload Hasil MCU (tandai Fit/Unfit) dan Visa Kerja — begitu MCU Fit &amp; Visa lengkap, tahap naik otomatis ke Tiket &amp; Keberangkatan.</p>
+          </div>
+          <div class="sekolah-head-mark"><span>TAHAP</span><b>5 / 6</b></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="stVisaMcuCount">0</b><span>Peserta di Tahap Ini</span></div>
+        </div>
+        <div class="toolbar">
+          <input type="text" id="qSearchVisaMcu" placeholder="Cari nama, kota, atau kode peserta…">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Hasil MCU</th><th>Visa Kerja</th><th>Aksi</th></tr></thead>
+            <tbody id="tblVisaMcuBody"><tr class="empty-row"><td colspan="7">Memuat data…</td></tr></tbody>
+          </table>
+        </div>
+        <input type="file" id="hasilMcuFileInput" style="display:none" accept="image/*,.pdf">
+        <input type="file" id="visaFileInput" style="display:none" accept="image/*,.pdf">
+      </div>
+
+      <div class="tab-panel" id="secKeberangkatan">
+        <div class="sekolah-head">
+          <div>
+            <h2>Tiket &amp; Keberangkatan</h2>
+            <p>Peserta yang siap berangkat: PAP, asuransi, tiket, dan jadwal keberangkatan (Tahap 6).</p>
+          </div>
+          <div class="sekolah-head-mark"><span>TAHAP</span><b>6 / 6</b></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="stKeberangkatanCount">0</b><span>Peserta di Tahap Ini</span></div>
+        </div>
+        <div class="toolbar">
+          <input type="text" id="qSearchKeberangkatan" placeholder="Cari nama, kota, atau kode peserta…">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Aksi</th></tr></thead>
+            <tbody id="tblKeberangkatanBody"><tr class="empty-row"><td colspan="5">Memuat data…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -3027,28 +3124,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <div id="toastWrap"></div>
 
-<!-- ============ MODAL VERIFIKASI OTOMATIS (AI: cek KTP/Paspor vs data profil) ============ -->
-<div class="modal" id="autoVerifyModal">
-  <div class="box" style="max-width:560px">
-    <div class="box-h">
-      <div style="min-width:0"><h3>🤖 Verifikasi Otomatis Dokumen</h3><p>Mencocokkan NIK, Nama &amp; Tanggal Lahir di foto KTP/Paspor dengan data profil</p></div>
-      <button class="x" id="btnCloseAutoVerify">✕</button>
-    </div>
-    <div class="box-body">
-      <div style="background:#F4F1E8;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;font:700 .78rem var(--body);color:var(--navy);margin-bottom:8px">
-          <span id="avProgLabel">Menyiapkan…</span><span id="avProgCount">0 / 0</span>
-        </div>
-        <div style="height:8px;border-radius:99px;background:#E4E0D2;overflow:hidden">
-          <div id="avProgBar" style="height:100%;width:0%;background:var(--navy);transition:.25s"></div>
-        </div>
-      </div>
-      <div id="avLog" style="max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
-      <button class="btn b-navy sm" id="btnAvClose" style="width:100%;justify-content:center;margin-top:14px;display:none">Tutup</button>
-    </div>
-  </div>
-</div>
-
 <!-- ============ MODAL KONFIRMASI (pengganti confirm() bawaan browser) ============ -->
 <div class="modal" id="confirmModal">
   <div class="confirm-box">
@@ -3221,9 +3296,8 @@ const DOCS=[
 ];
 
 let PARTICIPANTS=[], DOCS_BY_PID={}, STAGE_BY_PID={}, ACTIVE_PID=null;
-/* Jenis dokumen yang dicek otomatis pakai AI vision (Gemini) — semua dokumen
-   WAJIB/OPSIONAL kecuali Pas Foto (foto tidak punya data teks utk dicocokkan). */
-const AUTOVERIFY_DOC_TYPES=DOCS.filter(d=>d.k!=='foto').map(d=>d.k);
+let PELATIHAN_SELESAI_BY_PID={};
+let MCU_STATUS_BY_PID={};
 let MASTER_ROWS=[], MASTER_IDS=new Set();
 let SEKOLAH_MITRA=[];
 let FIN_CATS=[], FIN_BILLS=[], FIN_PAYMENTS=[], FIN_ACTIVE_PID=null;
@@ -3449,7 +3523,9 @@ async function loadAll(){
     DOCS_BY_PID={};
     (dRes.data||[]).forEach(d=>{ (DOCS_BY_PID[d.participant_id]=DOCS_BY_PID[d.participant_id]||{})[d.jenis]=d; });
     STAGE_BY_PID={};
-    (sRes.data||[]).forEach(s=>{ STAGE_BY_PID[s.participant_id]=s.tahap??0; });
+    PELATIHAN_SELESAI_BY_PID={};
+    MCU_STATUS_BY_PID={};
+    (sRes.data||[]).forEach(s=>{ STAGE_BY_PID[s.participant_id]=s.tahap??0; PELATIHAN_SELESAI_BY_PID[s.participant_id]=!!s.pelatihan_selesai; MCU_STATUS_BY_PID[s.participant_id]=s.mcu_status||null; });
 
     if(mRes.error){
       console.warn('Tabel master_data_v2 belum tersedia:',mRes.error.message);
@@ -3498,8 +3574,12 @@ async function loadAll(){
     fillAsalSekolahDatalist();
     renderFinanceTable();
     renderBuktiTable();
+    renderAllStageSections();
     refreshFpCategoryOptions();
     sweepStaleStages();
+    sweepPelatihanStage();
+    sweepPenempatanStage();
+    sweepVisaMcuStage();
   }catch(err){
     console.error(err);
     $('#tblBody').innerHTML='<tr class="empty-row"><td colspan="5">Gagal memuat data: '+(err.message||'periksa koneksi/izin akses')+'</td></tr>';
@@ -3657,6 +3737,358 @@ function renderFinKolektifBadge(){
   nc.textContent=label;
   nc.style.display=n>0?'flex':'none';
 }
+
+/* ---- Panel tahap penempatan (Pelatihan, Penempatan&Perusahaan, Visa&MCU, Keberangkatan) ----
+   Semua panel ini otomatis terisi dari STAGE_BY_PID (tabel progress_v2) yang sudah ada -
+   tidak ada input data ganda. Tombol "Kelola" membuka modal detail peserta yang sudah ada
+   (openDetail), tempat admin menaikkan/mengubah tahap lewat #eStage. */
+/* ---- Panel tahap penempatan (Pelatihan, Penempatan&Perusahaan, Visa&MCU, Keberangkatan) ----
+   Semua panel ini otomatis terisi dari STAGE_BY_PID (tabel progress_v2) yang sudah ada -
+   tidak ada input data ganda. Tombol "Kelola" membuka modal detail peserta yang sudah ada
+   (openDetail), tempat admin menaikkan/mengubah tahap manual lewat #eStage. */
+
+/* Pelatihan & Pembekalan (Tahap 3->4) PUNYA AUTO-ADVANCE:
+   syarat = sertifikat pelatihan sudah diunggah admin (documents_v2 jenis 'sertifikat')
+   DAN admin sudah centang "Pelatihan Selesai" (progress_v2.pelatihan_selesai).
+   Begitu dua-duanya terpenuhi, tahap naik sendiri ke 3 (Penempatan & Perusahaan) -
+   tidak perlu klik apa-apa lagi. */
+async function checkPelatihanAutoAdvance(pid){
+  if((STAGE_BY_PID[pid]??0)!==2)return; // hanya berlaku selama masih di Tahap 3
+  const hasCert=!!(DOCS_BY_PID[pid]?.sertifikat?.storage_path);
+  const selesai=!!PELATIHAN_SELESAI_BY_PID[pid];
+  if(!hasCert||!selesai)return;
+  const {error}=await sb.from('progress_v2').upsert({participant_id:pid,tahap:3,pelatihan_selesai:true,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
+  if(error){console.error('Gagal menaikkan tahap otomatis (pelatihan):',error);return;}
+  STAGE_BY_PID[pid]=3;
+  if(ACTIVE_PID===pid){ $('#eStage').value='3'; ensureCsel($('#eStage')); }
+  renderTable(); renderStats(); renderAllStageSections();
+  const nama=PARTICIPANTS.find(p=>p.id===pid)?.nama||'Peserta';
+  toast(`${nama}: sertifikat lengkap & pelatihan selesai — tahap otomatis naik ke "Penempatan & Perusahaan" ✓`,'ok');
+}
+/* Dijalankan tiap loadAll(): menyisir peserta yang syaratnya sudah lengkap dari
+   sebelumnya (mis. sertifikat diunggah & dicentang selesai sebelum fitur ini ada)
+   tapi tahapnya masih nyangkut di 2. Tidak menampilkan toast per-peserta. */
+async function sweepPelatihanStage(){
+  const ready=PARTICIPANTS.map(p=>p.id).filter(pid=>{
+    if((STAGE_BY_PID[pid]??0)!==2)return false;
+    return !!(DOCS_BY_PID[pid]?.sertifikat?.storage_path)&&!!PELATIHAN_SELESAI_BY_PID[pid];
+  });
+  if(!ready.length)return;
+  const rows=ready.map(pid=>({participant_id:pid,tahap:3,pelatihan_selesai:true,updated_at:new Date().toISOString()}));
+  const {error}=await sb.from('progress_v2').upsert(rows,{onConflict:'participant_id'});
+  if(error){console.error('Gagal menyisir tahap pelatihan:',error);return;}
+  ready.forEach(pid=>{ STAGE_BY_PID[pid]=3; });
+  renderTable(); renderStats(); renderAllStageSections();
+}
+let PENDING_SERTIFIKAT_PID=null;
+$('#sertifikatFileInput')?.addEventListener('change', async e=>{
+  const file=e.target.files?.[0]; e.target.value='';
+  const pid=PENDING_SERTIFIKAT_PID; PENDING_SERTIFIKAT_PID=null;
+  if(!file||!pid)return;
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+  const path=`${pid}/sertifikat.${ext}`;
+  toast('Mengunggah sertifikat pelatihan…','ok');
+  try{
+    const {error:upErr}=await sb.storage.from('juara-v2-documents').upload(path, file, {contentType:file.type||'application/octet-stream', upsert:true});
+    if(upErr)throw new Error(upErr.message);
+    const existing=(DOCS_BY_PID[pid]||{}).sertifikat;
+    const payload={participant_id:pid, jenis:'sertifikat', file_name:file.name, size:file.size, storage_path:path, status:'terverifikasi'};
+    let saved;
+    if(existing?.id){
+      const {data,error}=await sb.from('documents_v2').update(payload).eq('id',existing.id).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }else{
+      const {data,error}=await sb.from('documents_v2').insert(payload).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }
+    (DOCS_BY_PID[pid]=DOCS_BY_PID[pid]||{}).sertifikat=saved;
+    toast('Sertifikat pelatihan berhasil diunggah ✓','ok');
+    renderPelatihanTable();
+    await checkPelatihanAutoAdvance(pid);
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunggah sertifikat: '+err.message,'err');
+  }
+});
+async function togglePelatihanSelesai(pid,checked){
+  const {error}=await sb.from('progress_v2').upsert({participant_id:pid,tahap:STAGE_BY_PID[pid]??2,pelatihan_selesai:checked,pelatihan_selesai_at:checked?new Date().toISOString():null,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
+  if(error){toast('Gagal menyimpan status: '+error.message,'err'); renderPelatihanTable(); return;}
+  PELATIHAN_SELESAI_BY_PID[pid]=checked;
+  toast(checked?'Ditandai selesai ✓':'Ditandai belum selesai','ok');
+  await checkPelatihanAutoAdvance(pid);
+}
+
+/* Penempatan & Perusahaan (Tahap 4->5) PUNYA AUTO-ADVANCE:
+   syarat = dokumen PK (Perjanjian Kerja) sudah diunggah admin (documents_v2 jenis 'pk').
+   Begitu terpenuhi, tahap naik sendiri ke 4 (Visa & MCU) - tidak perlu klik apa-apa lagi. */
+async function checkPenempatanAutoAdvance(pid){
+  if((STAGE_BY_PID[pid]??0)!==3)return; // hanya berlaku selama masih di Tahap 4 (Penempatan)
+  const hasPk=!!(DOCS_BY_PID[pid]?.pk?.storage_path);
+  if(!hasPk)return;
+  const {error}=await sb.from('progress_v2').upsert({participant_id:pid,tahap:4,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
+  if(error){console.error('Gagal menaikkan tahap otomatis (penempatan):',error);return;}
+  STAGE_BY_PID[pid]=4;
+  if(ACTIVE_PID===pid){ $('#eStage').value='4'; ensureCsel($('#eStage')); }
+  renderTable(); renderStats(); renderAllStageSections();
+  const nama=PARTICIPANTS.find(p=>p.id===pid)?.nama||'Peserta';
+  toast(`${nama}: dokumen PK lengkap — tahap otomatis naik ke "Visa & MCU" ✓`,'ok');
+}
+/* Dijalankan tiap loadAll(): menyisir peserta yang syaratnya sudah lengkap dari
+   sebelumnya tapi tahapnya masih nyangkut di 3. Tidak menampilkan toast per-peserta. */
+async function sweepPenempatanStage(){
+  const ready=PARTICIPANTS.map(p=>p.id).filter(pid=>{
+    if((STAGE_BY_PID[pid]??0)!==3)return false;
+    return !!(DOCS_BY_PID[pid]?.pk?.storage_path);
+  });
+  if(!ready.length)return;
+  const rows=ready.map(pid=>({participant_id:pid,tahap:4,updated_at:new Date().toISOString()}));
+  const {error}=await sb.from('progress_v2').upsert(rows,{onConflict:'participant_id'});
+  if(error){console.error('Gagal menyisir tahap penempatan:',error);return;}
+  ready.forEach(pid=>{ STAGE_BY_PID[pid]=4; });
+  renderTable(); renderStats(); renderAllStageSections();
+}
+let PENDING_PK_PID=null;
+$('#pkFileInput')?.addEventListener('change', async e=>{
+  const file=e.target.files?.[0]; e.target.value='';
+  const pid=PENDING_PK_PID; PENDING_PK_PID=null;
+  if(!file||!pid)return;
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+  const path=`${pid}/pk.${ext}`;
+  toast('Mengunggah dokumen PK…','ok');
+  try{
+    const {error:upErr}=await sb.storage.from('juara-v2-documents').upload(path, file, {contentType:file.type||'application/octet-stream', upsert:true});
+    if(upErr)throw new Error(upErr.message);
+    const existing=(DOCS_BY_PID[pid]||{}).pk;
+    const payload={participant_id:pid, jenis:'pk', file_name:file.name, size:file.size, storage_path:path, status:'terverifikasi'};
+    let saved;
+    if(existing?.id){
+      const {data,error}=await sb.from('documents_v2').update(payload).eq('id',existing.id).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }else{
+      const {data,error}=await sb.from('documents_v2').insert(payload).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }
+    (DOCS_BY_PID[pid]=DOCS_BY_PID[pid]||{}).pk=saved;
+    toast('Dokumen PK berhasil diunggah ✓','ok');
+    renderPenempatanTable();
+    await checkPenempatanAutoAdvance(pid);
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunggah dokumen PK: '+err.message,'err');
+  }
+});
+
+/* Visa & MCU (Tahap 5->6) PUNYA AUTO-ADVANCE:
+   syarat = Hasil MCU berstatus 'fit' (documents_v2 jenis 'hasil_mcu' + progress_v2.mcu_status)
+   DAN dokumen Visa Kerja sudah diunggah (documents_v2 jenis 'visa').
+   Kalau MCU 'unfit', TIDAK naik otomatis - status ditandai visual, admin urus manual lewat
+   modal Kelola (override tahap). */
+async function checkVisaMcuAutoAdvance(pid){
+  if((STAGE_BY_PID[pid]??0)!==4)return; // hanya berlaku selama masih di Tahap 5 (Visa & MCU)
+  const hasVisa=!!(DOCS_BY_PID[pid]?.visa?.storage_path);
+  const fit=MCU_STATUS_BY_PID[pid]==='fit';
+  if(!hasVisa||!fit)return;
+  const {error}=await sb.from('progress_v2').upsert({participant_id:pid,tahap:5,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
+  if(error){console.error('Gagal menaikkan tahap otomatis (visa&mcu):',error);return;}
+  STAGE_BY_PID[pid]=5;
+  if(ACTIVE_PID===pid){ $('#eStage').value='5'; ensureCsel($('#eStage')); }
+  renderTable(); renderStats(); renderAllStageSections();
+  const nama=PARTICIPANTS.find(p=>p.id===pid)?.nama||'Peserta';
+  toast(`${nama}: MCU Fit & Visa lengkap — tahap otomatis naik ke "Tiket & Keberangkatan" ✓`,'ok');
+}
+async function sweepVisaMcuStage(){
+  const ready=PARTICIPANTS.map(p=>p.id).filter(pid=>{
+    if((STAGE_BY_PID[pid]??0)!==4)return false;
+    return !!(DOCS_BY_PID[pid]?.visa?.storage_path)&&MCU_STATUS_BY_PID[pid]==='fit';
+  });
+  if(!ready.length)return;
+  const rows=ready.map(pid=>({participant_id:pid,tahap:5,updated_at:new Date().toISOString()}));
+  const {error}=await sb.from('progress_v2').upsert(rows,{onConflict:'participant_id'});
+  if(error){console.error('Gagal menyisir tahap visa&mcu:',error);return;}
+  ready.forEach(pid=>{ STAGE_BY_PID[pid]=5; });
+  renderTable(); renderStats(); renderAllStageSections();
+}
+let PENDING_MCU_PID=null;
+$('#hasilMcuFileInput')?.addEventListener('change', async e=>{
+  const file=e.target.files?.[0]; e.target.value='';
+  const pid=PENDING_MCU_PID; PENDING_MCU_PID=null;
+  if(!file||!pid)return;
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+  const path=`${pid}/hasil_mcu.${ext}`;
+  toast('Mengunggah hasil MCU…','ok');
+  try{
+    const {error:upErr}=await sb.storage.from('juara-v2-documents').upload(path, file, {contentType:file.type||'application/octet-stream', upsert:true});
+    if(upErr)throw new Error(upErr.message);
+    const existing=(DOCS_BY_PID[pid]||{}).hasil_mcu;
+    const payload={participant_id:pid, jenis:'hasil_mcu', file_name:file.name, size:file.size, storage_path:path, status:'terverifikasi'};
+    let saved;
+    if(existing?.id){
+      const {data,error}=await sb.from('documents_v2').update(payload).eq('id',existing.id).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }else{
+      const {data,error}=await sb.from('documents_v2').insert(payload).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }
+    (DOCS_BY_PID[pid]=DOCS_BY_PID[pid]||{}).hasil_mcu=saved;
+    toast('Hasil MCU berhasil diunggah ✓','ok');
+    renderVisaMcuTable();
+    await checkVisaMcuAutoAdvance(pid);
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunggah hasil MCU: '+err.message,'err');
+  }
+});
+let PENDING_VISA_PID=null;
+$('#visaFileInput')?.addEventListener('change', async e=>{
+  const file=e.target.files?.[0]; e.target.value='';
+  const pid=PENDING_VISA_PID; PENDING_VISA_PID=null;
+  if(!file||!pid)return;
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+  const path=`${pid}/visa.${ext}`;
+  toast('Mengunggah visa kerja…','ok');
+  try{
+    const {error:upErr}=await sb.storage.from('juara-v2-documents').upload(path, file, {contentType:file.type||'application/octet-stream', upsert:true});
+    if(upErr)throw new Error(upErr.message);
+    const existing=(DOCS_BY_PID[pid]||{}).visa;
+    const payload={participant_id:pid, jenis:'visa', file_name:file.name, size:file.size, storage_path:path, status:'terverifikasi'};
+    let saved;
+    if(existing?.id){
+      const {data,error}=await sb.from('documents_v2').update(payload).eq('id',existing.id).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }else{
+      const {data,error}=await sb.from('documents_v2').insert(payload).select().single();
+      if(error)throw new Error(error.message);
+      saved=data;
+    }
+    (DOCS_BY_PID[pid]=DOCS_BY_PID[pid]||{}).visa=saved;
+    toast('Visa kerja berhasil diunggah ✓','ok');
+    renderVisaMcuTable();
+    await checkVisaMcuAutoAdvance(pid);
+  }catch(err){
+    console.error(err);
+    toast('Gagal mengunggah visa kerja: '+err.message,'err');
+  }
+});
+async function setMcuStatus(pid,status){
+  const {error}=await sb.from('progress_v2').upsert({participant_id:pid,tahap:STAGE_BY_PID[pid]??4,mcu_status:status||null,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
+  if(error){toast('Gagal menyimpan status MCU: '+error.message,'err'); renderVisaMcuTable(); return;}
+  MCU_STATUS_BY_PID[pid]=status||null;
+  toast(status==='fit'?'MCU ditandai Fit ✓':(status==='unfit'?'MCU ditandai Unfit':'Status MCU direset'),'ok');
+  renderVisaMcuTable();
+  await checkVisaMcuAutoAdvance(pid);
+}
+
+function renderStageSectionTable(stageIndex, tbodyId, searchId, badgeSelId, statSelId){
+  const body=$('#'+tbodyId); if(!body)return;
+  const q=($('#'+searchId)?.value||'').trim().toLowerCase();
+  const total=PARTICIPANTS.filter(p=>MASTER_IDS.has(p.id)&&(STAGE_BY_PID[p.id]??0)===stageIndex).length;
+  const rows=PARTICIPANTS.filter(p=>MASTER_IDS.has(p.id)&&(STAGE_BY_PID[p.id]??0)===stageIndex)
+    .filter(p=>!q||[p.nama,p.kota,participantCode(p)].filter(Boolean).some(v=>String(v).toLowerCase().includes(q)));
+  const badgeEl=$(badgeSelId);
+  if(badgeEl){
+    badgeEl.textContent=total>99?'99+':String(total);
+    badgeEl.style.display=total>0?'flex':'none';
+  }
+  const statEl=$(statSelId); if(statEl)statEl.textContent=String(total);
+  const isPelatihan=stageIndex===2;
+  const isPenempatan=stageIndex===3;
+  const isVisaMcu=stageIndex===4;
+  const colspan=isPelatihan?7:(isPenempatan?6:(isVisaMcu?7:5));
+  if(!rows.length){ body.innerHTML=`<tr class="empty-row"><td colspan="${colspan}">Belum ada peserta di tahap ini.</td></tr>`; return; }
+  body.innerHTML=rows.map((p,i)=>{
+    const base=`<td>${i+1}</td>
+      <td class="kode">${participantCode(p)}</td>
+      <td class="nama"><b>${escapeHtml(p.nama||'-')}</b><span class="tel">${escapeHtml(p.telepon||'-')}</span></td>
+      <td>${escapeHtml(p.kota||'-')}</td>`;
+    if(isPelatihan){
+      const cert=DOCS_BY_PID[p.id]?.sertifikat;
+      const hasCert=!!cert?.storage_path;
+      const selesai=!!PELATIHAN_SELESAI_BY_PID[p.id];
+      return `<tr data-pid="${p.id}">${base}
+        <td>
+          <span class="pill ${hasCert?'ok':'wait'}" style="margin-right:6px">${hasCert?'✓ Ada':'Belum ada'}</span>
+          ${hasCert?`<button class="mini" data-view-sert="${p.id}">Lihat</button>`:''}
+          <button class="mini g" data-upload-sert="${p.id}">${hasCert?'Ganti':'Unggah'}</button>
+        </td>
+        <td style="text-align:center"><input type="checkbox" data-selesai="${p.id}" ${selesai?'checked':''} style="width:18px;height:18px;cursor:pointer"></td>
+        <td><button class="btn b-navy sm" data-openstage="${p.id}">Kelola</button></td>
+      </tr>`;
+    }
+    if(isPenempatan){
+      const pk=DOCS_BY_PID[p.id]?.pk;
+      const hasPk=!!pk?.storage_path;
+      return `<tr data-pid="${p.id}">${base}
+        <td>
+          <span class="pill ${hasPk?'ok':'wait'}" style="margin-right:6px">${hasPk?'✓ Ada':'Belum ada'}</span>
+          ${hasPk?`<button class="mini" data-view-pk="${p.id}">Lihat</button>`:''}
+          <button class="mini g" data-upload-pk="${p.id}">${hasPk?'Ganti':'Unggah'}</button>
+        </td>
+        <td><button class="btn b-navy sm" data-openstage="${p.id}">Kelola</button></td>
+      </tr>`;
+    }
+    if(isVisaMcu){
+      const mcu=DOCS_BY_PID[p.id]?.hasil_mcu;
+      const hasMcu=!!mcu?.storage_path;
+      const mcuStatus=MCU_STATUS_BY_PID[p.id]||'';
+      const statusPill=mcuStatus==='fit'?'<span class="pill ok">Fit</span>':(mcuStatus==='unfit'?'<span class="pill bad">Unfit</span>':'<span class="pill wait">Belum ditandai</span>');
+      const visa=DOCS_BY_PID[p.id]?.visa;
+      const hasVisa=!!visa?.storage_path;
+      return `<tr data-pid="${p.id}">${base}
+        <td>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+            <span class="pill ${hasMcu?'ok':'wait'}">${hasMcu?'✓ Ada':'Belum ada'}</span>
+            ${hasMcu?`<button class="mini" data-view-mcu="${p.id}">Lihat</button>`:''}
+            <button class="mini g" data-upload-mcu="${p.id}">${hasMcu?'Ganti':'Unggah'}</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${statusPill}
+            <select data-mcu-status="${p.id}" style="font-size:12px">
+              <option value="">- pilih -</option>
+              <option value="fit" ${mcuStatus==='fit'?'selected':''}>Fit</option>
+              <option value="unfit" ${mcuStatus==='unfit'?'selected':''}>Unfit</option>
+            </select>
+          </div>
+        </td>
+        <td>
+          <span class="pill ${hasVisa?'ok':'wait'}" style="margin-right:6px">${hasVisa?'✓ Ada':'Belum ada'}</span>
+          ${hasVisa?`<button class="mini" data-view-visa="${p.id}">Lihat</button>`:''}
+          <button class="mini g" data-upload-visa="${p.id}">${hasVisa?'Ganti':'Unggah'}</button>
+        </td>
+        <td><button class="btn b-navy sm" data-openstage="${p.id}">Kelola</button></td>
+      </tr>`;
+    }
+    return `<tr data-pid="${p.id}">${base}
+      <td><button class="btn b-navy sm" data-openstage="${p.id}">Kelola</button></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('[data-openstage]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); openDetail(b.dataset.openstage); }));
+  body.querySelectorAll('[data-upload-sert]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); PENDING_SERTIFIKAT_PID=b.dataset.uploadSert; $('#sertifikatFileInput').click(); }));
+  body.querySelectorAll('[data-view-sert]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); viewDoc(b.dataset.viewSert,'sertifikat'); }));
+  body.querySelectorAll('[data-selesai]').forEach(b=>b.addEventListener('change', e=>{ e.stopPropagation(); togglePelatihanSelesai(b.dataset.selesai, b.checked); }));
+  body.querySelectorAll('[data-upload-pk]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); PENDING_PK_PID=b.dataset.uploadPk; $('#pkFileInput').click(); }));
+  body.querySelectorAll('[data-view-pk]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); viewDoc(b.dataset.viewPk,'pk'); }));
+  body.querySelectorAll('[data-upload-mcu]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); PENDING_MCU_PID=b.dataset.uploadMcu; $('#hasilMcuFileInput').click(); }));
+  body.querySelectorAll('[data-view-mcu]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); viewDoc(b.dataset.viewMcu,'hasil_mcu'); }));
+  body.querySelectorAll('[data-upload-visa]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); PENDING_VISA_PID=b.dataset.uploadVisa; $('#visaFileInput').click(); }));
+  body.querySelectorAll('[data-view-visa]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); viewDoc(b.dataset.viewVisa,'visa'); }));
+  body.querySelectorAll('[data-mcu-status]').forEach(sel=>sel.addEventListener('change', e=>{ e.stopPropagation(); setMcuStatus(sel.dataset.mcuStatus, sel.value); }));
+}
+function renderPelatihanTable(){ renderStageSectionTable(2,'tblPelatihanBody','qSearchPelatihan','#sbPelatihanBadge','#stPelatihanCount'); }
+function renderPenempatanTable(){ renderStageSectionTable(3,'tblPenempatanBody','qSearchPenempatan','#sbPenempatanBadge','#stPenempatanCount'); }
+function renderVisaMcuTable(){ renderStageSectionTable(4,'tblVisaMcuBody','qSearchVisaMcu','#sbVisaMcuBadge','#stVisaMcuCount'); }
+function renderKeberangkatanTable(){ renderStageSectionTable(5,'tblKeberangkatanBody','qSearchKeberangkatan','#sbKeberangkatanBadge','#stKeberangkatanCount'); }
+function renderAllStageSections(){ renderPelatihanTable(); renderPenempatanTable(); renderVisaMcuTable(); renderKeberangkatanTable(); }
+$('#qSearchPelatihan')?.addEventListener('input', debounce(renderPelatihanTable,250));
+$('#qSearchPenempatan')?.addEventListener('input', debounce(renderPenempatanTable,250));
+$('#qSearchVisaMcu')?.addEventListener('input', debounce(renderVisaMcuTable,250));
+$('#qSearchKeberangkatan')?.addEventListener('input', debounce(renderKeberangkatanTable,250));
 
 function renderFinanceTable(){
   const body=$('#tblFinBody'); if(!body)return;
@@ -4675,11 +5107,6 @@ function renderTable(){
     }else{
       aksiHtml=`<button class="icon-plain-btn" disabled title="Lengkapi &amp; verifikasi/kolektifkan semua dokumen dahulu">${CONVERT_SVG}</button>`;
     }
-    const avPending=autoVerifyCandidates(p.id).length;
-    const AI_SVG=`<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="display:block"><path d="M12 2.5c.4 0 .74.27.85.65l1.2 4.3a4.6 4.6 0 0 0 3.15 3.15l4.3 1.2c.38.11.65.45.65.85s-.27.74-.65.85l-4.3 1.2a4.6 4.6 0 0 0-3.15 3.15l-1.2 4.3a.88.88 0 0 1-1.7 0l-1.2-4.3a4.6 4.6 0 0 0-3.15-3.15l-4.3-1.2a.88.88 0 0 1 0-1.7l4.3-1.2A4.6 4.6 0 0 0 9.95 7.45l1.2-4.3c.11-.38.45-.65.85-.65Z"/><path d="M19 2.5c.32 0 .6.22.68.53l.32 1.2c.14.5.53.9 1.03 1.03l1.2.32c.31.08.53.36.53.68s-.22.6-.53.68l-1.2.32c-.5.14-.9.53-1.03 1.03l-.32 1.2a.71.71 0 0 1-1.37 0l-.32-1.2a1.53 1.53 0 0 0-1.03-1.03l-1.2-.32a.71.71 0 0 1 0-1.37l1.2-.32c.5-.14.9-.53 1.03-1.03l.32-1.2c.08-.31.36-.53.68-.53Z"/></svg>`;
-    const avHtml=avPending
-      ?`<button class="btn b-navy sm" data-verify1="${p.id}" style="position:relative;padding:6px 10px;line-height:1" title="Verifikasi otomatis dokumen peserta ini pakai AI (${avPending} menunggu)">${AI_SVG}<span style="position:absolute;top:-6px;right:-6px;background:var(--gold,#c9a227);color:#1a1a2e;font-size:.62rem;font-weight:800;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1">${avPending}</span></button>`
-      :'';
     /* Desktop: TETAP desain lama (tabel Dokumen), tidak ada varian 'review' supaya
        tampilan desktop tidak berubah dari sebelumnya. */
     const docPillClass=verifiedAll===totalAll?'ok':(acceptedAll===totalAll?'kolektif':'wait');
@@ -4694,9 +5121,6 @@ function renderTable(){
     /* Mobile (popup & kartu): pakai varian 'review' (amber) supaya status
        "sudah unggah lengkap tapi belum diverifikasi" kelihatan beda. */
     const docPillClassMobile=verifiedAll===totalAll?'ok':(acceptedAll===totalAll?'kolektif':(needsVerif?'review':'wait'));
-    const avMobileHtml=avPending
-      ?`<button type="button" class="aksi-row aksi-row-navy" data-verify1="${p.id}">${AI_SVG} Verifikasi Otomatis <b>${avPending}</b></button>`
-      :'';
     const PROFILE_SVG=`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     const DOTS_SVG=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>`;
     /* Baris "Convert" khusus popup mobile: bentuk & kelas warna sama dengan
@@ -4713,7 +5137,6 @@ function renderTable(){
         <button type="button" class="aksi-mobile-trigger" data-aksi-toggle="${p.id}" aria-haspopup="true" aria-expanded="false" title="${needsVerif?'Ada dokumen menunggu diverifikasi':'Aksi'}">${DOTS_SVG}${needsVerif?'<span class="aksi-alert-dot"></span>':''}</button>
         <div class="aksi-mobile-menu" data-aksi-menu="${p.id}">
           <div class="aksi-row ${uploadedAll===totalAll?'aksi-row-navy':'aksi-row-gray'}" data-profile="${p.id}" data-focus="dokumen" style="cursor:pointer" title="Klik untuk langsung lihat Dokumen">${uploadedAll}/${totalAll} unggah · ${verifiedAll}/${totalAll} terverifikasi${kolektifAll?` · ${kolektifAll} kolektif`:''}</div>
-          ${avMobileHtml}
           ${convertRowMobile}
           <button type="button" class="aksi-row aksi-row-navy" data-profile="${p.id}">${PROFILE_SVG} Profil Peserta</button>
         </div>
@@ -4729,7 +5152,7 @@ function renderTable(){
       <td>${p.kota||'-'}</td>
       <td><div class="stagebar"><div class="track"><div class="fill" style="width:${((stage+1)/6*100).toFixed(0)}%"></div></div><b>${stage+1}/6</b></div></td>
       <td><span class="doc-status-icons ${docPillClass}" title="${docPillTitle}">${docPillHtml}</span></td>
-      <td class="aksi-cell"><div class="aksi-cell-in aksi-inline">${avHtml}${aksiHtml}</div>${aksiMobileHtml}</td>
+      <td class="aksi-cell"><div class="aksi-cell-in aksi-inline">${aksiHtml}</div>${aksiMobileHtml}</td>
     </tr>`;
   }).join('');
   renderPesertaPagination(rows.length,totalPages);
@@ -4804,8 +5227,6 @@ function initPesertaTableEvents(){
          sendiri begitu renderTable() jalan lagi setelah convert selesai. */
       convertToMaster(convertBtn.dataset.convert, convertBtn); return;
     }
-    const verifyBtn=e.target.closest('[data-verify1]');
-    if(verifyBtn){ e.stopPropagation(); closeAllAksiMenus(); runAutoVerify(verifyBtn.dataset.verify1); return; }
     const toggleBtn=e.target.closest('[data-aksi-toggle]');
     if(toggleBtn){
       e.stopPropagation();
@@ -4954,6 +5375,7 @@ ${kode}`,
     renderMasterTable();
     renderFinanceTable();
     renderStats();
+    renderAllStageSections();
     toast(`Peserta "${p.nama||kode}" berhasil dihapus`,'ok');
   }catch(err){
     console.error(err);
@@ -5043,6 +5465,7 @@ async function convertToMaster(pid, btn){
   renderTable();
   renderMasterTable();
   renderFinanceTable();
+  renderAllStageSections();
   toast(`${p.nama||'Peserta'} di Data Master ✓`,'ok');
 }
 
@@ -5061,6 +5484,7 @@ async function removeFromMaster(masterId,pid){
   renderTable();
   renderMasterTable();
   renderFinanceTable();
+  renderAllStageSections();
   toast('Peserta dikeluarkan dari Data Master','ok');
 }
 
@@ -5279,10 +5703,6 @@ $('#detailModal').addEventListener('click', e=>{
    agensi (Paspor/MCU yang belum ada, tapi diurus kolektif). */
 function isDocAccepted(docObj){ return docObj?.status==='terverifikasi'||docObj?.status==='kolektif'; }
 
-function aiTooltip(up){
-  const d=up?.ai_detail||{}; const ex=d.extracted||{};
-  return (`Hasil baca AI — NIK: ${ex.nik||'-'} | Nama: ${ex.nama||'-'} | Tgl Lahir: ${ex.tanggal_lahir||'-'}`).replace(/"/g,'&quot;');
-}
 function renderDocList(pid){
   const docs=DOCS_BY_PID[pid]||{};
   $('#docList').innerHTML=DOCS.map(d=>{
@@ -5291,15 +5711,12 @@ function renderDocList(pid){
     const isKolektif=status==='kolektif';
     const pillClass=status==='terverifikasi'?'ok':status==='ditolak'?'bad':isKolektif?'kolektif':'wait';
     const pillText=status==='terverifikasi'?'✓ Terverifikasi':status==='ditolak'?'Ditolak':isKolektif?'📋 Kolektif (Agensi)':status==='menunggu'?'Menunggu':'Belum diunggah';
-    const showAi=AUTOVERIFY_DOC_TYPES.includes(d.k)&&up?.ai_status==='cocok'&&status!=='ditolak';
-    const aiBadge=showAi?`<span class="pill ok" style="cursor:help" title="${aiTooltip(up)}">✓ AI</span>`:'';
     return `<div class="doc">
       <div class="ic">${d.ic}</div>
       <div class="doc-body">
         <h5>${d.t} <span class="${d.req?'req':'opt'}">${d.req?'WAJIB':'OPSIONAL'}</span></h5>
         <div class="act">
           <span class="pill ${pillClass}">${pillText}</span>
-          ${aiBadge}
           ${up&&!isKolektif?`<button class="mini" data-view="${d.k}">Lihat</button>
             <button class="mini g" data-verify="${d.k}" ${status==='terverifikasi'?'disabled':''}>Verifikasi</button>
             <button class="mini r" data-reject="${d.k}" ${status==='ditolak'?'disabled':''}>Tolak</button>`:''}
@@ -5474,94 +5891,6 @@ async function setDocStatus(pid,jenis,status){
   await maybeAdvanceStage(pid);
 }
 
-/* ============ VERIFIKASI OTOMATIS DOKUMEN (AI: Gemini Vision) ============
-   Batch dari Admin Panel: baca foto KTP/Paspor semua peserta yang masih
-   berstatus 'menunggu', lalu bandingkan NIK/Nama/Tanggal Lahir hasil OCR
-   dengan data profil (p.nik, p.nama, p.tgl_lahir). Panggil Edge Function
-   Supabase 'verify-document' (lihat file verify-document/index.ts).
-   - Kalau SEMUA field cocok -> dokumen otomatis ditandai 'terverifikasi',
-     admin tidak perlu buka satu-satu.
-   - Kalau ada yang tidak cocok/tidak terbaca -> status TETAP 'menunggu',
-     tapi hasil OCR disimpan (ai_status/ai_detail) & badge 🤖 muncul di
-     modal Kelola Dokumen supaya admin cukup cek pengecualian yang meleset. */
-function autoVerifyCandidates(pid){
-  const list=[];
-  const targets=pid?PARTICIPANTS.filter(p=>p.id===pid):PARTICIPANTS;
-  targets.forEach(p=>{
-    const docs=DOCS_BY_PID[p.id]||{};
-    AUTOVERIFY_DOC_TYPES.forEach(jenis=>{
-      const d=docs[jenis];
-      if(d&&d.storage_path&&d.status==='menunggu')list.push({p,jenis,doc:d});
-    });
-  });
-  return list;
-}
-function avLogRow(text,cls){
-  const row=document.createElement('div');
-  row.style.cssText='display:flex;align-items:center;gap:10px;font:600 .78rem var(--body);color:var(--ink);padding:8px 10px;border:1.5px solid var(--line);border-radius:10px';
-  row.innerHTML=`<span class="pill ${cls}" style="min-width:0;padding:4px 9px">${cls==='ok'?'✓':cls==='bad'?'!':'…'}</span><span style="flex:1;min-width:0">${text}</span>`;
-  return row;
-}
-async function runAutoVerify(pid){
-  const tasks=autoVerifyCandidates(pid);
-  if(!tasks.length){
-    const who=pid?PARTICIPANTS.find(p=>p.id===pid)?.nama||'peserta ini':null;
-    return toast(who?`Tidak ada KTP/Paspor berstatus "Menunggu" untuk ${who}`:'Tidak ada KTP/Paspor berstatus "Menunggu" untuk diverifikasi otomatis','ok');
-  }
-
-  const modal=$('#autoVerifyModal'), log=$('#avLog'), bar=$('#avProgBar'), label=$('#avProgLabel'), count=$('#avProgCount'), closeBtn=$('#btnAvClose');
-  log.innerHTML=''; bar.style.width='0%'; closeBtn.style.display='none';
-  label.textContent='Memproses…'; count.textContent=`0 / ${tasks.length}`;
-  modal.classList.add('show');
-
-  let done=0, cocok=0, tidakCocok=0, gagal=0;
-  for(const {p,jenis,doc} of tasks){
-    const jenisLabel=DOCS.find(x=>x.k===jenis)?.t||jenis;
-    const row=avLogRow(`${p.nama||'Peserta'} — ${jenisLabel}: memeriksa…`,'wait');
-    log.prepend(row);
-    try{
-      const {data,error}=await sb.functions.invoke('verify-document',{ body:{
-        storage_path:doc.storage_path, doc_type:jenis,
-        expected:{ nama:p.nama||'', nik:p.nik||'', tgl_lahir:p.tgl_lahir||'' }
-      }});
-      if(error||data?.error)throw new Error(data?.error||error?.message||'Gagal memproses');
-
-      const ai_status=data.match?'cocok':'tidak_cocok';
-      const upd={ ai_status, ai_detail:data, ai_checked_at:new Date().toISOString() };
-      if(data.match)upd.status='terverifikasi';
-      const {error:updErr}=await sb.from('documents_v2').update(upd).eq('id',doc.id);
-      if(updErr)throw new Error(updErr.message);
-
-      Object.assign(doc,upd);
-      if(data.match){ cocok++; row.replaceWith(avLogRow(`${p.nama} — ${jenisLabel}: cocok ✓ (otomatis terverifikasi)`,'ok')); }
-      else{
-        tidakCocok++;
-        const parts=[];
-        if(jenis==='ktp'&&!data.checks?.nik)parts.push('NIK beda');
-        if(!data.checks?.nama)parts.push(`nama beda (mirip ${data.checks?.nama_score??'?'}%)`);
-        if(!data.checks?.tanggal_lahir)parts.push('tgl lahir beda');
-        row.replaceWith(avLogRow(`${p.nama} — ${jenisLabel}: perlu dicek manual (${parts.join(', ')||'tidak cocok'})`,'bad'));
-      }
-      await maybeAdvanceStage(p.id);
-    }catch(e){
-      gagal++;
-      row.replaceWith(avLogRow(`${p.nama} — ${jenisLabel}: gagal diproses (${e.message})`,'bad'));
-    }
-    done++;
-    bar.style.width=Math.round(done/tasks.length*100)+'%';
-    count.textContent=`${done} / ${tasks.length}`;
-  }
-  label.textContent='Selesai';
-  closeBtn.style.display='block';
-  renderTable(); renderStats();
-  if(ACTIVE_PID)renderDocList(ACTIVE_PID);
-  toast(`Verifikasi otomatis selesai: ${cocok} cocok, ${tidakCocok} perlu dicek manual${gagal?`, ${gagal} gagal`:''}`, (tidakCocok||gagal)?'err':'ok');
-}
-$('#btnAutoVerify')?.addEventListener('click', runAutoVerify);
-$('#btnCloseAutoVerify')?.addEventListener('click', ()=>$('#autoVerifyModal').classList.remove('show'));
-$('#btnAvClose')?.addEventListener('click', ()=>$('#autoVerifyModal').classList.remove('show'));
-$('#autoVerifyModal')?.addEventListener('click', e=>{ if(e.target.id==='autoVerifyModal')$('#autoVerifyModal').classList.remove('show'); });
-
 
 /* Begitu SEMUA dokumen WAJIB (req:true) BENAR-BENAR berstatus 'terverifikasi'
    (file asli sudah diunggah & diperiksa — status 'kolektif' TIDAK dihitung,
@@ -5590,7 +5919,7 @@ async function maybeAdvanceStage(pid){
   if(error){console.error('Gagal menaikkan tahap otomatis:',error);return;}
   STAGE_BY_PID[pid]=2;
   if(ACTIVE_PID===pid){ $('#eStage').value='2'; ensureCsel($('#eStage')); }
-  renderTable(); renderStats();
+  renderTable(); renderStats(); renderAllStageSections();
   toast('Semua dokumen terverifikasi — tahap otomatis naik ke "Pelatihan & Pembekalan" ✓','ok');
 }
 /* Dijalankan sekali tiap loadAll(): menyisir peserta LAMA yang berkasnya sudah
@@ -5635,7 +5964,7 @@ async function sweepStaleStages(){
   if(ACTIVE_PID&&(stuckPids.includes(ACTIVE_PID)||overAdvancedPids.includes(ACTIVE_PID))){
     $('#eStage').value=String(STAGE_BY_PID[ACTIVE_PID]??0); ensureCsel($('#eStage'));
   }
-  renderTable(); renderStats();
+  renderTable(); renderStats(); renderAllStageSections();
 }
 
 $('#btnSaveInfo').addEventListener('click', async ()=>{
@@ -5676,7 +6005,7 @@ $('#btnSaveStage').addEventListener('click', async ()=>{
   const {error}=await sb.from('progress_v2').upsert({participant_id:ACTIVE_PID,tahap,updated_at:new Date().toISOString()},{onConflict:'participant_id'});
   if(error)return toast('Gagal menyimpan tahap: '+error.message,'err');
   STAGE_BY_PID[ACTIVE_PID]=tahap;
-  renderTable(); renderStats();
+  renderTable(); renderStats(); renderAllStageSections();
   toast('Tahap peserta diperbarui ✓','ok');
 });
 
