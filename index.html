@@ -3026,6 +3026,21 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth:{ persistSession:true, autoRefreshToken:true, storageKey:'juara-admin-auth' }
 });
 
+/* ============ JAGA SESI HILANG DIAM-DIAM ============
+   Kalau autoRefreshToken gagal (mis. HP di-background lalu dibuka lagi),
+   supabase-js diam-diam menghapus sesi. Tanpa listener ini, UI tetap
+   kelihatan "login" padahal semua request sudah jalan sebagai anon dan
+   ditolak RLS. Begitu sesi hilang di luar alur logout manual, langsung
+   balik ke layar login dengan pesan yang jelas. */
+let SB_MANUAL_SIGNOUT=false;
+sb.auth.onAuthStateChange((event, session)=>{
+  if(event==='SIGNED_OUT' && !SB_MANUAL_SIGNOUT){
+    showLogin();
+    toast('Sesi login berakhir, silakan masuk kembali','err');
+  }
+  if(event==='SIGNED_OUT'){ SB_MANUAL_SIGNOUT=false; }
+});
+
 const $=s=>document.querySelector(s);
 /* Helper debounce umum -> dipakai buat search/filter yang berat (misal renderTable
    dengan ratusan/ribuan baris) supaya tidak render ulang di SETIAP ketukan huruf,
@@ -3303,6 +3318,7 @@ if(toggleLoginPass){
 }
 
 $('#btnLogout').addEventListener('click', async ()=>{
+  SB_MANUAL_SIGNOUT=true;
   await sb.auth.signOut();
   PARTICIPANTS=[]; DOCS_BY_PID={}; STAGE_BY_PID={};
   showLogin();
