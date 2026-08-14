@@ -222,11 +222,84 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secBukti .tbl-wrap tbody tr{transition:background .12s ease}
 #secBukti .tbl-wrap tbody tr:hover{background:#F4F6F9}
 #secBukti .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:10px 14px;font-size:.8rem;line-height:1.3}
+/* Desktop: pill status & tombol aksi tetap tampil icon+teks seperti biasa;
+   status ganda yang disisipkan di kolom Aksi (buat mobile) disembunyikan. */
+#secBukti .pill .pill-ic{display:none}
+#secBukti .mini{display:inline-flex;align-items:center;gap:6px}
+#secBukti .mini .mini-ic{display:none}
+/* Icon status ganda yang disisipkan di kolom Aksi (khusus mobile) -> class
+   sendiri, TIDAK numpang di ".pill" supaya tidak ikut kebawa padding/
+   border/background bawaan ".pill"/".pill.ok" dari tempat lain di app. */
+#secBukti .bukti-status-ico{display:none}
 @media(max-width:760px){
   #secBukti .bukti-head{align-items:flex-start}
   #secBukti .bukti-head-mark{display:none}
   #secBukti .bukti-toolbar{padding:8px;flex-wrap:wrap}
   #secBukti .bukti-search{min-width:100%}
+  #secBukti .bukti-filter{min-width:100%}
+  /* 3 kartu stat (Menunggu/Disetujui/Ditolak) -> sejajar 1 baris di mobile,
+     bukan 2+1 seperti grid ".stats" default. Font & padding dikecilkan
+     dikit supaya angka & label tetap muat di kartu yang lebih sempit. */
+  #secBukti .stats{grid-template-columns:repeat(3,1fr);gap:8px}
+  #secBukti .stats .stat{padding:12px 10px}
+  #secBukti .stats .stat b{font-size:1.5rem}
+  #secBukti .stats .stat span{font-size:.6rem;line-height:1.3}
+
+  /* Reset: tabel Bukti Pembayaran di mobile disamakan dengan Data Peserta/
+     Data Master/Adm Peserta — tampil sebagai tabel biasa (bukan kartu
+     stacked tanpa label) dengan scroll horizontal, bukan ditimpa aturan
+     generik "thead{display:none} table,tbody,tr,td{display:block}" yang
+     bikin tiap sel cuma numpuk ke bawah tanpa nama kolom sama sekali. */
+  #secBukti .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
+  /* Aturan generik ".tbl-wrap table{min-width:760px}" juga ikut kena ke
+     wrapper ini (sama-sama punya class "tbl-wrap") — timpa balik ke 0. */
+  #secBukti .tbl-wrap table{display:table;width:100%;min-width:0}
+  #secBukti .tbl-wrap thead{display:table-header-group}
+  #secBukti .tbl-wrap thead tr{display:table-row}
+  #secBukti .tbl-wrap tbody{display:table-row-group}
+  #secBukti .tbl-wrap tbody tr{display:table-row;border-bottom:0;padding:0}
+  #secBukti .tbl-wrap tbody td{display:table-cell;width:auto;padding:8px 10px}
+  /* Sembunyikan kolom "Diunggah" (ke-5) di mobile supaya tabel tidak
+     terlalu lebar — tetap tampil normal di desktop. */
+  #secBukti .tbl-wrap thead th:nth-child(5),
+  #secBukti .tbl-wrap tbody td:nth-child(5){display:none}
+  #secBukti .tbl-wrap thead th{padding:9px 10px}
+  #secBukti .tbl-wrap .pill{white-space:nowrap}
+  /* Kolom Nominal (ke-4) -> "Rp 850.000" jangan sampai kepisah jadi 2 baris
+     ("Rp" lalu "850.000" menumpuk) yang bikin baris tabel jadi tinggi.
+     Dibuat 1 baris rapat, font sedikit dikecilkan; kalau tetap kepanjangan
+     wrapper tabel sudah overflow-x:auto jadi tidak overflow ke luar layar. */
+  #secBukti .tbl-wrap tbody td:nth-child(4){font-size:.76rem}
+  #secBukti .tbl-wrap tbody td:nth-child(4) .bukti-nominal{white-space:nowrap;display:inline-block}
+  /* Kolom Kode & Peserta -> font dikecilkan + dibuat 1 baris (nowrap) biar
+     tidak menumpuk turun ("JR-" lalu "F8E18E25" di baris terpisah dsb).
+     Wrapper tabel sudah overflow-x:auto jadi tetap aman kalau kepanjangan. */
+  #secBukti .tbl-wrap td.kode{font-size:.7rem;white-space:nowrap}
+  #secBukti .tbl-wrap td.nama b{font-size:.76rem;white-space:nowrap;line-height:1.2}
+  #secBukti .tbl-wrap td.nama span{font-size:.62rem;white-space:nowrap}
+
+  /* Satukan kolom Status ke kolom Aksi -> kolom Status terpisah disembunyikan,
+     pill status ganda yang sudah disisipkan di sel Aksi (bukti-status-mobile)
+     ditampilkan berdampingan dengan tombol-tombol aksi. */
+  #secBukti .tbl-wrap thead th:nth-child(6),
+  #secBukti .tbl-wrap tbody td.status-cell{display:none}
+  #secBukti .aksi-cell-in{gap:6px;justify-content:flex-start;align-items:center;flex-wrap:nowrap}
+  #secBukti .bukti-status-ico{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:18px;height:18px}
+  #secBukti .bukti-status-ico svg{width:16px;height:16px;display:block}
+  #secBukti .bukti-status-ico.st-disetujui{color:#0E8F55}
+  #secBukti .bukti-status-ico.st-ditolak{color:#B32C2C}
+  #secBukti .bukti-status-ico.st-menunggu{color:#B37A16}
+
+  /* Pill status & tombol aksi -> icon SVG saja, teks disembunyikan. */
+  #secBukti .pill{width:auto;min-width:0;padding:7px;border-radius:9px;justify-content:center}
+  #secBukti .pill .pill-txt{display:none}
+  #secBukti .pill .pill-ic{display:inline-flex}
+  #secBukti .pill.ok .pill-ic{color:#0E8F55}
+  #secBukti .pill.bad .pill-ic{color:#B32C2C}
+  #secBukti .pill.wait .pill-ic{color:#B37A16}
+  #secBukti .mini{width:34px;height:34px;padding:0;justify-content:center;border-radius:9px;gap:0}
+  #secBukti .mini .mini-ic{display:inline-flex}
+  #secBukti .mini .mini-txt{display:none}
 }
 #secSekolah .sekolah-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 18px;padding:0 4px}
 #secSekolah .sekolah-head h2{margin-top:6px;font:800 1.65rem/1.15 var(--disp);letter-spacing:-.03em;color:var(--navy)}
@@ -931,6 +1004,15 @@ td.nama span{color:var(--mut);font-size:.78rem}
   .mail-folder-nav{display:flex;overflow-x:auto;gap:6px;padding:10px}
   .mail-folder-nav button{white-space:nowrap}
   .mail-list{max-height:320px}.mail-read{min-height:420px}}
+@media(max-width:760px){
+  .mail-topbar{flex-direction:column;align-items:stretch;gap:10px}
+  .mail-topbar .csel{max-width:none;width:100%}
+  .mail-topbar-r{width:100%;min-width:0;flex-wrap:nowrap;gap:6px}
+  .mail-search{flex:1 1 auto;min-width:0;padding:8px 12px}
+  .mail-search input{min-width:0}
+  .mail-topbar-r .mail-icon-btn{flex:0 0 auto;width:34px;height:34px}
+  .mail-topbar-r .mail-icon-btn svg{width:15px;height:15px}
+}
 .mail-side{border-right:1.5px solid var(--line);padding:16px 10px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
 .mail-compose-btn{display:flex;align-items:center;gap:9px;justify-content:center;background:var(--navy);color:#fff;border:none;border-radius:24px;padding:13px 16px;font:800 .84rem var(--body);cursor:pointer;box-shadow:0 3px 10px rgba(19,49,77,.25);transition:.15s}
 .mail-compose-btn:hover{background:var(--navy3);transform:translateY(-1px)}
@@ -941,8 +1023,14 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .mail-folder-nav button:hover{background:#F1F5FA}
 .mail-folder-nav button.active{background:var(--navy);color:#fff;font-weight:800}
 .mail-folder-nav button.active svg{opacity:1;stroke:#fff}
+@media(max-width:860px){
+  .mail-folder-nav{flex-direction:row;overflow-x:auto;gap:6px;padding:10px;justify-content:center}
+  .mail-folder-nav button{white-space:nowrap;flex-shrink:0;width:38px;height:38px;padding:0;justify-content:center;border-radius:50%}
+  .mail-folder-nav button span{display:none}
+  #secEmail .mail-side{padding-left:10px!important}
+}
 .mail-list{border-right:1.5px solid var(--line);overflow-y:auto;background:transparent}
-.mail-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
+.mail-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:none;cursor:pointer;transition:.12s}
 .mail-item:hover{background:#F7F8FA;box-shadow:inset 0 0 0 9999px rgba(0,0,0,.015)}
 .mail-item.active{background:#EEF3FA}
 .mail-item .mi-avatar{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font:800 .82rem var(--disp);flex-shrink:0}
@@ -1704,7 +1792,7 @@ td.kode{
 /* Email panel — menyatu dengan background halaman, tanpa card putih (gaya Gmail) */
 .mail-body{
   border:none;
-  border-top:1.5px solid var(--navy);
+  border-top:1.5px solid #000;
   border-bottom:1.5px solid var(--navy);
   border-radius:0;
   overflow:visible;
@@ -2382,7 +2470,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="bukti-head-mark"><span>VERIFIKASI</span><b>PT. JUARA</b></div>
         </div>
         <div class="stats">
-          <div class="stat warn"><b id="bpStPending">0</b><span>Menunggu Verifikasi</span></div>
+          <div class="stat warn"><b id="bpStPending">0</b><span>Verifikasi</span></div>
           <div class="stat ok"><b id="bpStApproved">0</b><span>Disetujui</span></div>
           <div class="stat bad"><b id="bpStRejected">0</b><span>Ditolak</span></div>
         </div>
@@ -2403,7 +2491,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>No</th><th>Kode</th><th>Peserta</th><th>Nominal Diklaim</th><th>Diunggah</th><th>Status</th><th>Aksi</th>
+              <th>No</th><th>Kode</th><th>Peserta</th><th>Nominal</th><th>Diunggah</th><th>Status</th><th>Aksi</th>
             </tr></thead>
             <tbody id="tblBuktiBody"><tr class="empty-row"><td colspan="7">Memuat data…</td></tr></tbody>
           </table>
@@ -3624,6 +3712,17 @@ $('#qSearchFin')?.addEventListener('input',renderFinanceTable);
    ikut ter-update. Nilai status di DB pakai Bahasa Indonesia (constraint
    CHECK di kolom status): 'menunggu' | 'disetujui' | 'ditolak'. */
 const PP_STATUS_LABEL={ menunggu:['wait','Menunggu'], disetujui:['ok','Disetujui'], ditolak:['bad','Ditolak'] };
+/* Icon untuk pill status & tombol aksi Bukti Pembayaran -> di desktop tetap
+   tampil icon+teks, di mobile teksnya disembunyikan lewat CSS (.pill-txt,
+   .mini-txt) supaya kolom Status & Aksi jadi ringkas cukup icon saja,
+   mengikuti pola yang sama dipakai kolom Status di Sekolah Mitra. */
+const PP_STAT_ICO_WAIT='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>';
+const PP_STAT_ICO_OK='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.4l2.6 2.6 4.8-5.2"/></svg>';
+const PP_STAT_ICO_BAD='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M4.9 4.9l14.2 14.2"/></svg>';
+const PP_STAT_ICON={ menunggu:PP_STAT_ICO_WAIT, disetujui:PP_STAT_ICO_OK, ditolak:PP_STAT_ICO_BAD };
+const PP_ACT_ICO_VIEW='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+const PP_ACT_ICO_APPROVE='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const PP_ACT_ICO_REJECT='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
 function ppStatusOf(pp){ return pp.status||'menunggu'; }
 function renderBuktiBadge(){
   const n=PAY_PROOFS.filter(pp=>ppStatusOf(pp)==='menunggu').length;
@@ -3658,13 +3757,14 @@ function renderBuktiTable(){
       <td>${i+1}</td>
       <td class="kode">${p?participantCode(p):'—'}</td>
       <td class="nama"><b>${escapeHtml(p?.nama||'Peserta tidak ditemukan')}</b><span>${escapeHtml(p?.kota||'-')}</span></td>
-      <td>${formatRupiah(pp.jumlah_klaim)}${ocrDiff?`<div style="font:600 .68rem var(--body);color:var(--mut);margin-top:2px">OCR baca: ${formatRupiah(pp.ocr_terbaca)}</div>`:''}</td>
+      <td><span class="bukti-nominal">${formatRupiah(pp.jumlah_klaim)}</span>${ocrDiff?`<div style="font:600 .68rem var(--body);color:var(--mut);margin-top:2px;white-space:normal">OCR baca: ${formatRupiah(pp.ocr_terbaca)}</div>`:''}</td>
       <td>${fmtMailDate(pp.created_at)}</td>
-      <td><span class="pill ${cls}">${label}</span></td>
-      <td class="aksi-cell"><div class="aksi-cell-in" style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="mini" data-view-bukti="${pp.id}">Lihat Bukti</button>
-        ${s==='menunggu'?`<button class="mini g" data-approve-bukti="${pp.id}">Setujui</button>
-          <button class="mini r" data-reject-bukti="${pp.id}">Tolak</button>`:''}
+      <td class="status-cell"><span class="pill ${cls}"><span class="pill-ic">${PP_STAT_ICON[s]||PP_STAT_ICO_WAIT}</span><span class="pill-txt">${label}</span></span></td>
+      <td class="aksi-cell"><div class="aksi-cell-in">
+        <span class="bukti-status-ico st-${s}">${PP_STAT_ICON[s]||PP_STAT_ICO_WAIT}</span>
+        <button class="mini" data-view-bukti="${pp.id}" title="Lihat Bukti"><span class="mini-ic">${PP_ACT_ICO_VIEW}</span><span class="mini-txt">Lihat Bukti</span></button>
+        ${s==='menunggu'?`<button class="mini g" data-approve-bukti="${pp.id}" title="Setujui"><span class="mini-ic">${PP_ACT_ICO_APPROVE}</span><span class="mini-txt">Setujui</span></button>
+          <button class="mini r" data-reject-bukti="${pp.id}" title="Tolak"><span class="mini-ic">${PP_ACT_ICO_REJECT}</span><span class="mini-txt">Tolak</span></button>`:''}
       </div></td>
     </tr>`;
   }).join('');
