@@ -254,9 +254,17 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   /* Reset: tabel Data Peserta di mobile sekarang tampil sama persis seperti
      desktop (semua kolom & tombol aksi inline apa adanya) — tidak lagi
      diubah jadi kartu ringkas dengan kolom tersembunyi + menu "..." popup.
-     Supaya tetap bisa dilihat di layar sempit, tabel dibuat scroll horizontal. */
+     Supaya tetap bisa dilihat di layar sempit, tabel dibuat scroll horizontal.
+     PENTING: ada aturan global (table,tbody,tr,td{display:block}) yang
+     dipakai tabel lain di app ini untuk mode "kartu" mobile — timpa balik
+     ke display tabel normal di sini supaya Data Peserta tidak ikut kena. */
   #secPeserta .peserta-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0}
-  #secPeserta .peserta-table-wrap table{min-width:760px}
+  #secPeserta .peserta-table-wrap table{min-width:760px;display:table;width:auto}
+  #secPeserta .peserta-table-wrap thead{display:table-header-group}
+  #secPeserta .peserta-table-wrap thead tr{display:table-row}
+  #secPeserta .peserta-table-wrap tbody{display:table-row-group}
+  #secPeserta .peserta-table-wrap tbody tr{display:table-row}
+  #secPeserta .peserta-table-wrap tbody td{display:table-cell;width:auto}
 }
 
 
