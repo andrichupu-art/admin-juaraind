@@ -509,11 +509,49 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secKeuangan .tbl-wrap td:nth-child(7){font:800 .72rem var(--body);color:var(--navy)}
 #secKeuangan .tbl-wrap .aksi-cell-in{gap:5px}
 #secKeuangan .tbl-wrap .btn.sm{padding:5px 10px;font-size:.68rem;border-radius:8px}
+#secKeuangan .pill-ico{display:flex;flex-shrink:0}
+#secKeuangan .pill-ico svg{display:block}
 #secKeuangan .tbl-wrap .btn.b-navy{box-shadow:none}
 #secKeuangan .tbl-wrap .empty-row td{background:transparent!important;border:0!important;border-bottom:1px solid rgba(19,49,77,.16)!important;border-radius:0!important;padding:36px 16px}
 @media(max-width:760px){
   #secKeuangan .toolbar{padding:8px;flex-wrap:wrap}
   #secKeuangan .toolbar input[type="text"]{min-width:100%}
+  /* Sama seperti Data Peserta & Data Master: timpa balik aturan generik
+     "thead{display:none} table,tbody,tr,td{display:block}" (dipakai tabel
+     lain di app ini) supaya ADM Peserta tetap tampil sebagai tabel asli
+     (header + baris + kolom sejajar), bukan tumpukan blok per-kolom.
+     Kolomnya ada 9 (lebih banyak dari Data Peserta/Master), jadi dibuat
+     scroll horizontal supaya tetap rapi & semua kolom kebaca di layar sempit. */
+  #secKeuangan .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
+  #secKeuangan table{display:table;width:100%;min-width:700px}
+  #secKeuangan thead{display:table-header-group}
+  #secKeuangan thead tr{display:table-row}
+  #secKeuangan tbody{display:table-row-group}
+  #secKeuangan tbody tr{display:table-row;border-bottom:0}
+  #secKeuangan tbody td{display:table-cell;width:auto;padding:8px 10px}
+  #secKeuangan td.kode{order:initial;white-space:nowrap}
+  #secKeuangan td.nama{order:initial;margin-bottom:0}
+  #secKeuangan td.nama b{white-space:nowrap}
+  #secKeuangan .pill{white-space:nowrap}
+  #secKeuangan .aksi-cell-in{flex-wrap:nowrap}
+  /* Ringkas tampilan mobile: nomor telepon di kolom Peserta disembunyikan,
+     dan kolom Kota (kolom ke-4) dihilangkan sepenuhnya (header + isi). */
+  #secKeuangan td.nama span{display:none}
+  #secKeuangan thead th:nth-child(4),
+  #secKeuangan tbody td:nth-child(4){display:none}
+  /* Kolom Status & Aksi jadi icon-only di mobile: hapus background pill
+     dan tombol, teks disembunyikan, tersisa icon polos saja. */
+  #secKeuangan .pill-txt{display:none}
+  #secKeuangan .pill{width:auto;height:auto;padding:0;border-radius:0;border:0;background:transparent!important;box-shadow:none}
+  #secKeuangan .pill-ico svg{width:18px;height:18px}
+  #secKeuangan .btn-fin-label{display:none}
+  #secKeuangan .tbl-wrap .btn.sm[data-fin]{padding:0;width:auto;height:auto;justify-content:center;gap:0;background:transparent!important;border:0!important;color:var(--navy)}
+  #secKeuangan .tbl-wrap .btn.sm[data-fin] .btn-fin-ico{width:19px;height:19px}
+  #secKeuangan thead th:nth-child(8),
+  #secKeuangan tbody td:nth-child(8),
+  #secKeuangan thead th:nth-child(9),
+  #secKeuangan tbody td:nth-child(9){text-align:center}
+  #secKeuangan table{min-width:600px}
 }
 
 /* ============ DASHBOARD ============ */
@@ -3210,6 +3248,20 @@ function financeSummaryFor(pid){
   return {totalTagihan,totalDibayar,sisa,status};
 }
 const FIN_STATUS_LABEL={ 'belum-ada':['wait','Belum Ada Tagihan'], 'lunas':['ok','Lunas'], 'cicilan':['ok','Cicilan'], 'belum-bayar':['bad','Belum Bayar'] };
+/* Icon per status tagihan -> dipakai di kolom Status tabel ADM Peserta.
+   Di desktop tampil bareng teks label; di mobile teksnya disembunyikan
+   lewat CSS (.pill-txt) supaya kolom Status jadi ringkas, cukup icon. */
+const FIN_STATUS_ICON={
+  'belum-ada':'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  'lunas':'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  'cicilan':'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+  'belum-bayar':'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7.5" x2="12" y2="13"/><circle cx="12" cy="16.3" r=".6" fill="currentColor" stroke="none"/></svg>'
+};
+/* Icon "Kelola" (gear) -> dipakai di kolom Aksi tabel ADM Peserta.
+   Di desktop tampil bareng teks "Kelola"; di mobile teksnya disembunyikan
+   supaya tombol jadi icon-only, sama pola dengan tombol "Kelola Dokumen"
+   di Data Master. */
+const FIN_MANAGE_ICON='<svg class="btn-fin-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
 
 /* Cek apakah peserta punya tagihan yang berasal dari dokumen kolektif
    (Pembuatan Paspor / Medical Check-Up Kolektif — lihat KOLEKTIF_BILL_LABEL
@@ -3272,8 +3324,8 @@ function renderFinanceTable(){
       <td>${formatRupiah(s.totalTagihan)}</td>
       <td>${formatRupiah(s.totalDibayar)}</td>
       <td>${formatRupiah(Math.max(s.sisa,0))}</td>
-      <td><span class="pill ${cls}">${label}</span></td>
-      <td class="aksi-cell"><div class="aksi-cell-in"><button class="btn b-navy sm" data-fin="${p.id}">Kelola</button></div></td>
+      <td><span class="pill ${cls}"><span class="pill-ico">${FIN_STATUS_ICON[s.status]||''}</span><span class="pill-txt">${label}</span></span></td>
+      <td class="aksi-cell"><div class="aksi-cell-in"><button class="btn b-navy sm" data-fin="${p.id}" title="Kelola" aria-label="Kelola">${FIN_MANAGE_ICON}<span class="btn-fin-label"> Kelola</span></button></div></td>
     </tr>`;
   }).join('');
   body.querySelectorAll('[data-fin]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); openFinance(b.dataset.fin); }));
