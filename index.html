@@ -265,6 +265,16 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secPeserta .peserta-table-wrap tbody{display:table-row-group}
   #secPeserta .peserta-table-wrap tbody tr{display:table-row}
   #secPeserta .peserta-table-wrap tbody td{display:table-cell;width:auto}
+  /* Sembunyikan kolom Kota (ke-4) dan Tahap (ke-5) di tabel Data Peserta,
+     khusus di mobile — tetap tampil normal di desktop. */
+  #secPeserta .peserta-table-wrap thead th:nth-child(4),
+  #secPeserta .peserta-table-wrap thead th:nth-child(5),
+  #secPeserta .peserta-table-wrap tbody td:nth-child(4),
+  #secPeserta .peserta-table-wrap tbody td:nth-child(5){display:none}
+  /* Tombol pagination "Sebelumnya"/"Berikutnya" -> icon-only di mobile */
+  #secPeserta .peserta-pagination .pg-nav-label{display:none}
+  #secPeserta .peserta-pagination button[data-pg="prev"],
+  #secPeserta .peserta-pagination button[data-pg="next"]{padding:7px 11px}
 }
 
 
@@ -398,6 +408,18 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   color:#65748A;font:700 .7rem var(--body);
 }
 #secMaster .master-table-card .aksi-cell-in{gap:5px}
+/* Sembunyikan kolom Kota (kolom ke-4) dan Dikonversi (kolom ke-6) di tabel
+   Data Master — baik di header maupun isi baris, di semua ukuran layar. */
+#secMaster .master-table-card thead th:nth-child(4),
+#secMaster .master-table-card thead th:nth-child(6),
+#secMaster .master-table-card tbody td:nth-child(4),
+#secMaster .master-table-card tbody td:nth-child(6){display:none}
+@media(max-width:760px){
+  /* Mobile: tombol "Kelola Dokumen" jadi icon-only (teksnya disembunyikan),
+     samakan bentuknya dengan tombol icon-only di sebelahnya (tombol hapus). */
+  #secMaster .btn-manage-doc-label{display:none}
+  #secMaster .btn-manage-doc{padding:8px;width:34px;height:34px;justify-content:center;gap:0}
+}
 #secMaster .master-table-card .btn.sm{
   padding:5px 10px;font-size:.68rem;border-radius:8px;
 }
@@ -415,6 +437,24 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secMaster .master-toolbar{padding:8px;flex-wrap:wrap}
   #secMaster .master-search{min-width:100%}
   #secMaster .master-toolbar-note{width:100%;justify-content:center}
+
+  /* Reset: tabel Data Master di mobile sekarang tampil sama persis seperti
+     desktop (semua kolom & tombol aksi apa adanya), bukan kartu stacked.
+     Ada aturan global (table,tbody,tr,td{display:block}) yang dipakai
+     tabel lain di app ini untuk mode "kartu" mobile — timpa balik ke
+     display tabel normal di sini supaya Data Master tidak ikut kena,
+     dan kasih scroll horizontal supaya tetap bisa diakses di layar sempit. */
+  #secMaster .master-table-card{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
+  #secMaster .master-table-card table{min-width:760px;display:table;width:auto}
+  #secMaster .master-table-card thead{display:table-header-group}
+  #secMaster .master-table-card thead tr{display:table-row}
+  #secMaster .master-table-card tbody{display:table-row-group}
+  #secMaster .master-table-card tbody tr{display:table-row}
+  #secMaster .master-table-card tbody td{display:table-cell;width:auto}
+  /* Tombol pagination "Sebelumnya"/"Berikutnya" -> icon-only di mobile */
+  #secMaster .master-pagination .pg-nav-label{display:none}
+  #secMaster .master-pagination button[data-pg="prev"],
+  #secMaster .master-pagination button[data-pg="next"]{padding:7px 11px}
 }
 /* Kontrol pagination Data Master -> style sama dengan pagination Data Peserta */
 #secMaster .master-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:2px 4px;flex-wrap:wrap}
@@ -1995,7 +2035,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <thead><tr>
                 <th>No</th><th>Kode</th><th>Peserta</th><th>Kota</th><th>Tahap</th><th>Dikonversi</th><th>Aksi</th>
               </tr></thead>
-              <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr></tbody>
+              <tbody id="tblMasterBody"><tr class="empty-row"><td colspan="5">Belum ada peserta di Data Master.</td></tr></tbody>
             </table>
           </div>
           <div class="master-pagination" id="masterPagination"></div>
@@ -4214,6 +4254,8 @@ function renderTable(){
 /* Render kontrol pagination (info + tombol halaman + ukuran halaman).
    Dipanggil tiap akhir renderTable() supaya selalu sinkron dgn hasil filter. */
 function renderPesertaPagination(totalRows,totalPages){
+  const isMobileView=window.matchMedia('(max-width:760px)').matches;
+  const pgSizeLabel=(n)=>isMobileView?`${n}`:`${n}/halaman`;
   const host=$('#pesertaPagination');
   if(!host)return;
   if(totalRows===0){ host.innerHTML=''; return; }
@@ -4230,14 +4272,14 @@ function renderPesertaPagination(totalRows,totalPages){
   host.innerHTML=`
     <div class="pg-info">Menampilkan ${from}–${to} dari ${totalRows} peserta</div>
     <div class="pg-btns">
-      <button type="button" data-pg="prev" ${pesertaPage<=1?'disabled':''}>‹ Sebelumnya</button>
+      <button type="button" data-pg="prev" title="Halaman sebelumnya" ${pesertaPage<=1?'disabled':''}>‹<span class="pg-nav-label"> Sebelumnya</span></button>
       ${pageBtns}
-      <button type="button" data-pg="next" ${pesertaPage>=totalPages?'disabled':''}>Berikutnya ›</button>
+      <button type="button" data-pg="next" title="Halaman berikutnya" ${pesertaPage>=totalPages?'disabled':''}><span class="pg-nav-label">Berikutnya </span>›</button>
       <span class="pg-size"><select id="pesertaPageSizeSel">
-        <option value="25" ${pesertaPageSize===25?'selected':''}>25/halaman</option>
-        <option value="50" ${pesertaPageSize===50?'selected':''}>50/halaman</option>
-        <option value="100" ${pesertaPageSize===100?'selected':''}>100/halaman</option>
-        <option value="200" ${pesertaPageSize===200?'selected':''}>200/halaman</option>
+        <option value="25" ${pesertaPageSize===25?'selected':''}>${pgSizeLabel(25)}</option>
+        <option value="50" ${pesertaPageSize===50?'selected':''}>${pgSizeLabel(50)}</option>
+        <option value="100" ${pesertaPageSize===100?'selected':''}>${pgSizeLabel(100)}</option>
+        <option value="200" ${pesertaPageSize===200?'selected':''}>${pgSizeLabel(200)}</option>
       </select></span>
     </div>`;
   host.querySelectorAll('[data-pg]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -4567,7 +4609,7 @@ function renderMasterTable(){
     return [r.nama,r.kota,r.kode_peserta].filter(Boolean).some(v=>String(v).toLowerCase().includes(q));
   });
   const body=$('#tblMasterBody'); if(!body)return;
-  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="7">Belum ada peserta di Data Master.</td></tr>'; renderMasterPagination(0,0); return; }
+  if(!rows.length){ body.innerHTML='<tr class="empty-row"><td colspan="5">Belum ada peserta di Data Master.</td></tr>'; renderMasterPagination(0,0); return; }
   const totalPages=Math.max(1,Math.ceil(rows.length/masterPageSize));
   if(masterPage>totalPages)masterPage=totalPages;
   if(masterPage<1)masterPage=1;
@@ -4583,7 +4625,7 @@ function renderMasterTable(){
       <td>${(Number(r.tahap??0)+1)}/6</td>
       <td>${tgl}</td>
       <td class="aksi-cell"><div class="aksi-cell-in">
-        <button class="btn b-navy sm" data-manage="${r.participant_id}"><svg class="ic-outbox" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v9" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"/><path d="M8 7l4-4 4 4" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13h4.5a1 1 0 0 1 .95.68 2.4 2.4 0 0 0 4.6 0 1 1 0 0 1 .95-.68H20" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Kelola Dokumen</button>
+        <button class="btn b-navy sm btn-manage-doc" data-manage="${r.participant_id}" title="Kelola Dokumen" aria-label="Kelola Dokumen"><svg class="ic-outbox" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v9" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"/><path d="M8 7l4-4 4 4" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13h4.5a1 1 0 0 1 .95.68 2.4 2.4 0 0 0 4.6 0 1 1 0 0 1 .95-.68H20" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="btn-manage-doc-label"> Kelola Dokumen</span></button>
         <button class="btn b-red sm icon-only" data-remove="${r.id}" data-pid="${r.participant_id}" title="Keluarkan dari Data Master" aria-label="Keluarkan dari Data Master"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><line x1="10" y1="12" x2="21" y2="12"/><path d="m17 8 4 4-4 4"/></svg></button>
       </div></td>
     </tr>`;
@@ -4610,6 +4652,8 @@ function initMasterTableEvents(){
 }
 /* Render kontrol pagination Data Master -> sama persis pola dgn Data Peserta. */
 function renderMasterPagination(totalRows,totalPages){
+  const isMobileView=window.matchMedia('(max-width:760px)').matches;
+  const pgSizeLabel=(n)=>isMobileView?`${n}`:`${n}/halaman`;
   const host=$('#masterPagination');
   if(!host)return;
   if(totalRows===0){ host.innerHTML=''; return; }
@@ -4626,14 +4670,14 @@ function renderMasterPagination(totalRows,totalPages){
   host.innerHTML=`
     <div class="pg-info">Menampilkan ${from}–${to} dari ${totalRows} peserta</div>
     <div class="pg-btns">
-      <button type="button" data-pg="prev" ${masterPage<=1?'disabled':''}>‹ Sebelumnya</button>
+      <button type="button" data-pg="prev" title="Halaman sebelumnya" ${masterPage<=1?'disabled':''}>‹<span class="pg-nav-label"> Sebelumnya</span></button>
       ${pageBtns}
-      <button type="button" data-pg="next" ${masterPage>=totalPages?'disabled':''}>Berikutnya ›</button>
+      <button type="button" data-pg="next" title="Halaman berikutnya" ${masterPage>=totalPages?'disabled':''}><span class="pg-nav-label">Berikutnya </span>›</button>
       <span class="pg-size"><select id="masterPageSizeSel">
-        <option value="25" ${masterPageSize===25?'selected':''}>25/halaman</option>
-        <option value="50" ${masterPageSize===50?'selected':''}>50/halaman</option>
-        <option value="100" ${masterPageSize===100?'selected':''}>100/halaman</option>
-        <option value="200" ${masterPageSize===200?'selected':''}>200/halaman</option>
+        <option value="25" ${masterPageSize===25?'selected':''}>${pgSizeLabel(25)}</option>
+        <option value="50" ${masterPageSize===50?'selected':''}>${pgSizeLabel(50)}</option>
+        <option value="100" ${masterPageSize===100?'selected':''}>${pgSizeLabel(100)}</option>
+        <option value="200" ${masterPageSize===200?'selected':''}>${pgSizeLabel(200)}</option>
       </select></span>
     </div>`;
   host.querySelectorAll('[data-pg]').forEach(btn=>btn.addEventListener('click',()=>{
