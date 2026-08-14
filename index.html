@@ -551,6 +551,10 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secKeuangan tbody{display:table-row-group}
   #secKeuangan tbody tr{display:table-row;border-bottom:0}
   #secKeuangan tbody td{display:table-cell;width:auto;padding:8px 10px}
+  /* Perkecil jarak antara kolom No dan Peserta khusus di mobile supaya
+     lebih pas di layar sempit (kolom lain tidak berubah). */
+  #secKeuangan tbody td:first-child{padding-right:4px}
+  #secKeuangan td.nama{padding-left:4px}
   #secKeuangan td.kode{order:initial;white-space:nowrap}
   #secKeuangan td.nama{order:initial;margin-bottom:0}
   #secKeuangan td.nama b{white-space:nowrap;display:block}
