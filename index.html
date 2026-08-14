@@ -198,6 +198,67 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secPeserta .peserta-table-wrap table{border-collapse:collapse;border-spacing:0}
 #secPeserta .peserta-table-wrap thead th{background:var(--navy);color:#E7DCC4;border:0;padding:7px 14px;font-size:.61rem;letter-spacing:.1em}
 #secPeserta .peserta-table-wrap tbody tr{transition:background .12s ease}
+
+/* ============ PREMIUM BUKTI PEMBAYARAN REDESIGN (mengikuti pola Data Peserta/Data Master) ============ */
+#secBukti{padding-top:4px;margin-top:-18px}
+#secBukti .bukti-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 18px;padding:0 4px}
+#secBukti .bukti-head h2{margin-top:6px;font:800 1.65rem/1.15 var(--disp);letter-spacing:-.03em;color:var(--navy)}
+#secBukti .bukti-head p{margin-top:5px;font:600 .78rem/1.5 var(--body);color:var(--mut)}
+#secBukti .bukti-head-mark{text-align:right;padding-bottom:2px}
+#secBukti .bukti-head-mark span{display:block;font:800 .58rem var(--body);letter-spacing:.14em;color:var(--mut);margin-bottom:2px}
+#secBukti .bukti-head-mark b{font:800 .72rem var(--disp);letter-spacing:.12em;color:var(--navy);opacity:.72}
+#secBukti .bukti-toolbar{margin-bottom:14px;background:rgba(255,255,255,.66);border:1px solid rgba(217,227,239,.95);border-radius:16px;padding:9px;gap:9px;box-shadow:0 8px 22px rgba(27,58,102,.055);backdrop-filter:blur(10px);display:flex;flex-wrap:wrap;align-items:center}
+#secBukti .bukti-search{display:flex;align-items:center;gap:9px;flex:1;min-width:260px;background:#fff;border:1.5px solid #D5DFEA;border-radius:11px;padding:0 13px;height:46px;transition:.18s}
+#secBukti .bukti-search:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secBukti .bukti-search svg{width:17px;height:17px;stroke:#718198;fill:none;stroke-width:2;flex-shrink:0}
+#secBukti .bukti-search input{width:100%;height:100%;border:0;outline:0;background:transparent;padding:0;font:600 .83rem var(--body);color:var(--ink)}
+#secBukti .bukti-search input::placeholder{color:#93A0B1}
+#secBukti .bukti-filter{position:relative;min-width:220px}
+#secBukti .bukti-filter select{width:100%;height:46px;border:1.5px solid #D5DFEA;border-radius:11px;background:#fff;color:var(--navy);font:800 .79rem var(--body);padding:0 36px 0 13px;outline:0;transition:.18s}
+#secBukti .bukti-filter select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secBukti .tbl-wrap{background:transparent;border:0;border-radius:0;overflow:visible}
+#secBukti .tbl-wrap table{border-collapse:collapse;border-spacing:0}
+#secBukti .tbl-wrap thead th{background:var(--navy);color:#E7DCC4;border:0;padding:11px 14px;font-size:.61rem;letter-spacing:.1em}
+#secBukti .tbl-wrap tbody tr{transition:background .12s ease}
+#secBukti .tbl-wrap tbody tr:hover{background:#F4F6F9}
+#secBukti .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:10px 14px;font-size:.8rem;line-height:1.3}
+@media(max-width:760px){
+  #secBukti .bukti-head{align-items:flex-start}
+  #secBukti .bukti-head-mark{display:none}
+  #secBukti .bukti-toolbar{padding:8px;flex-wrap:wrap}
+  #secBukti .bukti-search{min-width:100%}
+}
+#secSekolah .sekolah-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 18px;padding:0 4px}
+#secSekolah .sekolah-head h2{margin-top:6px;font:800 1.65rem/1.15 var(--disp);letter-spacing:-.03em;color:var(--navy)}
+#secSekolah .sekolah-head p{margin-top:5px;font:600 .78rem/1.5 var(--body);color:var(--mut)}
+#secSekolah .sekolah-head-mark{text-align:right;padding-bottom:2px}
+#secSekolah .sekolah-head-mark span{display:block;font:800 .58rem var(--body);letter-spacing:.14em;color:var(--mut);margin-bottom:2px}
+#secSekolah .sekolah-head-mark b{font:800 .72rem var(--disp);letter-spacing:.12em;color:var(--navy);opacity:.72}
+#secSekolah .sekolah-toolbar{margin-bottom:14px;background:rgba(255,255,255,.66);border:1px solid rgba(217,227,239,.95);border-radius:16px;padding:9px;gap:9px;box-shadow:0 8px 22px rgba(27,58,102,.055);backdrop-filter:blur(10px);display:flex;flex-wrap:wrap;align-items:center}
+#secSekolah .sekolah-search{display:flex;align-items:center;gap:9px;flex:1;min-width:260px;background:#fff;border:1.5px solid #D5DFEA;border-radius:11px;padding:0 13px;height:46px;transition:.18s}
+#secSekolah .sekolah-search:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secSekolah .sekolah-search svg{width:17px;height:17px;stroke:#718198;fill:none;stroke-width:2;flex-shrink:0}
+#secSekolah .sekolah-search input{width:100%;height:100%;border:0;outline:0;background:transparent;padding:0;font:600 .83rem var(--body);color:var(--ink)}
+#secSekolah .sekolah-search input::placeholder{color:#93A0B1}
+#secSekolah .sekolah-add{display:flex;gap:9px;flex:1;min-width:280px;align-items:center}
+#secSekolah .sekolah-add input[type="text"]{flex:1;height:46px;border:1.5px solid #D5DFEA;border-radius:11px;padding:0 14px;font:600 .83rem var(--body);outline:0;transition:.18s;background:#fff;color:var(--ink)}
+#secSekolah .sekolah-add input[type="text"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(190,129,70,.11)}
+#secSekolah .sekolah-add input[type="text"]::placeholder{color:#93A0B1}
+#secSekolah .sekolah-add .btn{height:46px;padding:0 18px;white-space:nowrap;border-radius:11px}
+#secSekolah .tbl-wrap{background:transparent;border:0;border-radius:0;overflow:visible}
+#secSekolah .tbl-wrap table{border-collapse:collapse;border-spacing:0}
+#secSekolah .tbl-wrap thead th{background:var(--navy);color:#E7DCC4;border:0;padding:11px 14px;font-size:.61rem;letter-spacing:.1em}
+#secSekolah .tbl-wrap tbody tr{transition:background .12s ease}
+#secSekolah .tbl-wrap tbody tr:hover{background:#F4F6F9}
+#secSekolah .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:10px 14px;font-size:.8rem;line-height:1.3}
+#secSekolah .tbl-wrap td:first-child b{font:800 .82rem var(--body);color:#14233A}
+@media(max-width:760px){
+  #secSekolah .sekolah-head{align-items:flex-start}
+  #secSekolah .sekolah-head-mark{display:none}
+  #secSekolah .sekolah-toolbar{padding:8px;flex-wrap:wrap}
+  #secSekolah .sekolah-search{min-width:100%}
+  #secSekolah .sekolah-add{min-width:100%}
+}
 #secPeserta .peserta-table-wrap tbody tr:hover{background:#F4F6F9}
 #secPeserta .peserta-table-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2}
 #secPeserta .peserta-table-wrap tbody td:first-child{color:#8390A0;font:800 .72rem var(--mono)}
@@ -1054,7 +1115,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 /* ============ KELOLA KEUANGAN ============ */
 #financeModal{justify-content:flex-start;align-items:stretch;padding:0}
 #financeModal .box{max-width:780px;width:100%;height:100vh;border-radius:0;display:flex;flex-direction:column;animation:panelIn .22s ease-out}
-#financeModal .box-body{max-height:none;flex:1;overflow-y:auto}
+#financeModal .box-body{max-height:70vh;overflow-y:auto}
 @media(max-width:860px){#financeModal .box{max-width:100%}}
 
 #finCatModal{justify-content:flex-start;align-items:stretch;padding:0}
@@ -1099,6 +1160,11 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .fp-hist-l span{font:600 .74rem var(--body);color:var(--mut)}
 .fp-hist-actions{display:flex;gap:8px;flex-shrink:0}
 .fp-catatan-row{display:flex;gap:10px}
+/* Tanggal & Metode selalu sejajar (2 kolom) baik di mobile maupun
+   desktop -> tidak ikut aturan info-grid yang jadi 1 kolom di mobile. */
+.fp-two-col{display:flex;gap:12px}
+.fp-two-col-item{flex:1;min-width:0}
+.fp-two-col-item label{display:block}
 .fp-catatan-row input{width:100%}
 .fp-catatan-row #btnSavePayment{flex-shrink:0;width:46px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:11px}
 .fp-catatan-row #fpCatatanNominal{background:#f4f5f7;color:var(--mut);cursor:default}
@@ -1173,7 +1239,12 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .inv-brand{display:flex;align-items:center;gap:10px}
 .inv-brand img{height:66px;width:auto;display:block;flex-shrink:0}
 .inv-no{font:700 .82rem var(--mono);color:var(--navy);text-align:right}
+.inv-no .inv-label{display:block;font:800 1.6rem var(--disp);letter-spacing:.06em;color:var(--navy);margin-bottom:2px}
 .inv-no small{display:block;font:600 .68rem var(--body);color:var(--mut);margin-top:2px}
+.ico-inv{width:16px;height:16px;flex-shrink:0;vertical-align:-3px}
+#btnOpenInvoice{font-size:1.05rem;padding:10px 20px;gap:10px;background:#fff;color:var(--navy);border-color:#fff}
+#btnOpenInvoice:hover{background:#f0f3f7}
+#btnOpenInvoice .ico-inv{width:22px;height:22px;vertical-align:-5px;color:var(--navy)}
 .inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-bottom:20px}
 .inv-meta div{font:600 .82rem var(--body);color:var(--ink)}
 .inv-meta div b{display:block;font:800 .64rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
@@ -2205,10 +2276,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <div class="tab-panel" id="secSekolah">
-        <div class="toolbar">
-          <input type="text" id="qSekolah" placeholder="Cari nama sekolah…">
-          <input type="text" id="newSekolahNama" placeholder="Nama sekolah baru…" style="flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
-          <button class="btn b-pri sm" id="btnAddSekolah">+ Tambah Sekolah</button>
+        <div class="sekolah-head">
+          <div>
+            <h2>Sekolah Mitra</h2>
+            <p>Kelola daftar sekolah mitra dan jaringan asal peserta.</p>
+          </div>
+          <div class="sekolah-head-mark"><span>JARINGAN</span><b>PT. JUARA</b></div>
+        </div>
+        <div class="sekolah-toolbar">
+          <div class="sekolah-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input type="text" id="qSekolah" placeholder="Cari nama sekolah…">
+          </div>
+          <div class="sekolah-add">
+            <input type="text" id="newSekolahNama" placeholder="Nama sekolah baru…">
+            <button class="btn b-pri sm" id="btnAddSekolah">+ Tambah Sekolah</button>
+          </div>
         </div>
         <div class="tbl-wrap">
           <table>
@@ -2242,19 +2325,31 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <div class="tab-panel" id="secBukti">
+        <div class="bukti-head">
+          <div>
+            <h2>Bukti Pembayaran</h2>
+            <p>Periksa dan verifikasi bukti transaksi pembayaran yang diunggah peserta.</p>
+          </div>
+          <div class="bukti-head-mark"><span>VERIFIKASI</span><b>PT. JUARA</b></div>
+        </div>
         <div class="stats">
           <div class="stat warn"><b id="bpStPending">0</b><span>Menunggu Verifikasi</span></div>
           <div class="stat ok"><b id="bpStApproved">0</b><span>Disetujui</span></div>
           <div class="stat bad"><b id="bpStRejected">0</b><span>Ditolak</span></div>
         </div>
-        <div class="toolbar">
-          <input type="text" id="qSearchBukti" placeholder="Cari nama, kode, atau kota peserta…">
-          <select id="qBuktiStatus">
-            <option value="menunggu">Menunggu Verifikasi</option>
-            <option value="disetujui">Disetujui</option>
-            <option value="ditolak">Ditolak</option>
-            <option value="">Semua Status</option>
-          </select>
+        <div class="bukti-toolbar">
+          <div class="bukti-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input type="text" id="qSearchBukti" placeholder="Cari nama, kode, atau kota peserta…">
+          </div>
+          <div class="bukti-filter">
+            <select id="qBuktiStatus">
+              <option value="">Semua Status</option>
+              <option value="menunggu">Menunggu Verifikasi</option>
+              <option value="disetujui">Disetujui</option>
+              <option value="ditolak">Ditolak</option>
+            </select>
+          </div>
         </div>
         <div class="tbl-wrap">
           <table>
@@ -2683,7 +2778,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div style="min-width:0"><h3 id="finNama" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-</h3><p id="finKode">-</p></div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <button class="btn b-pri sm" id="btnOpenInvoice">🧾 Lihat Invoice</button>
+        <button class="btn b-pri sm" id="btnOpenInvoice"><svg class="ico-inv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18l-2.5-1.5L14 21l-2.5-1.5L9 21l-2.5-1.5L4 21V3a1 1 0 0 1 1-1Z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg> Lihat Invoice</button>
         <button class="x" id="btnCloseFinance">✕</button>
       </div>
     </div>
@@ -2701,12 +2796,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <div id="fpCategoryTotal" class="fp-cat-total"></div>
             <select id="fpCategory" style="display:none"></select>
           </div>
-          <div class="fld"><label>Tanggal</label><input type="date" id="fpTanggal" readonly onkeydown="return false" onwheel="return false" style="background:#f4f5f7;color:var(--mut);cursor:default;pointer-events:none"></div>
-          <div class="fld"><label>Metode</label>
-            <select id="fpMetode">
-              <option value="Cicilan">Cicilan</option>
-              <option value="Tunai">Tunai</option>
-            </select>
+          <div class="fld full">
+            <div class="fp-two-col">
+              <div class="fp-two-col-item"><label>Tanggal</label><input type="date" id="fpTanggal" readonly onkeydown="return false" onwheel="return false" style="background:#f4f5f7;color:var(--mut);cursor:default;pointer-events:none"></div>
+              <div class="fp-two-col-item"><label>Metode</label>
+                <select id="fpMetode">
+                  <option value="Cicilan">Cicilan</option>
+                  <option value="Tunai">Tunai</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="fld full"><label>Jumlah Bayar (Rp)</label><input type="text" inputmode="numeric" id="fpJumlah" placeholder="0"></div>
           <div class="fld full">
@@ -2720,7 +2819,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         </div>
       </div>
       <div class="box-sec">
-        <h4>🧾 Riwayat Pembayaran</h4>
+        <h4><svg class="ico-inv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18l-2.5-1.5L14 21l-2.5-1.5L9 21l-2.5-1.5L4 21V3a1 1 0 0 1 1-1Z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg> Riwayat Pembayaran</h4>
         <div id="fpSisaPembayaran" class="fp-cat-total" style="margin-bottom:10px"><b>Sisa Pembayaran</b><span>Rp 0</span></div>
         <div id="finPaymentBody" class="fp-hist-list"><p class="fp-hist-empty">Belum ada pembayaran.</p></div>
       </div>
@@ -2732,16 +2831,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <div class="modal" id="invoiceModal">
   <div class="box">
     <div class="box-h">
-      <div style="min-width:0"><h3>🧾 Invoice Peserta</h3><p id="invSubtitle">Rincian tagihan &amp; pembayaran</p></div>
+      <div style="min-width:0"><h3><svg class="ico-inv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18l-2.5-1.5L14 21l-2.5-1.5L9 21l-2.5-1.5L4 21V3a1 1 0 0 1 1-1Z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg> Invoice Peserta</h3><p id="invSubtitle">Rincian tagihan &amp; pembayaran</p></div>
       <button class="x" id="btnCloseInvoice">✕</button>
     </div>
     <div class="box-body">
       <div id="invoiceArea"></div>
       <div class="toolbar" style="margin-top:18px;gap:10px;flex-wrap:wrap">
-        <button class="btn b-navy sm" id="btnPrintInvoice">🖨️ Cetak / Simpan PDF</button>
-        <a class="btn b-pri sm" id="btnShareInvoiceWA" href="#" target="_blank" rel="noopener">📲 Kirim ke WhatsApp</a>
-        <button class="btn b-ghost sm" id="btnCopyInvoiceWA">📋 Salin Pesan</button>
-        <button class="btn b-navy sm" id="btnOpenInvoiceEmail">✉️ Kirim ke Email</button>
+        <button class="btn b-navy sm" id="btnPrintInvoice" style="flex:1;justify-content:center;min-width:150px">🖨️ Cetak / Simpan PDF</button>
+        <a class="btn b-pri sm" id="btnShareInvoiceWA" href="#" target="_blank" rel="noopener" style="flex:1;justify-content:center;min-width:150px">📲 Kirim ke WhatsApp</a>
+        <button class="btn b-navy sm" id="btnOpenInvoiceEmail" style="flex:1;justify-content:center;min-width:150px">✉️ Kirim ke Email</button>
       </div>
       <p style="margin-top:8px;font:600 .74rem var(--body);color:var(--mut)">Tips: tahan <b>Ctrl</b> (Windows) / <b>Cmd</b> (Mac) saat klik "Kirim ke WhatsApp" supaya tab terbuka di background tanpa berpindah halaman.</p>
       <p id="invWaWarn" style="display:none;margin-top:10px;font:600 .78rem var(--body);color:var(--red)">Nomor WhatsApp peserta belum terdaftar. Lengkapi data telepon peserta terlebih dahulu.</p>
@@ -2852,7 +2950,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div id="bvLoading" style="padding:40px 0;color:var(--mut);font:600 .85rem var(--body)">Memuat berkas…</div>
       <img id="bvImg" style="display:none;max-width:100%;max-height:60vh;border-radius:12px;border:1.5px solid var(--line);object-fit:contain" alt="Bukti pembayaran">
       <iframe id="bvPdf" style="display:none;width:100%;height:60vh;border:1.5px solid var(--line);border-radius:12px" title="Bukti pembayaran"></iframe>
-      <a id="bvOpenNew" href="#" target="_blank" rel="noopener" class="btn b-ghost sm" style="display:none">Buka di tab baru</a>
+      <a id="bvOpenNew" href="#" rel="noopener" class="btn b-ghost sm" style="display:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Download</a>
     </div>
   </div>
 </div>
@@ -3509,32 +3607,78 @@ function renderBuktiTable(){
 }
 $('#qSearchBukti')?.addEventListener('input',renderBuktiTable);
 $('#qBuktiStatus')?.addEventListener('change',renderBuktiTable);
+ensureCsel($('#qBuktiStatus'));
 
+/* Cek cepat apakah signed URL masih valid (dipakai khusus untuk PDF, karena
+   <iframe> tidak punya event 'error' yang bisa diandalkan kalau kontennya
+   ternyata JSON error dari Supabase, bukan file PDF beneran). */
+async function checkSignedUrlOk(url){
+  try{
+    const res=await fetch(url,{method:'HEAD'});
+    return res.ok;
+  }catch(e){ return true; } // gagal cek (mis. jaringan/CORS) — jangan blokir, biarkan iframe coba muat sendiri
+}
+const BUKTI_URL_TTL=3600; // detik masa berlaku signed URL (1 jam)
+let bvCurrentPpid=null;
 async function viewBuktiProof(ppid){
   const pp=PAY_PROOFS.find(x=>x.id===ppid); if(!pp?.storage_path)return toast('Berkas tidak ditemukan','err');
   const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
   const modal=$('#buktiViewModal');
+  bvCurrentPpid=ppid;
   $('#bvSub').textContent=(p?.nama||'Peserta')+' · '+formatRupiah(pp.jumlah_klaim);
   const imgEl=$('#bvImg'), pdfEl=$('#bvPdf'), loadEl=$('#bvLoading'), openEl=$('#bvOpenNew');
   imgEl.style.display='none'; pdfEl.style.display='none'; openEl.style.display='none';
-  imgEl.src=''; pdfEl.src='';
-  loadEl.textContent='Memuat berkas…'; loadEl.style.display='block';
+  imgEl.src=''; pdfEl.src=''; imgEl.onerror=null;
+  loadEl.textContent='Memuat berkas…'; loadEl.style.display='block'; loadEl.style.color='';
   modal.classList.add('show');
   try{
-    const {data,error}=await sb.storage.from('juara-v2-payment-proofs').createSignedUrl(pp.storage_path,300);
-    if(error||!data)throw new Error(error?.message||'Gagal membuat tautan berkas');
     const isPdf=/\.pdf($|\?)/i.test(pp.storage_path);
+    const {data,error}=await sb.storage.from('juara-v2-payment-proofs').createSignedUrl(pp.storage_path,BUKTI_URL_TTL);
+    if(error||!data)throw new Error(error?.message||'Gagal membuat tautan berkas');
     loadEl.style.display='none';
+    const expiresAt=Date.now()+BUKTI_URL_TTL*1000;
+    const showExpired=()=>{
+      imgEl.style.display='none'; pdfEl.style.display='none';
+      loadEl.style.color='var(--r,#dc2626)';
+      loadEl.textContent='Tautan bukti sudah kedaluwarsa (lebih dari 1 jam). Tutup jendela ini lalu klik "Lihat Bukti" lagi untuk memuat ulang.';
+      loadEl.style.display='block';
+    };
     if(isPdf){
+      loadEl.textContent='Memuat berkas…'; loadEl.style.display='block';
+      const ok=await checkSignedUrlOk(data.signedUrl);
+      loadEl.style.display='none';
+      if(!ok){ showExpired(); return; }
       pdfEl.src=data.signedUrl; pdfEl.style.display='block';
     }else{
+      imgEl.onerror=()=>{ if(Date.now()>=expiresAt-5000) showExpired(); else loadEl.textContent='Gagal memuat gambar.'; loadEl.style.display='block'; };
       imgEl.src=data.signedUrl; imgEl.style.display='block';
     }
-    openEl.href=data.signedUrl; openEl.style.display='inline-flex';
+    openEl.style.display='inline-flex';
   }catch(err){
     loadEl.textContent='Gagal memuat berkas: '+(err.message||'terjadi kesalahan');
   }
 }
+$('#bvOpenNew')?.addEventListener('click',async e=>{
+  e.preventDefault();
+  const openEl=e.currentTarget;
+  const pp=PAY_PROOFS.find(x=>x.id===bvCurrentPpid); if(!pp)return;
+  const p=PARTICIPANTS.find(x=>x.id===pp.participant_id);
+  const isPdf=/\.pdf($|\?)/i.test(pp.storage_path);
+  const ext=isPdf?'pdf':(pp.storage_path.split('.').pop()||'jpg');
+  const downloadName=`Bukti-Pembayaran-${(p?.nama||'Peserta').replace(/[^a-z0-9]+/gi,'-')}.${ext}`;
+  const origHtml=openEl.innerHTML;
+  openEl.style.pointerEvents='none'; openEl.style.opacity='.6';
+  try{
+    // Selalu buat tautan baru saat tombol diklik, biar tidak pernah pakai tautan basi/kedaluwarsa
+    const {data,error}=await sb.storage.from('juara-v2-payment-proofs').createSignedUrl(pp.storage_path,BUKTI_URL_TTL,{download:downloadName});
+    if(error||!data)throw new Error(error?.message||'Gagal membuat tautan');
+    window.open(data.signedUrl,'_blank','noopener');
+  }catch(err){
+    toast('Gagal membuka berkas, coba lagi','err');
+  }finally{
+    openEl.style.pointerEvents=''; openEl.style.opacity='';
+  }
+});
 $('#btnCloseBuktiView')?.addEventListener('click',()=>{
   $('#buktiViewModal').classList.remove('show');
   $('#bvImg').src=''; $('#bvPdf').src='';
@@ -4004,7 +4148,7 @@ function invoiceHtml(inv){
     <div class="inv-box">
       <div class="inv-head">
         <div class="inv-brand"><img src="loogojuara3.svg" alt="PT. Juara"></div>
-        <div class="inv-no">INVOICE<br>${escapeHtml(invoiceNo)}<small>${tglStr}</small></div>
+        <div class="inv-no"><span class="inv-label">INVOICE</span>${escapeHtml(invoiceNo)}<small>${tglStr}</small></div>
       </div>
       <div class="inv-meta">
         <div><b>Ditagihkan kepada</b>${escapeHtml(p.nama||'-')}</div>
@@ -4112,16 +4256,6 @@ $('#btnPrintInvoice')?.addEventListener('click', ()=>{
   if(!INVOICE_ACTIVE)return;
   $('#invoicePrintArea').innerHTML=invoiceHtml(INVOICE_ACTIVE);
   window.print();
-});
-$('#btnCopyInvoiceWA')?.addEventListener('click', async ()=>{
-  if(!INVOICE_ACTIVE)return;
-  const text=invoiceWaText(INVOICE_ACTIVE);
-  try{
-    await navigator.clipboard.writeText(text);
-    toast('Pesan invoice disalin ✓ Tinggal paste ke WhatsApp','ok');
-  }catch(err){
-    toast('Gagal menyalin otomatis, silakan salin manual','err');
-  }
 });
 function openInvoiceEmailModal(){
   if(!INVOICE_ACTIVE)return;
@@ -5070,16 +5204,17 @@ async function cancelKolektif(pid,jenis){
 
 /* Cache signed URL per storage_path supaya buka pratinjau berulang (atau setelah
    di-hover/prefetch) terasa instan, tidak perlu nunggu round-trip ke Supabase
-   tiap kali. TTL signed URL 300 detik, kita anggap valid selama masih ada sisa
+   tiap kali. TTL signed URL 1 jam, kita anggap valid selama masih ada sisa
    >15 detik biar aman dari race condition pas dipakai. */
+const DOC_URL_TTL=3600;
 const SIGNED_URL_CACHE=new Map();
-async function getSignedDocUrl(storage_path){
+async function getSignedDocUrl(storage_path,forceFresh){
   const now=Date.now();
   const cached=SIGNED_URL_CACHE.get(storage_path);
-  if(cached&&cached.exp>now+15000) return cached.url;
-  const {data,error}=await sb.storage.from('juara-v2-documents').createSignedUrl(storage_path,300);
+  if(!forceFresh&&cached&&cached.exp>now+15000) return cached.url;
+  const {data,error}=await sb.storage.from('juara-v2-documents').createSignedUrl(storage_path,DOC_URL_TTL);
   if(error||!data) throw new Error(error?.message||'Gagal membuat tautan berkas');
-  SIGNED_URL_CACHE.set(storage_path,{url:data.signedUrl,exp:now+300*1000});
+  SIGNED_URL_CACHE.set(storage_path,{url:data.signedUrl,exp:now+DOC_URL_TTL*1000});
   return data.signedUrl;
 }
 function prefetchDocUrl(storage_path){ if(storage_path) getSignedDocUrl(storage_path).catch(()=>{}); }
@@ -5098,28 +5233,63 @@ async function viewDoc(pid,jenis){
 }
 /* Pratinjau dokumen langsung di halaman yang sama (modal), tanpa buka tab baru —
    dipakai oleh tombol mata 👁 di panel Kelola Dokumen. */
+let dvCurrentDoc=null;
 async function viewDocInline(pid,jenis){
   const doc=(DOCS_BY_PID[pid]||{})[jenis]; if(!doc?.storage_path)return toast('Berkas tidak ditemukan','err');
   const label=DOCS.find(d=>d.k===jenis)?.t||doc.file_name||'Dokumen';
   const modal=$('#docViewModal');
+  dvCurrentDoc=doc;
   $('#dvSub').textContent=label;
   const imgEl=$('#dvImg'), pdfEl=$('#dvPdf'), loadEl=$('#dvLoading'), openEl=$('#dvOpenNew');
   imgEl.style.display='none'; pdfEl.style.display='none'; openEl.style.display='none';
-  imgEl.src=''; pdfEl.src='';
-  loadEl.textContent='Memuat berkas…'; loadEl.style.display='block';
+  imgEl.src=''; pdfEl.src=''; imgEl.onerror=null;
+  loadEl.textContent='Memuat berkas…'; loadEl.style.display='block'; loadEl.style.color='';
   modal.classList.add('show');
   try{
     const url=await getSignedDocUrl(doc.storage_path);
     const isPdf=/\.pdf($|\?)/i.test(doc.storage_path)||/\.pdf($|\?)/i.test(doc.file_name||'');
-    loadEl.style.display='none';
-    if(isPdf){ pdfEl.src=url; pdfEl.style.display='block'; }
-    else{ imgEl.src=url; imgEl.style.display='block'; }
-    openEl.href=url; openEl.style.display='inline-flex';
+    if(isPdf){
+      const ok=await checkSignedUrlOk(url);
+      loadEl.style.display='none';
+      if(!ok){
+        loadEl.style.color='var(--r,#dc2626)';
+        loadEl.textContent='Tautan berkas sudah kedaluwarsa. Tutup jendela ini lalu buka pratinjau lagi untuk memuat ulang.';
+        loadEl.style.display='block';
+        return;
+      }
+      pdfEl.src=url; pdfEl.style.display='block';
+    }
+    else{
+      loadEl.style.display='none';
+      imgEl.onerror=()=>{
+        imgEl.style.display='none';
+        loadEl.style.color='var(--r,#dc2626)';
+        loadEl.textContent='Tautan berkas sudah kedaluwarsa. Tutup jendela ini lalu buka pratinjau lagi untuk memuat ulang.';
+        loadEl.style.display='block';
+      };
+      imgEl.src=url; imgEl.style.display='block';
+    }
+    openEl.style.display='inline-flex';
   }catch(err){
     loadEl.textContent='Gagal memuat berkas: '+(err.message||'terjadi kesalahan');
     loadEl.style.display='block';
   }
 }
+$('#dvOpenNew')?.addEventListener('click',async e=>{
+  e.preventDefault();
+  if(!dvCurrentDoc?.storage_path)return;
+  const openEl=e.currentTarget;
+  openEl.style.pointerEvents='none'; openEl.style.opacity='.6';
+  try{
+    // Selalu buat tautan baru saat tombol diklik, biar tidak pernah pakai tautan basi/kedaluwarsa
+    const url=await getSignedDocUrl(dvCurrentDoc.storage_path,true);
+    window.open(url,'_blank','noopener');
+  }catch(err){
+    toast('Gagal membuka berkas, coba lagi','err');
+  }finally{
+    openEl.style.pointerEvents=''; openEl.style.opacity='';
+  }
+});
 $('#btnCloseDocView')?.addEventListener('click',()=>{
   $('#docViewModal').classList.remove('show');
   $('#dvImg').src=''; $('#dvPdf').src='';
