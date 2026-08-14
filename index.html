@@ -252,12 +252,61 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 #secSekolah .tbl-wrap tbody tr:hover{background:#F4F6F9}
 #secSekolah .tbl-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:10px 14px;font-size:.8rem;line-height:1.3}
 #secSekolah .tbl-wrap td:first-child b{font:800 .82rem var(--body);color:#14233A}
+#secSekolah .mini{display:inline-flex;align-items:center;gap:6px}
+#secSekolah .mini .mini-ic{display:none}
+#secSekolah .aksi-cell-in{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start}
+#secSekolah .pill .pill-ic{display:none}
+#secSekolah .tgl-short{display:none}
 @media(max-width:760px){
   #secSekolah .sekolah-head{align-items:flex-start}
   #secSekolah .sekolah-head-mark{display:none}
   #secSekolah .sekolah-toolbar{padding:8px;flex-wrap:wrap}
   #secSekolah .sekolah-search{min-width:100%}
   #secSekolah .sekolah-add{min-width:100%}
+  /* Timpa balik aturan generik "thead{display:none} table,tbody,tr,td{display:block}"
+     supaya tabel Sekolah Mitra tetap tampil sebagai tabel asli (header + kolom
+     sejajar) persis seperti di desktop, bukan tumpukan kartu per-baris. Kolomnya
+     cuma 4 dan ringkas, jadi scroll horizontal (kalau memang kepepet) sudah cukup. */
+  #secSekolah .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
+  #secSekolah table{display:table;width:100%;min-width:0;table-layout:auto;border-spacing:0;border-collapse:collapse}
+  #secSekolah thead{display:table-header-group}
+  #secSekolah thead tr{display:table-row}
+  #secSekolah tbody{display:table-row-group}
+  #secSekolah tbody tr{display:table-row}
+  #secSekolah tbody td{display:table-cell;width:auto;padding:6px 8px;font-size:.8rem;line-height:1.2;white-space:nowrap}
+  #secSekolah thead th{padding:7px 8px;font-size:.61rem;letter-spacing:.1em;white-space:nowrap}
+  #secSekolah tbody td:last-child{white-space:normal}
+  /* Supaya tabel muat penuh di layar mobile (tidak overflow/kepotong ke
+     kanan): nama sekolah boleh membungkus 2 baris (bukan dipaksa 1 baris
+     panjang), dan kolom "Ditambahkan" pakai format tanggal singkat tanpa
+     jam (lihat .tgl-full/.tgl-short) — dua-duanya membebaskan ruang buat
+     kolom Status & Aksi tanpa perlu geser layar ke samping. */
+  #secSekolah tbody td:first-child{white-space:normal;max-width:120px}
+  #secSekolah .tgl-full{display:none}
+  #secSekolah .tgl-short{display:inline;font-size:.74rem;white-space:nowrap}
+  /* Pill status "Aktif"/"Nonaktif" diringkas jadi icon saja di mobile —
+     bentuk pill (background, border, teks) dilepas, cuma sisa ikon
+     centang (aktif) / silang (nonaktif) supaya kolom Status hemat tempat. */
+  #secSekolah .pill{background:transparent!important;border:0!important;padding:0!important;min-width:0!important;box-shadow:none!important}
+  #secSekolah .pill .pill-txt{display:none}
+  #secSekolah .pill .pill-ic{display:inline-flex}
+  #secSekolah .pill.ok .pill-ic{color:#0E8F55}
+  #secSekolah .pill.bad .pill-ic{color:#B32C2C}
+  /* Tombol Aksi jadi icon-only (ikon dari CAT_ICO_*) supaya kolom Aksi
+     ringkas dan tidak perlu scroll horizontal jauh-jauh cuma buat lihat
+     "Nonaktifkan"/"Hapus". Judul tombol tetap ada lewat atribut title
+     (muncul sbg tooltip) + aria-label bawaan HTML. */
+  #secSekolah .mini{width:36px;height:36px;padding:0;justify-content:center;border-radius:10px;gap:0}
+  #secSekolah .mini .mini-ic{display:inline-flex}
+  #secSekolah .mini .mini-txt{display:none}
+  /* Kolom Aksi diberi lebar tetap lewat width langsung di th/td (bukan lewat
+     <colgroup><col> — kombinasi col + visibility:collapse ternyata bikin
+     Safari/iOS salah render sampai kolom Aksi ikut hilang). Dua tombolnya
+     direnggangkan ke ujung kiri-kanan lewat wrapper .aksi-cell-in supaya
+     jelas terpisah dan tidak "berdempet". */
+  #secSekolah thead th:nth-child(4),
+  #secSekolah tbody td:nth-child(4){width:132px;padding-left:10px;padding-right:10px}
+  #secSekolah .aksi-cell-in{width:100%;flex-wrap:nowrap;justify-content:space-between;gap:0}
 }
 #secPeserta .peserta-table-wrap tbody tr:hover{background:#F4F6F9}
 #secPeserta .peserta-table-wrap tbody td{background:transparent;border:0;border-bottom:1px solid rgba(19,49,77,.16);padding:6px 14px;height:auto;font-size:.8rem;line-height:1.2}
@@ -3390,12 +3439,12 @@ function renderSekolahTable(){
   body.innerHTML=rows.map(s=>`
     <tr data-sid="${s.id}">
       <td><b>${escapeHtml(s.nama||'-')}</b></td>
-      <td><span class="pill ${s.aktif?'ok':'bad'}">${s.aktif?'Aktif':'Nonaktif'}</span></td>
-      <td>${s.created_at?fmtMailDate(s.created_at):'-'}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="mini" data-toggle="${s.id}">${s.aktif?'Nonaktifkan':'Aktifkan'}</button>
-        <button class="mini r" data-del="${s.id}">Hapus</button>
-      </td>
+      <td data-label="Status"><span class="pill ${s.aktif?'ok':'bad'}"><span class="pill-ic">${s.aktif?SEK_STAT_ICO_OK:SEK_STAT_ICO_BAD}</span><span class="pill-txt">${s.aktif?'Aktif':'Nonaktif'}</span></span></td>
+      <td data-label="Ditambahkan"><span class="tgl-full">${s.created_at?fmtMailDate(s.created_at):'-'}</span><span class="tgl-short">${s.created_at?fmtDateShort(s.created_at):'-'}</span></td>
+      <td class="aksi-cell"><div class="aksi-cell-in">
+        <button class="mini" data-toggle="${s.id}" title="${s.aktif?'Nonaktifkan':'Aktifkan'}"><span class="mini-ic">${s.aktif?CAT_ICO_OFF:CAT_ICO_ON}</span><span class="mini-txt">${s.aktif?'Nonaktifkan':'Aktifkan'}</span></button>
+        <button class="mini r" data-del="${s.id}" title="Hapus"><span class="mini-ic">${CAT_ICO_DEL}</span><span class="mini-txt">Hapus</span></button>
+      </div></td>
     </tr>`).join('');
   body.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggleSekolah(b.dataset.toggle);}));
   body.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();deleteSekolah(b.dataset.del);}));
@@ -3473,6 +3522,8 @@ const FIN_MANAGE_ICON='<svg class="btn-fin-ico" viewBox="0 0 24 24" width="15" h
 const CAT_ICO_EDIT='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 const CAT_ICO_SAVE='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>';
 const CAT_ICO_ON='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><path d="M12 2v10"/></svg>';
+const SEK_STAT_ICO_OK='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.4l2.6 2.6 4.8-5.2"/></svg>';
+const SEK_STAT_ICO_BAD='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M4.9 4.9l14.2 14.2"/></svg>';
 const CAT_ICO_OFF='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M4.9 4.9l14.2 14.2"/></svg>';
 const CAT_ICO_DEL='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
 const CAT_ICO_CHECK='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
@@ -5915,6 +5966,10 @@ const MAIL_WATCH_INTERVAL_MS=45000;
 
 function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtMailDate(d){ if(!d)return '-'; const dt=new Date(d); if(isNaN(dt))return '-'; return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
+/* Versi ringkas (tanggal saja, tanpa jam) — dipakai khusus di layar mobile
+   supaya kolom "Ditambahkan" tidak makan banyak tempat & tabel tidak
+   overflow ke luar layar. */
+function fmtDateShort(d){ if(!d)return '-'; const dt=new Date(d); if(isNaN(dt))return '-'; return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}); }
 function mailInitial(s){ const t=String(s||'').trim(); const m=t.match(/[A-Za-z0-9]/); return m?m[0].toUpperCase():'?'; }
 
 // FIX: sidebar folder gaya Gmail butuh ikon per jenis folder (bukan cuma teks di
