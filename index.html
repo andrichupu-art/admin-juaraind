@@ -376,7 +376,21 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
 }
 #secMaster .master-table-card table{
   border-collapse:collapse;border-spacing:0;
+  table-layout:fixed;width:100%;
 }
+/* Kolom Kota & Dikonversi disembunyikan (lihat aturan display:none di bawah),
+   jadi lebar 5 kolom yang tersisa dibagi rata supaya tabel tetap penuh
+   sampai sisi kanan, tidak menyisakan ruang kosong. */
+#secMaster .master-table-card thead th:nth-child(1),
+#secMaster .master-table-card tbody td:nth-child(1){width:6%}
+#secMaster .master-table-card thead th:nth-child(2),
+#secMaster .master-table-card tbody td:nth-child(2){width:20%}
+#secMaster .master-table-card thead th:nth-child(3),
+#secMaster .master-table-card tbody td:nth-child(3){width:34%}
+#secMaster .master-table-card thead th:nth-child(5),
+#secMaster .master-table-card tbody td:nth-child(5){width:12%}
+#secMaster .master-table-card thead th:nth-child(7),
+#secMaster .master-table-card tbody td:nth-child(7){width:28%}
 #secMaster .master-table-card thead th{
   background:var(--navy);color:#E7DCC4;border:0;
   padding:7px 14px;font-size:.61rem;letter-spacing:.1em;
@@ -454,7 +468,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secMaster .master-table-card{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:13px}
   /* Sama seperti Data Peserta: timpa balik aturan generik ".tbl-wrap table{min-width:760px}"
      yang ikut kena ke wrapper ini (juga punya class "tbl-wrap"). */
-  #secMaster .master-table-card table{display:table;width:auto;min-width:0}
+  #secMaster .master-table-card table{display:table;width:100%;min-width:0;table-layout:fixed}
   #secMaster .master-table-card thead{display:table-header-group}
   #secMaster .master-table-card thead tr{display:table-row}
   #secMaster .master-table-card tbody{display:table-row-group}
