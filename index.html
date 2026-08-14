@@ -1058,7 +1058,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .fin-cat-row-in .fin-bill-input.fin-cat-input-sm{flex:0 1 110px;min-width:70px}
 .fin-cat-row-in .fin-bill-input[readonly]{background:#f4f5f7;color:var(--mut);cursor:default}
 .fin-cat-row-in .fin-bill-input.editing{background:#fff;color:var(--ink);border-color:var(--navy)}
-.fin-cat-sep{width:1.5px;align-self:stretch;min-height:30px;background:var(--line);flex-shrink:0}
+.fin-cat-sep{width:1.5px;align-self:stretch;min-height:30px;background:var(--line);flex-shrink:0;margin-left:auto}
 .fp-cat-list{display:flex;flex-direction:column;gap:8px}
 .fp-cat-item{display:flex;align-items:center;justify-content:space-between;gap:12px;
   border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:#fff}
@@ -2627,10 +2627,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <button class="x" id="btnCloseFinCat">✕</button>
     </div>
     <div class="box-body">
-      <div class="toolbar" style="margin-bottom:14px">
-        <input type="text" id="newFinCatNama" placeholder="Nama kategori baru (cth: Biaya Pelatihan)…" style="flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
-        <input type="text" inputmode="numeric" id="newFinCatNominal" placeholder="Nominal (Rp)" style="width:150px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
-        <button class="btn b-pri sm" id="btnAddFinCat">+ Tambah</button>
+      <div class="toolbar" style="margin-bottom:14px;flex-direction:column;align-items:stretch;gap:10px">
+        <input type="text" id="newFinCatNama" placeholder="Nama kategori baru (cth: Biaya Pelatihan)…" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
+        <div style="display:flex;gap:10px">
+          <input type="text" inputmode="numeric" id="newFinCatNominal" placeholder="Nominal (Rp)" style="flex:1;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .86rem var(--body)">
+          <button class="btn b-pri sm" id="btnAddFinCat">+ Tambah</button>
+        </div>
       </div>
       <div id="finCatList" class="fin-cat-list"></div>
     </div>
