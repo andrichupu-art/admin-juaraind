@@ -591,6 +591,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      tempat banyak. */
   #secKeuangan .pill-txt{display:none}
   #secKeuangan .pill{width:auto;height:auto;min-width:0;padding:0;border-radius:0;border:0;background:transparent!important;box-shadow:none}
+  #secKeuangan .status-cell .pill{width:auto;min-width:0}
   #secKeuangan .pill-ico svg{width:17px;height:17px}
   /* AKAR MASALAH garis "patah": display:flex sempat dipasang LANGSUNG di
      <td class="status-cell">. Itu bikin <td> tsb lepas dari model layout
@@ -693,6 +694,19 @@ body{overflow-x:hidden}
 .toolbar input[type=text]{flex:1;min-width:180px;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font:600 .9rem var(--body)}
 .toolbar input[type=text]:focus{outline:none;border-color:var(--navy)}
 .toolbar .csel{min-width:280px;flex:1;max-width:360px}
+/* Dropdown kategori di form "+ Tambah Kategori Tagihan" (Catat Pembayaran)
+   dibuat memenuhi sisa lebar toolbar penuh di desktop, tidak dibatasi
+   360px seperti dropdown csel lain -> tidak ada ruang kosong di kanan. */
+.toolbar .csel:has(#finAddBillCat){max-width:none}
+@media(max-width:760px){
+  /* Toolbar "+ Tambah Kategori Tagihan" (form Catat Pembayaran) -> di
+     mobile tombolnya jadi icon-only persegi dan disejajarkan satu baris
+     dengan dropdown kategori di atasnya (bukan turun ke baris baru). */
+  .toolbar:has(#finAddBillCat){flex-wrap:nowrap}
+  .toolbar:has(#finAddBillCat) .csel{min-width:0;flex:1}
+  #btnAddBillCat{flex-shrink:0;padding:0;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;gap:0;border-radius:10px}
+  #btnAddBillCat .abc-label{display:none}
+}
 .search-wrap{position:relative;flex:1;min-width:180px;display:flex}
 .search-wrap input[type=text]{width:100%;padding-right:38px}
 .search-clear-btn{display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:none;border-radius:50%;background:var(--line);color:var(--ink,#1a1a2e);font-size:.85rem;font-weight:800;line-height:1;cursor:pointer;align-items:center;justify-content:center}
@@ -1075,6 +1089,7 @@ td.nama span{color:var(--mut);font-size:.78rem}
 .fp-cat-total span{font:800 .95rem var(--body);color:#fff;font-variant-numeric:tabular-nums}
 .fp-catatan-row{display:flex;gap:10px}
 .fp-catatan-row input{width:100%}
+.fp-catatan-row #btnSavePayment{flex-shrink:0;width:46px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:11px}
 .fp-catatan-row #fpCatatanNominal{background:#f4f5f7;color:var(--mut);cursor:default}
 .fp-catatan-row input:disabled{background:#f4f5f7;color:#b9c0cc;cursor:not-allowed;border-color:var(--line)}
 .fin-cat-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -1106,6 +1121,12 @@ td.nama span{color:var(--mut);font-size:.78rem}
 #secKeuangan td.nama b{font-size:.82rem;white-space:nowrap}
 #secKeuangan td.nama span{font-size:.72rem}
 #secKeuangan .pill{font-size:.68rem;padding:5px 10px;white-space:nowrap}
+/* Pill Status disamakan lebarnya (mengikuti pola Data Peserta) supaya tidak
+   mengikuti panjang teks masing-masing status -> baris jadi rapi & rata.
+   Khusus desktop; media query mobile di atas sudah override balik pill
+   jadi icon-only (width:auto) jadi tidak kena aturan ini. */
+#secKeuangan td.status-cell{text-align:center}
+#secKeuangan .status-cell .pill{width:150px;min-width:150px}
 
 /* ============ KWITANSI CETAK ============ */
 #kwitansiArea{position:fixed;left:-9999px;top:0;width:560px}
@@ -2657,7 +2678,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <h4>➕ Catat Pembayaran</h4>
         <div class="toolbar" style="margin-bottom:14px">
           <select id="finAddBillCat" style="flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font:600 .84rem var(--body)"></select>
-          <button class="btn b-pri sm" id="btnAddBillCat">+ Tambah Kategori Tagihan</button>
+          <button class="btn b-pri sm" id="btnAddBillCat" title="Tambah Kategori Tagihan"><svg class="abc-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span class="abc-label"> Tambah Kategori Tagihan</span></button>
         </div>
         <div class="info-grid">
           <div class="fld full">
@@ -2666,23 +2687,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <div id="fpCategoryTotal" class="fp-cat-total"></div>
             <select id="fpCategory" style="display:none"></select>
           </div>
-          <div class="fld full"><label>Metode</label>
+          <div class="fld"><label>Tanggal</label><input type="date" id="fpTanggal" readonly onkeydown="return false" onwheel="return false" style="background:#f4f5f7;color:var(--mut);cursor:default;pointer-events:none"></div>
+          <div class="fld"><label>Metode</label>
             <select id="fpMetode">
               <option value="Cicilan">Cicilan</option>
               <option value="Tunai">Tunai</option>
             </select>
           </div>
-          <div class="fld"><label>Tanggal</label><input type="date" id="fpTanggal" readonly onkeydown="return false" onwheel="return false" style="background:#f4f5f7;color:var(--mut);cursor:default;pointer-events:none"></div>
-          <div class="fld"><label>Jumlah Bayar (Rp)</label><input type="text" inputmode="numeric" id="fpJumlah" placeholder="0"></div>
+          <div class="fld full"><label>Jumlah Bayar (Rp)</label><input type="text" inputmode="numeric" id="fpJumlah" placeholder="0"></div>
           <div class="fld full">
             <label>Catatan</label>
             <div class="fp-catatan-row">
               <input type="text" id="fpCatatanLabel" placeholder="Cicilan 1">
               <input type="text" inputmode="numeric" id="fpCatatanNominal" placeholder="0" readonly>
+              <button class="btn b-navy" id="btnSavePayment" title="Simpan Pembayaran" aria-label="Simpan Pembayaran"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg></button>
             </div>
           </div>
         </div>
-        <button class="btn b-navy sm" id="btnSavePayment" style="margin-top:6px">💾 Simpan Pembayaran</button>
       </div>
       <div class="box-sec">
         <h4>🧾 Riwayat Pembayaran</h4>
@@ -3880,9 +3901,9 @@ $('#btnSavePayment')?.addEventListener('click', async ()=>{
   if(!category_id)return toast('Pilih kategori biaya dahulu','err');
   if(!jumlah||jumlah<=0)return toast('Jumlah bayar harus lebih dari 0','err');
   const no_kwitansi='KW-'+Date.now().toString(36).toUpperCase();
-  const btn=$('#btnSavePayment'); const orig=btn.textContent; btn.disabled=true; btn.textContent='Menyimpan…';
+  const btn=$('#btnSavePayment'); const orig=btn.innerHTML; btn.disabled=true;
   const {data,error}=await sb.from('finance_payments_v2').insert({participant_id:pid,category_id,jumlah,tanggal,metode,catatan,no_kwitansi}).select().single();
-  btn.disabled=false; btn.textContent=orig;
+  btn.disabled=false; btn.innerHTML=orig;
   if(error)return toast('Gagal menyimpan pembayaran: '+error.message,'err');
   FIN_PAYMENTS.unshift(data);
   $('#fpJumlah').value=''; $('#fpCatatanNominal').value='';
