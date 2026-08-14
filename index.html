@@ -550,11 +550,11 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secKeuangan thead tr{display:table-row}
   #secKeuangan tbody{display:table-row-group}
   #secKeuangan tbody tr{display:table-row;border-bottom:0}
-  #secKeuangan tbody td{display:table-cell;width:auto;padding:8px 10px}
+  #secKeuangan tbody td{display:table-cell;width:auto;padding:8px 4px}
   /* Perkecil jarak antara kolom No dan Peserta khusus di mobile supaya
      lebih pas di layar sempit (kolom lain tidak berubah). */
-  #secKeuangan tbody td:first-child{padding-right:4px}
-  #secKeuangan td.nama{padding-left:4px}
+  #secKeuangan tbody td:first-child{padding-right:2px}
+  #secKeuangan td.nama{padding-left:2px}
   #secKeuangan td.kode{order:initial;white-space:nowrap}
   #secKeuangan td.nama{order:initial;margin-bottom:0}
   #secKeuangan td.nama b{white-space:nowrap;display:block}
@@ -576,7 +576,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      puluhan juta (mis. "Rp 99.999.999", 13 karakter) masih muat 1 baris
      tanpa bikin tabel melebar/scroll berlebihan di layar sempit. */
   #secKeuangan tbody td:nth-child(5),
-  #secKeuangan tbody td:nth-child(6){white-space:nowrap;font-size:.64rem;letter-spacing:-.01em}
+  #secKeuangan tbody td:nth-child(6){white-space:nowrap;font-size:.6rem;letter-spacing:-.02em;padding-left:3px;padding-right:3px}
   /* Kolom Terbayar & Sisa digabung jadi 1 kolom (atas-bawah) sama seperti
      Kode yang disisipkan di bawah nama pada kolom Peserta: kolom Sisa
      terpisah (ke-7) disembunyikan total, nilainya dipindah tampil sebagai
@@ -584,7 +584,7 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
   #secKeuangan thead th:nth-child(7),
   #secKeuangan tbody td.sisa-col{display:none}
   #secKeuangan td.bayar{white-space:normal;line-height:1.3}
-  #secKeuangan td.bayar span.bayar-sisa{display:block;font:800 .6rem var(--body);color:#8390A0;margin-top:1px;white-space:nowrap}
+  #secKeuangan td.bayar span.bayar-sisa{display:block;font:800 .58rem var(--body);color:#8390A0;margin-top:1px;white-space:nowrap}
   /* Kolom Status jadi icon-only (pill tanpa background/teks), dan tombol
      "Kelola" dari kolom Aksi dipindah masuk ke sini juga sebagai icon --
      supaya kolom Aksi bisa disembunyikan total dan tabel tidak makan
@@ -604,8 +604,8 @@ header{position:sticky;top:0;z-index:50;background:#13314D;border-bottom:3px sol
      baris tabel, var FIN_STATUS_ICON / render row ADM Peserta). Dengan
      begini td tetap ikut grid table asli & border-nya balik lurus,
      sementara tampilan icon-icon di dalamnya tetap center pakai flex. */
-  #secKeuangan .status-cell{min-height:20px}
-  #secKeuangan .status-cell-inner{display:flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap}
+  #secKeuangan .status-cell{min-height:20px;padding-left:3px;padding-right:3px}
+  #secKeuangan .status-cell-inner{display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
   #secKeuangan .btn-fin-inline{display:inline-flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;color:var(--navy);cursor:pointer}
   #secKeuangan .btn-fin-inline .btn-fin-ico{width:18px;height:18px}
   #secKeuangan thead th:nth-child(8),
