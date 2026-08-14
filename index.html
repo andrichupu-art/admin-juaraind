@@ -1123,10 +1123,13 @@ td.nama span{color:var(--mut);font-size:.78rem}
 #secKeuangan .pill{font-size:.68rem;padding:5px 10px;white-space:nowrap}
 /* Pill Status disamakan lebarnya (mengikuti pola Data Peserta) supaya tidak
    mengikuti panjang teks masing-masing status -> baris jadi rapi & rata.
-   Khusus desktop; media query mobile di atas sudah override balik pill
-   jadi icon-only (width:auto) jadi tidak kena aturan ini. */
-#secKeuangan td.status-cell{text-align:center}
-#secKeuangan .status-cell .pill{width:150px;min-width:150px}
+   Dibungkus media(min-width:761px) supaya TIDAK menimpa balik aturan
+   icon-only mobile di atas (sebelumnya bikin kolom Status merenggang lagi
+   di HP karena pill dipaksa lebar 150px juga di layar sempit). */
+@media(min-width:761px){
+  #secKeuangan td.status-cell{text-align:center}
+  #secKeuangan .status-cell .pill{width:150px;min-width:150px}
+}
 
 /* ============ KWITANSI CETAK ============ */
 #kwitansiArea{position:fixed;left:-9999px;top:0;width:560px}
